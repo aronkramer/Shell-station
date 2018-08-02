@@ -1,31 +1,104 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿<div id="app">
+    <div class="row">
+        <h1 class="page-header text-center">{{pageHeader}}</h1>
+        <div class="col-md-12 col-md-offset-0">
+            <ul class="nav nav-tabs" id="myTab">
+                <li class="active"><a href="#home" data-toggle="tab">By Item</a></li>
+                <li><a href="#profile" data-toggle="tab">By Production</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="home">
+                    <div class="col-md-10 col-md-offset-1">
+                        <br />
+                        <table class="table table-bordered table-responsive table-striped">
+
+                            <tr>
+                                <template v-for="header in tableHeaders">
+                                    <th>{{header}}</th>
+                                </template>
+                            </tr>
+                            <template v-for="item in info">
+                                <tr>
+
+                                    <td>{{item.Id}}</td>
+                                    <td>{{item.SKU}}</td>
+                                    <td>{{item.LastProductionDate}}</td>
+                                    <td>{{item.ItemsNotReceived}}</td>
+                                    <td>{{item.PercentageRecived}}</td>
+                                    <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="details($event)">Details</button></td>
+                                </tr>
+                            </template>
+
+                        </table>
+                        <template v-for="item in itemActivty">
+
+                            <h1>{{item.Type}}</h1>
+                            <h1>{{item.Date}}</h1>
+                            <h1>{{item.Quantity}}</h1>
+
+                        </template>
+                        <h1>{{itemActivty}}</h1>
+                    </div>
+                </div>
+                <div class="tab-pane" id="profile">
+                    <h1>this is where the produciotsdaflkkj</h1>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+    <div class="modal fade" id="detail-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover table-responsive">
+                        <tr>
+                            <th>Transaction Type</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                        </tr>
+                        <tr>
+                            <td>Hello</td>
+                            <td>Hi</td>
+                            <td>dude</td>
+                        </tr>
+                        @*<template v-for="item in info">
+                            <tr>
+                                <td>{{item.Id}}</td>
+                                <td>{{item.SKU}}</td>
+                                <td>{{item.LastProductionDate}}</td>
+                            </tr>
+                        </template>*@
+                        
+                        @*<template v-for="item in activitys">
+                                <tr>
+                                    <td>{{item.Type}}</td>
+                                    <td>{{item.Date}}</td>
+                                    <td>{{item.Quantity}}</td>
+                                </tr>
+                            </template>*@
+                    </table>
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/SiteScripts/Index.js"></script>
+    }
+
+@section css{
+    <link rel="stylesheet" href="~/Content/Index.css">
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
