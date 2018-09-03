@@ -1,0 +1,83 @@
+﻿@using ProductionTracker.Data
+@using ProductionTracker.Web.Models
+@model ItemAdderVM
+
+@{
+    ViewBag.Title = "ItemAdder";
+}
+<div class="row" style="margin-top: 25px;">
+    <form class="form" action="" method="post">
+        <h2 style="text-align:center;">ItemAdder</h2>
+        <div class="col-md-2">
+            <h4>Select Which Departments</h4>
+            <select id="department-dropdown" name="departmentIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+                @foreach (var department in Model.Departments)
+                 {
+                    <option value="@department.Id">@department.Department1</option>
+                 }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <h4>Select What Body Style</h4>
+                <select id="bodystyle-dropdown" name="styles[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+                    @foreach (int i in Enum.GetValues(typeof(BodyStyle)))
+                    {
+                        string name = Enum.GetName(typeof(BodyStyle), i);
+                        <option value="@i">@name</option>
+                    }
+                </select>
+        </div>
+        <div class="col-md-2">
+            <h4>Select What Fabric</h4>
+            <select id="fabric-dropdown" name="fabricIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+                @foreach (var fabric in Model.Fabrics)
+                {
+                    <option value="@fabric.Id">@fabric.Fabric1</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <h4>Select What Sleeve Legnths</h4>
+            <select id="sleaves-dropdown" name="sleaves[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+                @foreach (int i in Enum.GetValues(typeof(Sleeves)))
+                {
+                    string name = Enum.GetName(typeof(Sleeves), i);
+                    <option value="@i">@name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <h4>Select What Colors</h4>
+            <select id="color-dropdown" name="colorIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+                @foreach (var color in Model.Colors)
+                {
+                    <option value="@color.Id">@color.Color1</option>
+                }
+            </select>
+        </div>
+
+
+
+        <button class="btn btn-danger">Submit</button>
+
+    </form>
+    @*<div class="col-md-2">
+        @if(Model.CheckedDepartments != null)
+        {
+            foreach(var dep in Model.CheckedDepartments)
+            {
+                <h3>@dep</h3>
+            }
+        }
+    </div>*@
+</div>
+
+
+@section scripts{
+<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+@*<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>*@
+<script src="~/Scripts/SiteScripts/item-adder.js" type="text/javascript"></script>
+    }
+@section css{
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+    }

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BodyStyle.cs" />
     <Compile Include="ItemQuantity.cs" />
     <Compile Include="ProductionRepository.cs" />
     <Compile Include="Production.designer.cs">
@@ -54,6 +55,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Sizes.cs" />
+    <Compile Include="Sleeves.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

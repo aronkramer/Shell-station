@@ -33,24 +33,24 @@ namespace ProductionTracker.Data
     partial void InsertProductionDetail(ProductionDetail instance);
     partial void UpdateProductionDetail(ProductionDetail instance);
     partial void DeleteProductionDetail(ProductionDetail instance);
-    partial void InsertItem(Item instance);
-    partial void UpdateItem(Item instance);
-    partial void DeleteItem(Item instance);
     partial void InsertFabric(Fabric instance);
     partial void UpdateFabric(Fabric instance);
     partial void DeleteFabric(Fabric instance);
-    partial void InsertColor(Color instance);
-    partial void UpdateColor(Color instance);
-    partial void DeleteColor(Color instance);
     partial void InsertDepartment(Department instance);
     partial void UpdateDepartment(Department instance);
     partial void DeleteDepartment(Department instance);
-    partial void InsertReceivedItem(ReceivedItem instance);
-    partial void UpdateReceivedItem(ReceivedItem instance);
-    partial void DeleteReceivedItem(ReceivedItem instance);
     partial void InsertProduction(Production instance);
     partial void UpdateProduction(Production instance);
     partial void DeleteProduction(Production instance);
+    partial void InsertReceivedItem(ReceivedItem instance);
+    partial void UpdateReceivedItem(ReceivedItem instance);
+    partial void DeleteReceivedItem(ReceivedItem instance);
+    partial void InsertItem(Item instance);
+    partial void UpdateItem(Item instance);
+    partial void DeleteItem(Item instance);
+    partial void InsertColor(Color instance);
+    partial void UpdateColor(Color instance);
+    partial void DeleteColor(Color instance);
     #endregion
 		
 		public ProductionDataContext() : 
@@ -91,27 +91,11 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		public System.Data.Linq.Table<Item> Items
-		{
-			get
-			{
-				return this.GetTable<Item>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Fabric> Fabrics
 		{
 			get
 			{
 				return this.GetTable<Fabric>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Color> Colors
-		{
-			get
-			{
-				return this.GetTable<Color>();
 			}
 		}
 		
@@ -123,6 +107,14 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		public System.Data.Linq.Table<Production> Productions
+		{
+			get
+			{
+				return this.GetTable<Production>();
+			}
+		}
+		
 		public System.Data.Linq.Table<ReceivedItem> ReceivedItems
 		{
 			get
@@ -131,11 +123,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		public System.Data.Linq.Table<Production> Productions
+		public System.Data.Linq.Table<Item> Items
 		{
 			get
 			{
-				return this.GetTable<Production>();
+				return this.GetTable<Item>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Color> Colors
+		{
+			get
+			{
+				return this.GetTable<Color>();
 			}
 		}
 	}
@@ -154,9 +154,9 @@ namespace ProductionTracker.Data
 		
 		private int _ProductionId;
 		
-		private EntityRef<Item> _Item;
-		
 		private EntityRef<Production> _Production;
+		
+		private EntityRef<Item> _Item;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -174,8 +174,8 @@ namespace ProductionTracker.Data
 		
 		public ProductionDetail()
 		{
-			this._Item = default(EntityRef<Item>);
 			this._Production = default(EntityRef<Production>);
+			this._Item = default(EntityRef<Item>);
 			OnCreated();
 		}
 		
@@ -267,40 +267,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
-		public Item Item
-		{
-			get
-			{
-				return this._Item.Entity;
-			}
-			set
-			{
-				Item previousValue = this._Item.Entity;
-				if (((previousValue != value) 
-							|| (this._Item.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Item.Entity = null;
-						previousValue.ProductionDetails.Remove(this);
-					}
-					this._Item.Entity = value;
-					if ((value != null))
-					{
-						value.ProductionDetails.Add(this);
-						this._ItemId = value.Id;
-					}
-					else
-					{
-						this._ItemId = default(int);
-					}
-					this.SendPropertyChanged("Item");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_ProductionDetail", Storage="_Production", ThisKey="ProductionId", OtherKey="Id", IsForeignKey=true)]
 		public Production Production
 		{
@@ -335,363 +301,36 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Items")]
-	public partial class Item : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _SKU;
-		
-		private int _ColorId;
-		
-		private int _Size;
-		
-		private int _DepartmentId;
-		
-		private int _FabricId;
-		
-		private int _Sleeve;
-		
-		private EntitySet<ProductionDetail> _ProductionDetails;
-		
-		private EntitySet<ReceivedItem> _ReceivedItems;
-		
-		private EntityRef<Fabric> _Fabric;
-		
-		private EntityRef<Color> _Color;
-		
-		private EntityRef<Department> _Department;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnSKUChanging(string value);
-    partial void OnSKUChanged();
-    partial void OnColorIdChanging(int value);
-    partial void OnColorIdChanged();
-    partial void OnSizeChanging(int value);
-    partial void OnSizeChanged();
-    partial void OnDepartmentIdChanging(int value);
-    partial void OnDepartmentIdChanged();
-    partial void OnFabricIdChanging(int value);
-    partial void OnFabricIdChanged();
-    partial void OnSleeveChanging(int value);
-    partial void OnSleeveChanged();
-    #endregion
-		
-		public Item()
-		{
-			this._ProductionDetails = new EntitySet<ProductionDetail>(new Action<ProductionDetail>(this.attach_ProductionDetails), new Action<ProductionDetail>(this.detach_ProductionDetails));
-			this._ReceivedItems = new EntitySet<ReceivedItem>(new Action<ReceivedItem>(this.attach_ReceivedItems), new Action<ReceivedItem>(this.detach_ReceivedItems));
-			this._Fabric = default(EntityRef<Fabric>);
-			this._Color = default(EntityRef<Color>);
-			this._Department = default(EntityRef<Department>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
+		public Item Item
 		{
 			get
 			{
-				return this._Id;
+				return this._Item.Entity;
 			}
 			set
 			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKU", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string SKU
-		{
-			get
-			{
-				return this._SKU;
-			}
-			set
-			{
-				if ((this._SKU != value))
-				{
-					this.OnSKUChanging(value);
-					this.SendPropertyChanging();
-					this._SKU = value;
-					this.SendPropertyChanged("SKU");
-					this.OnSKUChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ColorId", DbType="Int NOT NULL")]
-		public int ColorId
-		{
-			get
-			{
-				return this._ColorId;
-			}
-			set
-			{
-				if ((this._ColorId != value))
-				{
-					if (this._Color.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnColorIdChanging(value);
-					this.SendPropertyChanging();
-					this._ColorId = value;
-					this.SendPropertyChanged("ColorId");
-					this.OnColorIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Size", DbType="Int NOT NULL")]
-		public int Size
-		{
-			get
-			{
-				return this._Size;
-			}
-			set
-			{
-				if ((this._Size != value))
-				{
-					this.OnSizeChanging(value);
-					this.SendPropertyChanging();
-					this._Size = value;
-					this.SendPropertyChanged("Size");
-					this.OnSizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="Int NOT NULL")]
-		public int DepartmentId
-		{
-			get
-			{
-				return this._DepartmentId;
-			}
-			set
-			{
-				if ((this._DepartmentId != value))
-				{
-					if (this._Department.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnDepartmentIdChanging(value);
-					this.SendPropertyChanging();
-					this._DepartmentId = value;
-					this.SendPropertyChanged("DepartmentId");
-					this.OnDepartmentIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FabricId", DbType="Int NOT NULL")]
-		public int FabricId
-		{
-			get
-			{
-				return this._FabricId;
-			}
-			set
-			{
-				if ((this._FabricId != value))
-				{
-					if (this._Fabric.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnFabricIdChanging(value);
-					this.SendPropertyChanging();
-					this._FabricId = value;
-					this.SendPropertyChanged("FabricId");
-					this.OnFabricIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Sleeve", DbType="Int NOT NULL")]
-		public int Sleeve
-		{
-			get
-			{
-				return this._Sleeve;
-			}
-			set
-			{
-				if ((this._Sleeve != value))
-				{
-					this.OnSleeveChanging(value);
-					this.SendPropertyChanging();
-					this._Sleeve = value;
-					this.SendPropertyChanged("Sleeve");
-					this.OnSleeveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ProductionDetail", Storage="_ProductionDetails", ThisKey="Id", OtherKey="ItemId")]
-		public EntitySet<ProductionDetail> ProductionDetails
-		{
-			get
-			{
-				return this._ProductionDetails;
-			}
-			set
-			{
-				this._ProductionDetails.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivedItem", Storage="_ReceivedItems", ThisKey="Id", OtherKey="ItemId")]
-		public EntitySet<ReceivedItem> ReceivedItems
-		{
-			get
-			{
-				return this._ReceivedItems;
-			}
-			set
-			{
-				this._ReceivedItems.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Fabric_Item", Storage="_Fabric", ThisKey="FabricId", OtherKey="Id", IsForeignKey=true)]
-		public Fabric Fabric
-		{
-			get
-			{
-				return this._Fabric.Entity;
-			}
-			set
-			{
-				Fabric previousValue = this._Fabric.Entity;
+				Item previousValue = this._Item.Entity;
 				if (((previousValue != value) 
-							|| (this._Fabric.HasLoadedOrAssignedValue == false)))
+							|| (this._Item.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Fabric.Entity = null;
-						previousValue.Items.Remove(this);
+						this._Item.Entity = null;
+						previousValue.ProductionDetails.Remove(this);
 					}
-					this._Fabric.Entity = value;
+					this._Item.Entity = value;
 					if ((value != null))
 					{
-						value.Items.Add(this);
-						this._FabricId = value.Id;
+						value.ProductionDetails.Add(this);
+						this._ItemId = value.Id;
 					}
 					else
 					{
-						this._FabricId = default(int);
+						this._ItemId = default(int);
 					}
-					this.SendPropertyChanged("Fabric");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Color_Item", Storage="_Color", ThisKey="ColorId", OtherKey="Id", IsForeignKey=true)]
-		public Color Color
-		{
-			get
-			{
-				return this._Color.Entity;
-			}
-			set
-			{
-				Color previousValue = this._Color.Entity;
-				if (((previousValue != value) 
-							|| (this._Color.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Color.Entity = null;
-						previousValue.Items.Remove(this);
-					}
-					this._Color.Entity = value;
-					if ((value != null))
-					{
-						value.Items.Add(this);
-						this._ColorId = value.Id;
-					}
-					else
-					{
-						this._ColorId = default(int);
-					}
-					this.SendPropertyChanged("Color");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Item", Storage="_Department", ThisKey="DepartmentId", OtherKey="Id", IsForeignKey=true)]
-		public Department Department
-		{
-			get
-			{
-				return this._Department.Entity;
-			}
-			set
-			{
-				Department previousValue = this._Department.Entity;
-				if (((previousValue != value) 
-							|| (this._Department.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Department.Entity = null;
-						previousValue.Items.Remove(this);
-					}
-					this._Department.Entity = value;
-					if ((value != null))
-					{
-						value.Items.Add(this);
-						this._DepartmentId = value.Id;
-					}
-					else
-					{
-						this._DepartmentId = default(int);
-					}
-					this.SendPropertyChanged("Department");
+					this.SendPropertyChanged("Item");
 				}
 			}
 		}
@@ -714,30 +353,6 @@ namespace ProductionTracker.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_ProductionDetails(ProductionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Item = this;
-		}
-		
-		private void detach_ProductionDetails(ProductionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Item = null;
-		}
-		
-		private void attach_ReceivedItems(ReceivedItem entity)
-		{
-			this.SendPropertyChanging();
-			entity.Item = this;
-		}
-		
-		private void detach_ReceivedItems(ReceivedItem entity)
-		{
-			this.SendPropertyChanging();
-			entity.Item = null;
 		}
 	}
 	
@@ -855,120 +470,6 @@ namespace ProductionTracker.Data
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Colors")]
-	public partial class Color : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _Color1;
-		
-		private EntitySet<Item> _Items;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnColor1Changing(string value);
-    partial void OnColor1Changed();
-    #endregion
-		
-		public Color()
-		{
-			this._Items = new EntitySet<Item>(new Action<Item>(this.attach_Items), new Action<Item>(this.detach_Items));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Color", Storage="_Color1", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Color1
-		{
-			get
-			{
-				return this._Color1;
-			}
-			set
-			{
-				if ((this._Color1 != value))
-				{
-					this.OnColor1Changing(value);
-					this.SendPropertyChanging();
-					this._Color1 = value;
-					this.SendPropertyChanged("Color1");
-					this.OnColor1Changed();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Color_Item", Storage="_Items", ThisKey="Id", OtherKey="ColorId")]
-		public EntitySet<Item> Items
-		{
-			get
-			{
-				return this._Items;
-			}
-			set
-			{
-				this._Items.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Items(Item entity)
-		{
-			this.SendPropertyChanging();
-			entity.Color = this;
-		}
-		
-		private void detach_Items(Item entity)
-		{
-			this.SendPropertyChanging();
-			entity.Color = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Departments")]
 	public partial class Department : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1083,6 +584,172 @@ namespace ProductionTracker.Data
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Productions")]
+	public partial class Production : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private System.DateTime _Date;
+		
+		private string _Name;
+		
+		private EntitySet<ProductionDetail> _ProductionDetails;
+		
+		private EntitySet<ReceivedItem> _ReceivedItems;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnDateChanging(System.DateTime value);
+    partial void OnDateChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    #endregion
+		
+		public Production()
+		{
+			this._ProductionDetails = new EntitySet<ProductionDetail>(new Action<ProductionDetail>(this.attach_ProductionDetails), new Action<ProductionDetail>(this.detach_ProductionDetails));
+			this._ReceivedItems = new EntitySet<ReceivedItem>(new Action<ReceivedItem>(this.attach_ReceivedItems), new Action<ReceivedItem>(this.detach_ReceivedItems));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="Date NOT NULL")]
+		public System.DateTime Date
+		{
+			get
+			{
+				return this._Date;
+			}
+			set
+			{
+				if ((this._Date != value))
+				{
+					this.OnDateChanging(value);
+					this.SendPropertyChanging();
+					this._Date = value;
+					this.SendPropertyChanged("Date");
+					this.OnDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_ProductionDetail", Storage="_ProductionDetails", ThisKey="Id", OtherKey="ProductionId")]
+		public EntitySet<ProductionDetail> ProductionDetails
+		{
+			get
+			{
+				return this._ProductionDetails;
+			}
+			set
+			{
+				this._ProductionDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_ReceivedItem", Storage="_ReceivedItems", ThisKey="Id", OtherKey="ProductionId")]
+		public EntitySet<ReceivedItem> ReceivedItems
+		{
+			get
+			{
+				return this._ReceivedItems;
+			}
+			set
+			{
+				this._ReceivedItems.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_ProductionDetails(ProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Production = this;
+		}
+		
+		private void detach_ProductionDetails(ProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Production = null;
+		}
+		
+		private void attach_ReceivedItems(ReceivedItem entity)
+		{
+			this.SendPropertyChanging();
+			entity.Production = this;
+		}
+		
+		private void detach_ReceivedItems(ReceivedItem entity)
+		{
+			this.SendPropertyChanging();
+			entity.Production = null;
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ReceivedItems")]
 	public partial class ReceivedItem : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1096,6 +763,10 @@ namespace ProductionTracker.Data
 		private System.DateTime _Date;
 		
 		private int _Quantity;
+		
+		private System.Nullable<int> _ProductionId;
+		
+		private EntityRef<Production> _Production;
 		
 		private EntityRef<Item> _Item;
 		
@@ -1111,10 +782,13 @@ namespace ProductionTracker.Data
     partial void OnDateChanged();
     partial void OnQuantityChanging(int value);
     partial void OnQuantityChanged();
+    partial void OnProductionIdChanging(System.Nullable<int> value);
+    partial void OnProductionIdChanged();
     #endregion
 		
 		public ReceivedItem()
 		{
+			this._Production = default(EntityRef<Production>);
 			this._Item = default(EntityRef<Item>);
 			OnCreated();
 		}
@@ -1203,6 +877,64 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionId", DbType="Int")]
+		public System.Nullable<int> ProductionId
+		{
+			get
+			{
+				return this._ProductionId;
+			}
+			set
+			{
+				if ((this._ProductionId != value))
+				{
+					if (this._Production.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductionIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductionId = value;
+					this.SendPropertyChanged("ProductionId");
+					this.OnProductionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_ReceivedItem", Storage="_Production", ThisKey="ProductionId", OtherKey="Id", IsForeignKey=true)]
+		public Production Production
+		{
+			get
+			{
+				return this._Production.Entity;
+			}
+			set
+			{
+				Production previousValue = this._Production.Entity;
+				if (((previousValue != value) 
+							|| (this._Production.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Production.Entity = null;
+						previousValue.ReceivedItems.Remove(this);
+					}
+					this._Production.Entity = value;
+					if ((value != null))
+					{
+						value.ReceivedItems.Add(this);
+						this._ProductionId = value.Id;
+					}
+					else
+					{
+						this._ProductionId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Production");
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivedItem", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
 		public Item Item
 		{
@@ -1258,19 +990,37 @@ namespace ProductionTracker.Data
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Productions")]
-	public partial class Production : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Items")]
+	public partial class Item : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private int _Id;
 		
-		private System.DateTime _Date;
+		private string _SKU;
 		
-		private string _Name;
+		private int _ColorId;
+		
+		private Sizes _Size;
+		
+		private int _DepartmentId;
+		
+		private int _FabricId;
+		
+		private Sleeves _Sleeve;
+		
+		private BodyStyle _BodyStyle;
 		
 		private EntitySet<ProductionDetail> _ProductionDetails;
+		
+		private EntitySet<ReceivedItem> _ReceivedItems;
+		
+		private EntityRef<Department> _Department;
+		
+		private EntityRef<Fabric> _Fabric;
+		
+		private EntityRef<Color> _Color;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1278,15 +1028,29 @@ namespace ProductionTracker.Data
     partial void OnCreated();
     partial void OnIdChanging(int value);
     partial void OnIdChanged();
-    partial void OnDateChanging(System.DateTime value);
-    partial void OnDateChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
+    partial void OnSKUChanging(string value);
+    partial void OnSKUChanged();
+    partial void OnColorIdChanging(int value);
+    partial void OnColorIdChanged();
+    partial void OnSizeChanging(Sizes value);
+    partial void OnSizeChanged();
+    partial void OnDepartmentIdChanging(int value);
+    partial void OnDepartmentIdChanged();
+    partial void OnFabricIdChanging(int value);
+    partial void OnFabricIdChanged();
+    partial void OnSleeveChanging(Sleeves value);
+    partial void OnSleeveChanged();
+    partial void OnBodyStyleChanging(BodyStyle value);
+    partial void OnBodyStyleChanged();
     #endregion
 		
-		public Production()
+		public Item()
 		{
 			this._ProductionDetails = new EntitySet<ProductionDetail>(new Action<ProductionDetail>(this.attach_ProductionDetails), new Action<ProductionDetail>(this.detach_ProductionDetails));
+			this._ReceivedItems = new EntitySet<ReceivedItem>(new Action<ReceivedItem>(this.attach_ReceivedItems), new Action<ReceivedItem>(this.detach_ReceivedItems));
+			this._Department = default(EntityRef<Department>);
+			this._Fabric = default(EntityRef<Fabric>);
+			this._Color = default(EntityRef<Color>);
 			OnCreated();
 		}
 		
@@ -1310,47 +1074,159 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="Date NOT NULL")]
-		public System.DateTime Date
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKU", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string SKU
 		{
 			get
 			{
-				return this._Date;
+				return this._SKU;
 			}
 			set
 			{
-				if ((this._Date != value))
+				if ((this._SKU != value))
 				{
-					this.OnDateChanging(value);
+					this.OnSKUChanging(value);
 					this.SendPropertyChanging();
-					this._Date = value;
-					this.SendPropertyChanged("Date");
-					this.OnDateChanged();
+					this._SKU = value;
+					this.SendPropertyChanged("SKU");
+					this.OnSKUChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Name
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ColorId", DbType="Int NOT NULL")]
+		public int ColorId
 		{
 			get
 			{
-				return this._Name;
+				return this._ColorId;
 			}
 			set
 			{
-				if ((this._Name != value))
+				if ((this._ColorId != value))
 				{
-					this.OnNameChanging(value);
+					if (this._Color.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnColorIdChanging(value);
 					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
+					this._ColorId = value;
+					this.SendPropertyChanged("ColorId");
+					this.OnColorIdChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_ProductionDetail", Storage="_ProductionDetails", ThisKey="Id", OtherKey="ProductionId")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Size", DbType="Int NOT NULL", CanBeNull=false)]
+		public Sizes Size
+		{
+			get
+			{
+				return this._Size;
+			}
+			set
+			{
+				if ((this._Size != value))
+				{
+					this.OnSizeChanging(value);
+					this.SendPropertyChanging();
+					this._Size = value;
+					this.SendPropertyChanged("Size");
+					this.OnSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="Int NOT NULL")]
+		public int DepartmentId
+		{
+			get
+			{
+				return this._DepartmentId;
+			}
+			set
+			{
+				if ((this._DepartmentId != value))
+				{
+					if (this._Department.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDepartmentIdChanging(value);
+					this.SendPropertyChanging();
+					this._DepartmentId = value;
+					this.SendPropertyChanged("DepartmentId");
+					this.OnDepartmentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FabricId", DbType="Int NOT NULL")]
+		public int FabricId
+		{
+			get
+			{
+				return this._FabricId;
+			}
+			set
+			{
+				if ((this._FabricId != value))
+				{
+					if (this._Fabric.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnFabricIdChanging(value);
+					this.SendPropertyChanging();
+					this._FabricId = value;
+					this.SendPropertyChanged("FabricId");
+					this.OnFabricIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Sleeve", DbType="Int NOT NULL", CanBeNull=false)]
+		public Sleeves Sleeve
+		{
+			get
+			{
+				return this._Sleeve;
+			}
+			set
+			{
+				if ((this._Sleeve != value))
+				{
+					this.OnSleeveChanging(value);
+					this.SendPropertyChanging();
+					this._Sleeve = value;
+					this.SendPropertyChanged("Sleeve");
+					this.OnSleeveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BodyStyle", DbType="Int NOT NULL", CanBeNull=false)]
+		public BodyStyle BodyStyle
+		{
+			get
+			{
+				return this._BodyStyle;
+			}
+			set
+			{
+				if ((this._BodyStyle != value))
+				{
+					this.OnBodyStyleChanging(value);
+					this.SendPropertyChanging();
+					this._BodyStyle = value;
+					this.SendPropertyChanged("BodyStyle");
+					this.OnBodyStyleChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ProductionDetail", Storage="_ProductionDetails", ThisKey="Id", OtherKey="ItemId")]
 		public EntitySet<ProductionDetail> ProductionDetails
 		{
 			get
@@ -1360,6 +1236,121 @@ namespace ProductionTracker.Data
 			set
 			{
 				this._ProductionDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivedItem", Storage="_ReceivedItems", ThisKey="Id", OtherKey="ItemId")]
+		public EntitySet<ReceivedItem> ReceivedItems
+		{
+			get
+			{
+				return this._ReceivedItems;
+			}
+			set
+			{
+				this._ReceivedItems.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Item", Storage="_Department", ThisKey="DepartmentId", OtherKey="Id", IsForeignKey=true)]
+		public Department Department
+		{
+			get
+			{
+				return this._Department.Entity;
+			}
+			set
+			{
+				Department previousValue = this._Department.Entity;
+				if (((previousValue != value) 
+							|| (this._Department.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Department.Entity = null;
+						previousValue.Items.Remove(this);
+					}
+					this._Department.Entity = value;
+					if ((value != null))
+					{
+						value.Items.Add(this);
+						this._DepartmentId = value.Id;
+					}
+					else
+					{
+						this._DepartmentId = default(int);
+					}
+					this.SendPropertyChanged("Department");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Fabric_Item", Storage="_Fabric", ThisKey="FabricId", OtherKey="Id", IsForeignKey=true)]
+		public Fabric Fabric
+		{
+			get
+			{
+				return this._Fabric.Entity;
+			}
+			set
+			{
+				Fabric previousValue = this._Fabric.Entity;
+				if (((previousValue != value) 
+							|| (this._Fabric.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Fabric.Entity = null;
+						previousValue.Items.Remove(this);
+					}
+					this._Fabric.Entity = value;
+					if ((value != null))
+					{
+						value.Items.Add(this);
+						this._FabricId = value.Id;
+					}
+					else
+					{
+						this._FabricId = default(int);
+					}
+					this.SendPropertyChanged("Fabric");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Color_Item", Storage="_Color", ThisKey="ColorId", OtherKey="Id", IsForeignKey=true)]
+		public Color Color
+		{
+			get
+			{
+				return this._Color.Entity;
+			}
+			set
+			{
+				Color previousValue = this._Color.Entity;
+				if (((previousValue != value) 
+							|| (this._Color.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Color.Entity = null;
+						previousValue.Items.Remove(this);
+					}
+					this._Color.Entity = value;
+					if ((value != null))
+					{
+						value.Items.Add(this);
+						this._ColorId = value.Id;
+					}
+					else
+					{
+						this._ColorId = default(int);
+					}
+					this.SendPropertyChanged("Color");
+				}
 			}
 		}
 		
@@ -1386,13 +1377,139 @@ namespace ProductionTracker.Data
 		private void attach_ProductionDetails(ProductionDetail entity)
 		{
 			this.SendPropertyChanging();
-			entity.Production = this;
+			entity.Item = this;
 		}
 		
 		private void detach_ProductionDetails(ProductionDetail entity)
 		{
 			this.SendPropertyChanging();
-			entity.Production = null;
+			entity.Item = null;
+		}
+		
+		private void attach_ReceivedItems(ReceivedItem entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = this;
+		}
+		
+		private void detach_ReceivedItems(ReceivedItem entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Colors")]
+	public partial class Color : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _Color1;
+		
+		private EntitySet<Item> _Items;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnColor1Changing(string value);
+    partial void OnColor1Changed();
+    #endregion
+		
+		public Color()
+		{
+			this._Items = new EntitySet<Item>(new Action<Item>(this.attach_Items), new Action<Item>(this.detach_Items));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Color", Storage="_Color1", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Color1
+		{
+			get
+			{
+				return this._Color1;
+			}
+			set
+			{
+				if ((this._Color1 != value))
+				{
+					this.OnColor1Changing(value);
+					this.SendPropertyChanging();
+					this._Color1 = value;
+					this.SendPropertyChanged("Color1");
+					this.OnColor1Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Color_Item", Storage="_Items", ThisKey="Id", OtherKey="ColorId")]
+		public EntitySet<Item> Items
+		{
+			get
+			{
+				return this._Items;
+			}
+			set
+			{
+				this._Items.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Items(Item entity)
+		{
+			this.SendPropertyChanging();
+			entity.Color = this;
+		}
+		
+		private void detach_Items(Item entity)
+		{
+			this.SendPropertyChanging();
+			entity.Color = null;
 		}
 	}
 }

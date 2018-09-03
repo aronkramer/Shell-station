@@ -64,6 +64,67 @@ namespace ProductionTracker.Data
 
             }
         }
+
+        public IEnumerable<Production> GetAllProductions()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<Production>(p => p.ProductionDetails);
+                loadOptions.LoadWith<Production>(p => p.ReceivedItems);
+                context.LoadOptions = loadOptions;
+                return context.Productions.ToList();
+            }
+        }
+
+        public Production GetProductionById(int id)
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<Production>(p => p.ProductionDetails);
+                loadOptions.LoadWith<Production>(p => p.ReceivedItems);
+                loadOptions.LoadWith<ReceivedItem>(r => r.Item);
+                loadOptions.LoadWith<ProductionDetail>(pd => pd.Item);
+                context.LoadOptions = loadOptions;
+                return context.Productions.FirstOrDefault(i => i.Id == id);
+            }
+        }
+
+        public IEnumerable<Department> GetDepartments()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.Departments.ToList();
+            }
+        }
+        public void AddColors(IEnumerable<Color> colors)
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                //foreach(var color in colors)
+                //{
+                //    context.Colors.InsertOnSubmit(color);
+                //    context.SubmitChanges();
+                //}
+                context.Colors.InsertAllOnSubmit(colors);
+                context.SubmitChanges();
+            }
+        }
+        public IEnumerable<Color> GetAllColors()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.Colors.ToList();
+            }
+        }
+        public IEnumerable<Fabric> GetAllFabrics()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.Fabrics.ToList();
+            }
+        }
     }
 }
 

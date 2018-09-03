@@ -1,0 +1,75 @@
+﻿@using ProductionTracker.Data
+@using ProductionTracker.Web.Models
+@model IEnumerable<Item>
+<h2>ConfirmationPage</h2>
+
+@{ var x = 0;}
+<form action="/item/additems" method="post">
+    <table class="table table-bordered table-hover table-responsive table-striped">
+        <tr>
+            <th>SKU</th>
+            <th>Department</th>
+            <th>Fabric</th>
+            <th>Style</th>
+            <th>Color</th>
+            <th>Sleave</th>
+            <th>Size</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><input type="text" class="form-control" name="items[@x].SKU" value="@item.SKU" placeholder="SKU"></td>
+                <td><input type="text" class="form-control" name="items[@x].DepartmentId" value="@item.DepartmentId" disabled></td>
+                <td><input type="text" class="form-control" name="items[@x].BodyStyle" value="@item.BodyStyle" disabled></td>
+                <td><input type="text" class="form-control" name="items[@x].FabricId" value="@item.FabricId" disabled></td>
+                <td><input type="text" class="form-control" name="items[@x].ColorId" value="@item.ColorId" disabled></td>
+                <td><input type="text" class="form-control" name="items[@x].Sleeve" value="@item.Sleeve" disabled></td>
+                <td><input type="text" class="form-control" name="items[@x].Size" value="@item.Size" disabled></td>
+            </tr>
+            @*<div class="col-md-2 col-xs-2">
+        <div class="input-group">
+            <span class="input-group-addon">SKU</span>
+            <input type="text" class="form-control" name="items[@/*x*/].SKU" value="@/*item.SKU*/" placeholder="SKU">
+        </div> /input-group
+    </div>
+    <div class="col-md-2 col-xs-2">
+        <div class="input-group">
+            <span class="input-group-addon">Department</span>
+            <input type="text" class="form-control" name="items[@/*x*/].DepartmentId" value="@/*item.DepartmentId*/" disabled>
+        </div>
+    </div>
+    <div class="col-md-2 col-xs-2">
+        <div class="input-group">
+            <span class="input-group-addon">Style</span>
+            <input type="text" class="form-control" name="items[@/*x*/].BodyStyle" value="@/*item.BodyStyle*/" disabled>
+        </div>
+    </div>
+    <div class="col-md-2 col-xs-2">
+        <div class="input-group">
+            <span class="input-group-addon">Fabric</span>
+            <input type="text" class="form-control" name="items[@/*x*/].FabricId" value="@/*item.FabricId*/" disabled>
+        </div>
+    </div>
+    <div class="col-md-2 col-xs-2">
+        <div class="input-group">
+            <span class="input-group-addon">Color</span>
+            <input type="text" class="form-control" name="items[@/*x*/].ColorId" value="@/*item.ColorId*/" disabled>
+        </div>
+    </div>
+    <div class="col-md-1 col-xs-1">
+        <div class="input-group">
+            <span class="input-group-addon">Sleeve</span>
+            <input type="text" class="form-control" name="items[@/*x*/].Sleeve" value="@/*item.Sleeve*/" disabled>
+        </div>
+    </div>
+    <div class="col-md-1 col-xs-1">
+        <div class="input-group">
+            <span class="input-group-addon">Color</span>
+            <input type="text" class="form-control" name="items[@/*x*/].Size" value="@/*item.Size*/" disabled>
+        </div>
+    </div>*@
+        }
+    </table>
+</form>
+

@@ -15,11 +15,8 @@ namespace ProductionTracker.Web.Controllers
         {
             return View();
         }
-        public ActionResult ItemAdder()
-        {
-            return View();
-        }
-        public ActionResult GetAllItemWithDetails()
+        
+        public ActionResult GetAllItemsWithDetails()
         {
             var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
             var itemsWithextras = repo.GetAllItemsInProduction().Select(i => { return new ItemWithQuantityVM
@@ -42,6 +39,7 @@ namespace ProductionTracker.Web.Controllers
                 };
             }), JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetAllActivityOfAItem (int id)
         {
             var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
@@ -52,8 +50,9 @@ namespace ProductionTracker.Web.Controllers
                 activity.Add(new ItemActivity
                 {
                     Type = $"Recived",
-                    Date = recived.Date,
-                    Quantity = recived.Quantity
+                    Date = recived.Date.ToShortDateString(),
+                    Quantity = recived.Quantity,
+                    ProductionId = recived.ProductionId
                 });
             }
             foreach (var production in item.ProductionDetails)
@@ -61,20 +60,85 @@ namespace ProductionTracker.Web.Controllers
                 activity.Add(new ItemActivity
                 {
                     Type = $"Production :{production.Production.Name}",
-                    Date = production.Production.Date,
-                    Quantity = production.Quantity
+                    Date = production.Production.Date.ToShortDateString(),
+                    Quantity = production.Quantity,
+                    ProductionId = production.ProductionId
                 });
             }
-            return Json(activity.Select( a=> {
+            return Json(new
+            {
+                item = new
+                {
+                    Id = item.Id,
+                    SKU = item.SKU,
+                    Name = item.SKU
+                },
+                activity = activity
+                //.Select(a =>
+                //{
+                //    return new
+                //    {
+                //        Type = a.Type,
+                //        Date = a.Date.ToShortDateString(),
+                //        Quantity = a.Quantity
+                //    };
+                //})
+                .OrderByDescending(a => a.Date)
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetProductionsWithInfo()
+        {
+            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var productions = repo.GetAllProductions();
+            
+            return Json(productions.Select(p =>
+            {
+                var sumor = p.ProductionDetails.Sum(pd => pd.Quantity);
+                var sumre = p.ReceivedItems.Sum(re => re.Quantity);
                 return new
                 {
-                    Type = a.Type,
-                    Date = a.Date,
-                    Quantity = a.Quantity
+                    Date = p.Date.ToShortDateString(),
+                    Name = p.Name,
+                    Id = p.Id,
+                    TotalItems = sumor,
+                    ItemsNotReceived = sumor - sumre,
+                    PercentageFilled = String.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
+
                 };
-            }
-            ), JsonRequestBehavior.AllowGet);
+            }).OrderByDescending(p => p.Date), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetDeatilsOfAProduction(int id)
+        {
+            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var result = repo.GetProductionById(id);
+            var details = result.ProductionDetails.Select(pd =>
+            {
+                var received = result.ReceivedItems.Where(ri => ri.ProductionId == result.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity);
+                return new
+                {
+                    Id = pd.ItemId,
+                    SKU = pd.Item.SKU,
+                    Ordered = pd.Quantity,
+                    Received = received,
+                    PercentageFilled = String.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity)
+                };
+
+            });
+            return Json(new
+            {
+                production = new
+                {
+                   Name = result.Name,
+                   Id = result.Id,
+                   Date = result.Date.ToShortDateString()
+                    
+                },
+                details
+            },JsonRequestBehavior.AllowGet);
         }
 
     }
+    
 }

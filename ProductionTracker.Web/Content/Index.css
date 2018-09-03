@@ -1,7 +1,17 @@
-﻿body {
-}
-li {
+﻿/*body {
+
+}*/
+.table-li {
     width: 475px;
     font-size: 20px;
     text-align: center;
 }
+
+.glyphicon-arrow-left {
+    width: 50px;
+    text-align: left;
+}
+/*.site-body{
+    padding-top:50px;
+}*/
+

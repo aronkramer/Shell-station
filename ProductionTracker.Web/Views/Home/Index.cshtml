@@ -1,14 +1,14 @@
 ﻿<div id="app">
-    <div class="row">
+    <div class="row site-body">
         <h1 class="page-header text-center">{{pageHeader}}</h1>
         <div class="col-md-12 col-md-offset-0">
             <ul class="nav nav-tabs" id="myTab">
-                <li class="active"><a href="#home" data-toggle="tab">By Item</a></li>
-                <li><a href="#profile" data-toggle="tab">By Production</a></li>
+                <li class="active table-li"><a href="#byItems" data-toggle="tab">By Item</a></li>
+                <li class="table-li"><a v-on:click="productionTab" href="#byProductions" data-toggle="tab">By Production</a></li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane active" id="home">
+                <div class="tab-pane active" id="byItems">
                     <div class="col-md-10 col-md-offset-1">
                         <br />
                         <table class="table table-bordered table-responsive table-striped">
@@ -18,7 +18,7 @@
                                     <th>{{header}}</th>
                                 </template>
                             </tr>
-                            <template v-for="item in info">
+                            <template v-for="item in itemsInProduction">
                                 <tr>
 
                                     <td>{{item.Id}}</td>
@@ -26,15 +26,43 @@
                                     <td>{{item.LastProductionDate}}</td>
                                     <td>{{item.ItemsNotReceived}}</td>
                                     <td>{{item.PercentageRecived}}</td>
-                                    <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="details($event)">Details</button></td>
+                                    <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForItem($event)">Details</button></td>
                                 </tr>
                             </template>
 
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="profile">
-                    <h1>this is where the produciotsdaflkkj</h1>
+                <div class="tab-pane" id="byProductions">
+                    <div class="col-md-10 col-md-offset-1">
+                        <br />
+                        <table class="table table-bordered table-responsive table-striped">
+
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Total Items</th>
+                                <th>Items Not Recived</th>
+                                <th>Percentage Filled</th>
+                                <th>Actions</th>
+                            </tr>
+                            <template v-for="item in productions">
+                                <tr>
+                                    <td>{{item.Id}}</td>
+                                    <td>{{item.Name}}</td>
+                                    <td>{{item.Date}}</td>
+                                    <td>{{item.TotalItems}}</td>
+                                    <td>{{item.ItemsNotReceived}}</td>
+                                    <td>{{item.PercentageFilled}}</td>
+                                    <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForProduction($event)">Details</button></td>
+                                </tr>
+                            </template>
+
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,41 +73,41 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Modal title</h4>
+                    <h4 class="modal-title">Viewing the activity for :{{currentProduction.Name}} {{currentItem.Name}}</h4>
                 </div>
                 <div class="modal-body">
                     <table class="table table-bordered table-hover table-responsive">
                         <tr>
-                            <th>Transaction Type</th>
-                            <th>Date</th>
-                            <th>Quantity</th>
+                            <template v-for="header in detailHeaders">
+                                <th>{{header}}</th>
+                            </template>
                         </tr>
-                        <tr>
-                            <td>Hello</td>
-                            <td>Hi</td>
-                            <td>dude</td>
-                        </tr>
-                        @*<template v-for="item in info">
-                            <tr>
-                                <td>{{item.Id}}</td>
-                                <td>{{item.SKU}}</td>
-                                <td>{{item.LastProductionDate}}</td>
-                            </tr>
-                        </template>*@
-                        
-                        <template v-for="item in itemActivty">
+
+                        <template v-if="isSkus" v-for="item in itemActivty">
                                 <tr>
                                     <td>{{item.Type}}</td>
                                     <td>{{item.Date}}</td>
                                     <td>{{item.Quantity}}</td>
                                 </tr>
                             </template>
+                        <template v-if="isProd" v-for="item in productionDetails">
+                            <tr>
+                                <td><a v-bind:Id="item.Id" v-on:click="skuProdDeatails" href="#">{{item.SKU}}</a></td>
+                                <td>{{item.Ordered}}</td>
+                                <td>{{item.Received}}</td>
+                                <td>{{item.PercentageFilled}}</td>
+                            </tr>
+                        </template>
                     </table>
                    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <button class="btn btn-primary" v-on:click="backToProduction" v-if="backButton"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
