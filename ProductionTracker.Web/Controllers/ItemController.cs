@@ -18,46 +18,64 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult ItemAdder()
         {
+            var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
             var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
             var vm = new ItemAdderVM
             {
                 Departments = repo.GetDepartments(),
-                Fabrics = repo.GetAllFabrics(),
-                Colors = repo.GetAllColors(),
+                Materials = repo.GetAllMaterials(),
+                Colors = colorRepo.GetAllColors(),
+                Sleeves = repo.GetAllSleeves(),
+                Styles = repo.GetAllStyles(),
                 CheckedDepartments = (List<string>)Session["departments"] ?? null
             };
             return View(vm);
         }
         [HttpPost]
-        public ActionResult ItemAdder(List<int> departmentIds, List<BodyStyle> styles, List<int> fabricIds, List<Sleeves> sleaves, List<int> colorIds)
+        public ActionResult ItemAdder(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
-            var items = MakeItemsBasedOnCritera(departmentIds, styles, fabricIds, sleaves, colorIds);
+            if(departmentIds == null || styles == null || materialIds == null ||sleaves == null || colorIds == null)
+            {
+                return RedirectToAction("ItemAdder");
+            }
+            var items = MakeItemsBasedOnCritera(departmentIds, styles, materialIds, sleaves, colorIds);
+            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            items = repo.GetUniqueItemsAndUnquieSKU(items.ToList());
             foreach (var item in items)
             {
                 item.SKU = GetSku(item);
             }
             if(items != null && items.Count() >= 1)
             {
-                return View("ConfirmationPage",items);
+                return View("ConfirmationPage",items.OrderBy(i => i.SKU));
             }
+            return RedirectToAction("ItemAdder");
+        }
+        [HttpPost]
+        public ActionResult AddItems(List<Item> items)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            items = items.Where(i => i.SKU != null).ToList();
+            items = repo.GetUniqueItemsAndUnquieSKU(items).ToList();
+            repo.AddItems(items);
             return RedirectToAction("ItemAdder");
         }
         public ActionResult Colors()
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new ColorRepository(Properties.Settings.Default.ConStr);
 
             return View(new ColorVM { Colors = repo.GetAllColors()});
         }
         [HttpPost]
         public ActionResult AddColors(List<Color> colors)
         {
-            colors.RemoveAll(c => c.Id == 0 || c.Color1 == null);
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            colors.RemoveAll(c => c.Id == 0 || c.Name == null);
+            var repo = new ColorRepository(Properties.Settings.Default.ConStr);
             repo.AddColors(colors);
             return RedirectToAction("Colors");
         }
 
-        private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<BodyStyle> styles, List<int> fabricIds, List<Sleeves> sleaves, List<int> colorIds)
+        private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();
             
@@ -67,15 +85,18 @@ namespace ProductionTracker.Web.Controllers
                 {
                     if (DepartmentRuleChecker(dep, style))
                     {
-                        foreach (var fabric in fabricIds)
+                        foreach (var material in materialIds)
                         {
-                            if (!(fabric == 1 && dep == 4))
+                            if (!(material == 1 && dep == 4))
                             {
                                 foreach (var sleave in sleaves)
                                 {
                                     if (SleeveRuleChecker(dep, sleave))
                                     {
-                                        var sizeList = SizeList(dep, sleave);
+                                        //var sizeList = SizeList(dep, sleave);
+                                        var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+                                        var sizeList = repo.GetAllSizesByDepartment(dep);
+                                        sizeList = sleave == 2 ? sizeList.Where(s => s.Id != 10 && s.Id != 11) : sizeList;
                                         foreach (var color in colorIds)
                                         {
                                             foreach(var size in sizeList)
@@ -83,11 +104,11 @@ namespace ProductionTracker.Web.Controllers
                                                 ItemList.Add(new Item
                                                 {
                                                     DepartmentId = dep,
-                                                    BodyStyle = style,
-                                                    Sleeve = sleave,
+                                                    BodyStyleId = style,
+                                                    SleeveId = sleave,
                                                     ColorId = color,
-                                                    Size = size,
-                                                    FabricId = fabric
+                                                    SizeId = size.Id,
+                                                    MaterialId = material
 
                                                 });
                                             }
@@ -102,17 +123,17 @@ namespace ProductionTracker.Web.Controllers
 
             return ItemList;
         }
-        private bool DepartmentRuleChecker(int department, BodyStyle bodyStyle)
+        private bool DepartmentRuleChecker(int department, int bodyStyle)
         {
-            if(department == 1 && (bodyStyle == BodyStyle.CropTop || bodyStyle == BodyStyle.Dress || bodyStyle == BodyStyle.BodySuit))
+            if(department == 1 && (bodyStyle == 3 || bodyStyle == 5 || bodyStyle == 2))
             {
                 return false;
             }
-            else if(department == 3 && bodyStyle != BodyStyle.BodySuit)
+            else if(department == 3 && bodyStyle != 2)
             {
                 return false;
             }
-            else if(department == 4 && bodyStyle != BodyStyle.Classic)
+            else if(department == 4 && bodyStyle != 1)
             {
                 return false;
             }
@@ -122,72 +143,72 @@ namespace ProductionTracker.Web.Controllers
             }
         }
 
-        private bool SleeveRuleChecker(int departemnt, Sleeves sleeve)
+        private bool SleeveRuleChecker(int departemnt, int sleeve)
         {
-            if(sleeve == Sleeves.ShortSleeve && (departemnt == 2 || departemnt == 4))
+            if(sleeve == 2 && (departemnt == 2 || departemnt == 4))
             {
                 return false;
             }
             return true;
         }
 
-        private List<Sizes> SizeList(int depId, Sleeves sleeves)
-        {
-            var ladiesSizes = new List<Sizes> { Sizes.Lees, Sizes.Les, Sizes.Ls, Sizes.Lm, Sizes.Ll, Sizes.Lel, Sizes.Lx, Sizes.Lxx, Sizes.Lxxx };
-            var babySizes = new List<Sizes> { Sizes.B12_18, Sizes.B18_24, Sizes.B3_6, Sizes.B6_12 };
-            var kidSizes = new List<Sizes> { Sizes.Kb, Sizes.Kees, Sizes.Kes, Sizes.Ks, Sizes.Km, Sizes.Kl, Sizes.Kel };
-            var kidSizesSS = new List<Sizes> { Sizes.Kb, Sizes.Kees, Sizes.Kes, Sizes.Ks, Sizes.Km };
-            var maternitySizes = new List<Sizes> { Sizes.Mes, Sizes.Ms, Sizes.Mm, Sizes.Ml, Sizes.Mel };
-            if(depId == 1)
-            {
-                if (sleeves == Sleeves.ShortSleeve)
-                {
-                    return kidSizesSS;
-                }
-                else
-                {
-                    return kidSizes;
-                }
+        //private List<Sizes> SizeList(int depId, Sleeves sleeves)
+        //{
+        //    var ladiesSizes = new List<Sizes> { Sizes.Lees, Sizes.Les, Sizes.Ls, Sizes.Lm, Sizes.Ll, Sizes.Lel, Sizes.Lx, Sizes.Lxx, Sizes.Lxxx };
+        //    var babySizes = new List<Sizes> { Sizes.B12_18, Sizes.B18_24, Sizes.B3_6, Sizes.B6_12 };
+        //    var kidSizes = new List<Sizes> { Sizes.Kb, Sizes.Kees, Sizes.Kes, Sizes.Ks, Sizes.Km, Sizes.Kl, Sizes.Kel };
+        //    var kidSizesSS = new List<Sizes> { Sizes.Kb, Sizes.Kees, Sizes.Kes, Sizes.Ks, Sizes.Km };
+        //    var maternitySizes = new List<Sizes> { Sizes.Mes, Sizes.Ms, Sizes.Mm, Sizes.Ml, Sizes.Mel };
+        //    if(depId == 1)
+        //    {
+        //        if (sleeves == Sleeves.ShortSleeve)
+        //        {
+        //            return kidSizesSS;
+        //        }
+        //        else
+        //        {
+        //            return kidSizes;
+        //        }
                 
-            }
-            else if(depId == 2)
-            {
-                return ladiesSizes;
-            }
-            else if(depId == 3)
-            {
-                return babySizes;
-            }
-            else if(depId == 4)
-            {
-                return maternitySizes;
-            }
-            return null;
-        }
+        //    }
+        //    else if(depId == 2)
+        //    {
+        //        return ladiesSizes;
+        //    }
+        //    else if(depId == 3)
+        //    {
+        //        return babySizes;
+        //    }
+        //    else if(depId == 4)
+        //    {
+        //        return maternitySizes;
+        //    }
+        //    return null;
+        //}
 
         private string GetSku(Item item)
         {
-            var fabric = Fabric(item.FabricId);
-            var size = Size(item.Size);
-            var sleave = Sleave(item.Sleeve);
+            var material = material(item.MaterialId);
+            var size = Size(item.SizeId);
+            var sleave = Sleave(item.SleeveId);
             var department = Department(item.DepartmentId);
-            if (fabric == null || size == null || sleave == null || department == null)
+            if (material == null || size == null || sleave == null || department == null)
             {
                 return null;
             }
-            return $"{fabric}{item.ColorId.ToString()}{department}{size}{sleave}".ToUpper();
+            return $"{material}{item.ColorId.ToString()}{department}{size}{sleave}".ToUpper();
         }
-        private string Fabric(int fabricId)
+        private string material(int materialId)
         {
-            if (fabricId == 2)
+            if (materialId == 2)
             {
                 return "L";
             }
-            else if (fabricId == 1)
+            else if (materialId == 1)
             {
                 return "MD";
             }
-            else if (fabricId == 3)
+            else if (materialId == 3)
             {
                 return "CT";
             }
@@ -207,68 +228,72 @@ namespace ProductionTracker.Web.Controllers
             {
                 return "b";
             }
+            else if(departmentId == 4)
+            {
+                return "p";
+            }
             return null;
         }
-        private string Size(Sizes size)
+        private string Size(int size)
         {
-            if ((int)size == 20)
+            if (size == 5)
             {
                 return "b";
             }
-            else if ((int)size == 21 || (int)size == 30)
+            else if (size == 6)
             {
                 return "ess";
             }
-            else if ((int)size == 22 || (int)size == 31 || (int)size == 40)
+            else if (size == 7)
             {
                 return "es";
             }
-            else if ((int)size == 23 || (int)size == 32 || (int)size == 41)
+            else if (size == 8)
             {
                 return "s";
             }
-            else if ((int)size == 24 || (int)size == 33 || (int)size == 42)
+            else if (size == 9)
             {
                 return "m";
 
             }
-            else if ((int)size == 25 || (int)size == 34 || (int)size == 43)
+            else if (size == 10)
             {
                 return "l";
             }
-            else if ((int)size == 26 || (int)size == 35 || (int)size == 44)
+            else if (size == 11)
             {
                 return "el";
             }
-            else if ((int)size == 36)
+            else if (size == 12)
             {
                 return "x";
             }
-            else if ((int)size == 37)
+            else if (size == 13)
             {
                 return "xx";
             }
-            else if ((int)size == 38)
+            else if (size == 14)
             {
                 return "xxx";
             }
             return null;
         }
-        private string Sleave(Sleeves sleeves)
+        private string Sleave(int sleeves)
         {
-            if ((int)sleeves == 0)
+            if (sleeves == 1)
             {
                 return "";
             }
-            else if ((int)sleeves == 1)
+            else if (sleeves == 2)
             {
                 return "s";
             }
-            else if ((int)sleeves == 2)
+            else if (sleeves == 3)
             {
                 return "q";
             }
-            else if ((int)sleeves == 3)
+            else if (sleeves == 4)
             {
                 return "l";
             }

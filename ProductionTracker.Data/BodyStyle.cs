@@ -1,6 +1,6 @@
 ﻿namespace ProductionTracker.Data
 {
-    public enum BodyStyle
+    public enum BodyStyle1
     {
         Classic,
         BodySuit,

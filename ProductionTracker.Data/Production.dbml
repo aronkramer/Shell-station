@@ -10,20 +10,6 @@
       <Association Name="Item_ProductionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Fabrics" Member="Fabrics">
-    <Type Name="Fabric">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Fabric" Member="Fabric1" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Fabric_Item" Member="Items" ThisKey="Id" OtherKey="FabricId" Type="Item" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Departments" Member="Departments">
-    <Type Name="Department">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Department" Member="Department1" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Department_Item" Member="Items" ThisKey="Id" OtherKey="DepartmentId" Type="Item" />
-    </Type>
-  </Table>
   <Table Name="dbo.Productions" Member="Productions">
     <Type Name="Production">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -31,6 +17,8 @@
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Production_ProductionDetail" Member="ProductionDetails" ThisKey="Id" OtherKey="ProductionId" Type="ProductionDetail" />
       <Association Name="Production_ReceivedItem" Member="ReceivedItems" ThisKey="Id" OtherKey="ProductionId" Type="ReceivedItem" />
+      <Association Name="Production_MarkerTransaction" Member="MarkerTransactions" ThisKey="Id" OtherKey="ProductionId" Type="MarkerTransaction" />
+      <Association Name="Production_ProductionTransaction" Member="ProductionTransactions" ThisKey="Id" OtherKey="ProductionId" Type="ProductionTransaction" />
     </Type>
   </Table>
   <Table Name="dbo.ReceivedItems" Member="ReceivedItems">
@@ -44,28 +32,194 @@
       <Association Name="Item_ReceivedItem" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Items" Member="Items">
-    <Type Name="Item">
+  <Table Name="dbo.BodyStyle" Member="BodyStyles">
+    <Type Name="BodyStyle">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="SKU" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Size" Type="Sizes" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FabricId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Sleeve" Type="Sleeves" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="BodyStyle" Type="BodyStyle" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Item_ProductionDetail" Member="ProductionDetails" ThisKey="Id" OtherKey="ItemId" Type="ProductionDetail" />
-      <Association Name="Item_ReceivedItem" Member="ReceivedItems" ThisKey="Id" OtherKey="ItemId" Type="ReceivedItem" />
-      <Association Name="Department_Item" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
-      <Association Name="Fabric_Item" Member="Fabric" ThisKey="FabricId" OtherKey="Id" Type="Fabric" IsForeignKey="true" />
-      <Association Name="Color_Item" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="BodyStyle_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="BodyStyleId" Type="MarkerCategory" />
+      <Association Name="BodyStyle_Item" Member="Items" ThisKey="Id" OtherKey="BodyStyleId" Type="Item" />
     </Type>
   </Table>
   <Table Name="dbo.Colors" Member="Colors">
     <Type Name="Color">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Color" Member="Color1" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Color_Item" Member="Items" ThisKey="Id" OtherKey="ColorId" Type="Item" />
+      <Association Name="Color_Fabric" Member="Fabrics" ThisKey="Id" OtherKey="ColorId" Type="Fabric" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Departments" Member="Departments">
+    <Type Name="Department">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Department_SizeDepartment" Member="SizeDepartments" ThisKey="Id" OtherKey="DepartmentId" Type="SizeDepartment" />
+      <Association Name="Department_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="DepartmentId" Type="MarkerCategory" />
+      <Association Name="Department_Item" Member="Items" ThisKey="Id" OtherKey="DepartmentId" Type="Item" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sizes" Member="Sizes">
+    <Type Name="Size">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Size_SizeDepartment" Member="SizeDepartments" ThisKey="Id" OtherKey="SizeId" Type="SizeDepartment" />
+      <Association Name="Size_Item" Member="Items" ThisKey="Id" OtherKey="SizeId" Type="Item" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sleeves" Member="Sleeves">
+    <Type Name="Sleeve">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Sleeve_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="SleeveId" Type="MarkerCategory" />
+      <Association Name="Sleeve_Item" Member="Items" ThisKey="Id" OtherKey="SleeveId" Type="Item" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SizeDepartments" Member="SizeDepartments">
+    <Type Name="SizeDepartment">
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Department_SizeDepartment" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Size_SizeDepartment" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FabricRolls" Member="FabricRolls">
+    <Type Name="FabricRoll">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Yards" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Column Name="FabricId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FabricsReceivedId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Details" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="FabricRoll_FabricRollUsed" Member="FabricRollUseds" ThisKey="Id" OtherKey="FabricRollsId" Type="FabricRollUsed" />
+      <Association Name="FabricRoll_FabricRollsAdjusted" Member="FabricRollsAdjusteds" ThisKey="Id" OtherKey="FabricRollId" Type="FabricRollsAdjusted" />
+      <Association Name="FabricsReceived_FabricRoll" Member="FabricsReceived" ThisKey="FabricsReceivedId" OtherKey="Id" Type="FabricsReceived" IsForeignKey="true" />
+      <Association Name="Fabric_FabricRoll" Member="Fabric" ThisKey="FabricId" OtherKey="Id" Type="Fabric" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FabricsReceived" Member="FabricsReceiveds">
+    <Type Name="FabricsReceived">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Yards" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Association Name="FabricsReceived_FabricRoll" Member="FabricRolls" ThisKey="Id" OtherKey="FabricsReceivedId" Type="FabricRoll" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FabricRollUsed" Member="FabricRollUseds">
+    <Type Name="FabricRollUsed">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FabricRollsId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProductionTransactionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="YardsUsed" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Association Name="FabricRoll_FabricRollUsed" Member="FabricRoll" ThisKey="FabricRollsId" OtherKey="Id" Type="FabricRoll" IsForeignKey="true" />
+      <Association Name="ProductionTransaction_FabricRollUsed" Member="ProductionTransaction" ThisKey="ProductionTransactionId" OtherKey="Id" Type="ProductionTransaction" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FabricRollsAdjusted" Member="FabricRollsAdjusteds">
+    <Type Name="FabricRollsAdjusted">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Yards" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FabricRollId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="FabricRoll_FabricRollsAdjusted" Member="FabricRoll" ThisKey="FabricRollId" OtherKey="Id" Type="FabricRoll" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerCategories" Member="MarkerCategories">
+    <Type Name="MarkerCategory">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerCategory_Marker" Member="Markers" ThisKey="Id" OtherKey="MarkerCatergoryId" Type="Marker" />
+      <Association Name="BodyStyle_MarkerCategory" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
+      <Association Name="Department_MarkerCategory" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Sleeve_MarkerCategory" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Markers" Member="Markers">
+    <Type Name="Marker">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MarkerCatergoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Length" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Column Name="PercentOfWaste" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Column Name="BySize" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Marker_MarkerTransaction" Member="MarkerTransactions" ThisKey="Id" OtherKey="MarkerId" Type="MarkerTransaction" />
+      <Association Name="MarkerCategory_Marker" Member="MarkerCategory" ThisKey="MarkerCatergoryId" OtherKey="Id" Type="MarkerCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerTransactionFabricDetails" Member="MarkerTransactionFabricDetails">
+    <Type Name="MarkerTransactionFabricDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MarkerTransactionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FabricId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LayersUsed" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FabricUsed" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerTransaction_MarkerTransactionFabricDetail" Member="MarkerTransaction" ThisKey="MarkerTransactionId" OtherKey="Id" Type="MarkerTransaction" IsForeignKey="true" />
+      <Association Name="Fabric_MarkerTransactionFabricDetail" Member="Fabric" ThisKey="FabricId" OtherKey="Id" Type="Fabric" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerTransactions" Member="MarkerTransactions">
+    <Type Name="MarkerTransaction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MarkerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerTransaction_MarkerTransactionFabricDetail" Member="MarkerTransactionFabricDetails" ThisKey="Id" OtherKey="MarkerTransactionId" Type="MarkerTransactionFabricDetail" />
+      <Association Name="Marker_MarkerTransaction" Member="Marker" ThisKey="MarkerId" OtherKey="Id" Type="Marker" IsForeignKey="true" />
+      <Association Name="Production_MarkerTransaction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductionTransactions" Member="ProductionTransactions">
+    <Type Name="ProductionTransaction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Adjusted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ProductionTransaction_FabricRollUsed" Member="FabricRollUseds" ThisKey="Id" OtherKey="ProductionTransactionId" Type="FabricRollUsed" />
+      <Association Name="Production_ProductionTransaction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
+      <Association Name="Item_ProductionTransaction" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Materials" Member="Materials">
+    <Type Name="Material">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PricePerYard" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Material_Item" Member="Items" ThisKey="Id" OtherKey="MaterialId" Type="Item" />
+      <Association Name="Material_Fabric" Member="Fabrics" ThisKey="Id" OtherKey="MaterialsId" Type="Fabric" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Items" Member="Items">
+    <Type Name="Item">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SKU" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Item_ProductionDetail" Member="ProductionDetails" ThisKey="Id" OtherKey="ItemId" Type="ProductionDetail" />
+      <Association Name="Item_ReceivedItem" Member="ReceivedItems" ThisKey="Id" OtherKey="ItemId" Type="ReceivedItem" />
+      <Association Name="Item_ProductionTransaction" Member="ProductionTransactions" ThisKey="Id" OtherKey="ItemId" Type="ProductionTransaction" />
+      <Association Name="BodyStyle_Item" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
+      <Association Name="Color_Item" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+      <Association Name="Department_Item" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Material_Item" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
+      <Association Name="Size_Item" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
+      <Association Name="Sleeve_Item" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Fabrics" Member="Fabrics">
+    <Type Name="Fabric">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialsId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Fabric_FabricRoll" Member="FabricRolls" ThisKey="Id" OtherKey="FabricId" Type="FabricRoll" />
+      <Association Name="Fabric_MarkerTransactionFabricDetail" Member="MarkerTransactionFabricDetails" ThisKey="Id" OtherKey="FabricId" Type="MarkerTransactionFabricDetail" />
+      <Association Name="Color_Fabric" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+      <Association Name="Material_Fabric" Member="Material" ThisKey="MaterialsId" OtherKey="Id" Type="Material" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

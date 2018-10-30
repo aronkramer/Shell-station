@@ -1,0 +1,92 @@
+﻿@using  ProductionTracker.Data
+@using  ProductionTracker.Web.Models
+@model NewMarkerVM
+<h2>NewMarker</h2>
+<div id="app">
+    <form>
+        <div class="row" style="border-bottom:3px solid grey">
+            <div class="col-md-3">
+                <h4>Name the Marker</h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Pick the departemnt</h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Pick the body style</h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Pick the sleeve</h4>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+            <div class="col-md-3">
+                <input class="form-control marker-form-input marker-name" type="text" name="name" placeholder="Name Of Marker" />
+            </div>
+            <div class="col-md-3">
+                @foreach (var dep in Model.Departments)
+            {
+                    <label class="checkbox-inline">
+                        <input class="departemnt-ckb marker-form-input" name="department" type="checkbox" value="@dep.Id">@dep.Name
+                    </label>
+                    <br />
+                }
+            </div>
+            <div class="col-md-3">
+                @foreach (var dep in Model.Styles)
+            {
+                    <label class="checkbox-inline">
+                        <input class="style-ckb marker-form-input" name="bodystyle" type="checkbox" value="@dep.Id">@dep.Name
+                    </label>
+                    <br />
+                }
+            </div>
+            <div class="col-md-3">
+                @foreach (var dep in Model.Sleeves)
+            {
+                    <label class="checkbox-inline">
+                        <input class="sleeve-ckb marker-form-input" name="sleeves" type="checkbox" value="@dep.Id">@dep.Name
+                    </label>
+                    <br />
+                }
+            </div>
+        </div>
+        <div class="row" id="submit-btn-div">
+            <div class="col-md-2 col-md-offset-8">
+                <label class="checkbox-inline">
+                    <input class="departemnt-ckb marker-form-input" name="bySize" type="checkbox"> Do you want to make it go by size also?
+                </label>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-block btn-success" v-on:click="markerSubmitBtn" id="marker-submit-btn" type="button"> Submit Your Marker </button>
+            </div>
+
+        </div>
+        <div class="row" id="sizes-across" style="margin-top:15px">
+            <h3 class="text-center">Sizes Across </h3>
+            <h5 class="text-center">Chosse the sizes and enter the quantity per order</h5>
+            <table>
+                <tr>
+                    <template v-for="size in markerSizes">
+                        <th>
+                            <lable>{{size.Name}}</lable><input v-bind:id="size.Id" type="checkbox" data-sizeId="{{size.Id}}" class="chosseThisSizeA"  v-on:click="chosseThisSizeA($event)" />
+                        </th>
+                    </template>
+                </tr>
+                <tr>
+                    <template v-for="size in markerSizes">
+                            <td  class="s-a-{{size.Id}}">
+                                <input type="hidden" name="marker.markersizesacross[index].SizeId" value="{{size.Id}}" />
+                                <input type="text" name="marker.markersizesacross[index].QuantityPerLayer" placeholder="qualtiy per layer" />
+                            </td>
+                    </template>
+                 </tr>
+            </table>
+        </div>
+    </form>
+</div>
+@section scripts{
+    <script src="~/Scripts/SiteScripts/new-marker.js"></script>
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/SiteScripts/new-marker-vue.js"></script>
+    }
+

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<int>
+@{
+    ViewBag.Title = "ReceivedFabric";
+}
+<div id="app">
+    <h2>ReceivedFabric</h2>
+    <div class="row">
+        @if (Model != null)
+        {
+            foreach (var text in Model)
+            {
+                <h4>@text</h4>
+            }
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <label>
+                Select the material<select>
+                    <option style="font-weight:500;background-color:aqua; color:red;" value="">---Select the material---</option>
+                                       <template v-for="item in materials">
+                                           <option value="{{item.Id}}">{{item.Name}}</option>
+                                       </template>
+                </select>
+            </label>
+
+        </div>
+    </div>
+    <form method="post">
+        <div class="row">
+            <div class="col-md-5">
+                <select class="selectpicker"  name="matrieal" title="Choose a matierl" >
+                    <template v-for="item in materials">
+                        <option value="{{item.Id}}">{{item.Name}}</option>
+                    </template>
+                </select>
+               <div class="col-md-5">
+                <select class="selectpicker" name="color" title="Choose a matierl">
+                    <template v-for="item in colors">
+                        <option value="{{item.Id}}">{{item.Name}}</option>
+                    </template>
+                </select>
+                   <button class="btn btn-danger" v-on:click="rerender">refresh</button>
+                <button class="btn btn-default">submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/SiteScripts/fabric-received-vue.js"></script>
+    <script src="~/Scripts/SiteScripts/fabric-recived.js"></script>
+    }
+@section css{
+    <link rel="stylesheet" href="~/Content/bootstrap-select.min.css" />
+    }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductionTracker.Data
 {
-    public enum Sleeves
+    public enum Sleeves1
     {
         Sleeveless = 0,
         ShortSleeve = 1,

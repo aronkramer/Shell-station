@@ -18,23 +18,26 @@ namespace ProductionTracker.Web.Controllers
         
         public ActionResult GetAllItemsWithDetails()
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
-            var itemsWithextras = repo.GetAllItemsInProduction().Select(i => { return new ItemWithQuantityVM
-            {
-                Item = i,
-                Quantitys = repo.GetQuantitysPerItem(i),
-                LastProductionDate = repo.LastDateOfProductionPerItem(i)
+            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            var itemsWithextras = repo.GetAllItemsInProduction().Select(i => {
+                var isInProduction = repo.CheckIfItemIsInProduction(i);
+                return new ItemWithQuantityVM
+                {
+                    Item = i,
+                    Quantitys = isInProduction ? repo.GetQuantitysPerItem(i) : null,
+                    LastProductionDate = isInProduction ? repo.LastDateOfProductionPerItem(i) : DateTime.MinValue
              };
             });
             return Json(itemsWithextras.Select(it => 
             {
+                var isInProduction = repo.CheckIfItemIsInProduction(it.Item);
                 return new
                 {
                     Id = it.Item.Id,
                     SKU = it.Item.SKU,
-                    LastProductionDate = it.LastProductionDate.ToShortDateString(),
-                    ItemsNotReceived = it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived,
-                    PercentageRecived = String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered)
+                    LastProductionDate = isInProduction ? it.LastProductionDate.ToShortDateString(): "--------",
+                    ItemsNotReceived = isInProduction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
+                    PercentageRecived = isInProduction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
                     //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                 };
             }), JsonRequestBehavior.AllowGet);
@@ -42,7 +45,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetAllActivityOfAItem (int id)
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
             var item = repo.GetItemWithActivity(id);
             var activity = new List<ItemActivity>();
             foreach (var recived in item.ReceivedItems)
@@ -139,6 +142,32 @@ namespace ProductionTracker.Web.Controllers
             },JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult NewMarker()
+        {
+            var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
+            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var vm = new NewMarkerVM
+            {
+                Departments = repo.GetDepartments(),
+                Sleeves = repo.GetAllSleeves(),
+                Styles = repo.GetAllStyles()
+            };
+            return View(vm);
+        }
+
+        public ActionResult GetSizesOfDepartment(int depId)
+        {
+            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var sizes = repo.GetAllSizesByDepartment(depId);
+                 return Json(sizes.Select(s =>
+            {
+                return new
+                {
+                    Name = s.Name,
+                    Id = s.Id
+                };
+            }), JsonRequestBehavior.AllowGet);
+        }
     }
     
 }

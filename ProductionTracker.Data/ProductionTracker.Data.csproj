@@ -42,7 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BodyStyle.cs" />
+    <Compile Include="ColorRepository.cs" />
+    <Compile Include="FabricRepository.cs" />
     <Compile Include="ItemQuantity.cs" />
+    <Compile Include="ItemRepository.cs" />
     <Compile Include="ProductionRepository.cs" />
     <Compile Include="Production.designer.cs">
       <AutoGen>True</AutoGen>

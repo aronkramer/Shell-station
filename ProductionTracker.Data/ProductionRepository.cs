@@ -14,56 +14,7 @@ namespace ProductionTracker.Data
         {
             _connectionString = connectionString;
         }
-        public void AddItem(Item item)
-        {
-            using (var context = new ProductionDataContext(_connectionString))
-            {
-                context.Items.InsertOnSubmit(item);
-                context.SubmitChanges();
-            }
-        }
-        public IEnumerable<Item> GetAllItemsInProduction()
-        {
-            using (var context = new ProductionDataContext(_connectionString))
-            {
-                return context.Items.ToList();
-            }
-        }
-        public ItemQuantity GetQuantitysPerItem(Item item)
-        {
-            using (var context = new ProductionDataContext(_connectionString))
-            {
-                
-                 
-                return new ItemQuantity
-                {
-                    AmountOrdered = context.ProductionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity),
-                    AmountReceived = context.ReceivedItems.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity)
-                };
-
-            }
-        }
-        public DateTime LastDateOfProductionPerItem(Item item)
-        {
-            using (var context = new ProductionDataContext(_connectionString))
-            {
-                return context.ProductionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.Production.Date).First().Production.Date;
-            }
-        }
-
-        public Item GetItemWithActivity(int id)
-        {
-            using (var context = new ProductionDataContext(_connectionString))
-            {
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<Item>(i => i.ProductionDetails);
-                loadOptions.LoadWith<Item>(i => i.ReceivedItems);
-                loadOptions.LoadWith<ProductionDetail>(p => p.Production);
-                context.LoadOptions = loadOptions;
-                return context.Items.FirstOrDefault(i => i.Id == id);
-
-            }
-        }
+        
 
         public IEnumerable<Production> GetAllProductions()
         {
@@ -98,33 +49,67 @@ namespace ProductionTracker.Data
                 return context.Departments.ToList();
             }
         }
-        public void AddColors(IEnumerable<Color> colors)
+        
+        public IEnumerable<Material> GetAllMaterials()
         {
             using (var context = new ProductionDataContext(_connectionString))
             {
-                //foreach(var color in colors)
-                //{
-                //    context.Colors.InsertOnSubmit(color);
-                //    context.SubmitChanges();
-                //}
-                context.Colors.InsertAllOnSubmit(colors);
+               
+                return context.Materials.ToList();
+            }
+        }
+
+        public IEnumerable<Sleeve> GetAllSleeves()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.Sleeves.ToList();
+            }
+        }
+
+        public IEnumerable<BodyStyle> GetAllStyles()
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.BodyStyles.ToList();
+            }
+        }
+
+        public IEnumerable<Size> GetAllSizesByDepartment(int depId)
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                return context.SizeDepartments.Where(sd => sd.DepartmentId == depId).Select(i => i.Size).ToList();
+            }
+        }
+        public IEnumerable<BodyStyle> AddBodyStyles(List<BodyStyle> styles)
+        {
+            using (var context = new ProductionDataContext(_connectionString))
+            {
+                context.BodyStyles.InsertAllOnSubmit(styles);
                 context.SubmitChanges();
+                return styles;
             }
         }
-        public IEnumerable<Color> GetAllColors()
+        public IEnumerable<Sleeve> AddSleeves(List<Sleeve> sleeve)
         {
             using (var context = new ProductionDataContext(_connectionString))
             {
-                return context.Colors.ToList();
+                context.Sleeves.InsertAllOnSubmit(sleeve);
+                context.SubmitChanges();
+                return sleeve;
             }
         }
-        public IEnumerable<Fabric> GetAllFabrics()
+        public IEnumerable<Size> AddSizes(List<Size> size)
         {
             using (var context = new ProductionDataContext(_connectionString))
             {
-                return context.Fabrics.ToList();
+                context.Sizes.InsertAllOnSubmit(size);
+                context.SubmitChanges();
+                return size;
             }
         }
+
     }
 }
 

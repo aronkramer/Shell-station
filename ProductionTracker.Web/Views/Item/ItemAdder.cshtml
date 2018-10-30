@@ -10,55 +10,65 @@
         <h2 style="text-align:center;">ItemAdder</h2>
         <div class="col-md-2">
             <h4>Select Which Departments</h4>
+            <br />
             <select id="department-dropdown" name="departmentIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
                 @foreach (var department in Model.Departments)
                  {
-                    <option value="@department.Id">@department.Department1</option>
+                    <option class="hello" value="@department.Id">@department.Name</option>
                  }
             </select>
         </div>
         <div class="col-md-2">
             <h4>Select What Body Style</h4>
+            <br />
                 <select id="bodystyle-dropdown" name="styles[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
-                    @foreach (int i in Enum.GetValues(typeof(BodyStyle)))
+                    @foreach (var style in Model.Styles)
                     {
-                        string name = Enum.GetName(typeof(BodyStyle), i);
-                        <option value="@i">@name</option>
+                        <option value="@style.Id">@style.Name</option>
                     }
                 </select>
         </div>
         <div class="col-md-2">
-            <h4>Select What Fabric</h4>
+            <h4>Select What    Fabric</h4>
+            <br />
+            <br />
             <select id="fabric-dropdown" name="fabricIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
-                @foreach (var fabric in Model.Fabrics)
+                @foreach (var fabric in Model.Materials)
                 {
-                    <option value="@fabric.Id">@fabric.Fabric1</option>
+                    <option value="@fabric.Id">@fabric.Name</option>
                 }
             </select>
         </div>
         <div class="col-md-2">
             <h4>Select What Sleeve Legnths</h4>
+            <br />
             <select id="sleaves-dropdown" name="sleaves[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
-                @foreach (int i in Enum.GetValues(typeof(Sleeves)))
+                @foreach (var sleeve in Model.Sleeves)
                 {
-                    string name = Enum.GetName(typeof(Sleeves), i);
-                    <option value="@i">@name</option>
+                    <option value="@sleeve.Id">@sleeve.Name</option>
                 }
             </select>
         </div>
         <div class="col-md-2">
             <h4>Select What Colors</h4>
+            <br />
+            <br />
             <select id="color-dropdown" name="colorIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
                 @foreach (var color in Model.Colors)
                 {
-                    <option value="@color.Id">@color.Color1</option>
+                    <option value="@color.Id">@color.Name</option>
                 }
             </select>
         </div>
 
 
-
-        <button class="btn btn-danger">Submit</button>
+<div class="row">
+    <div class="col-md-2 col-md-offset-10" style="margin-top:15px;">
+        <button class="btn btn-danger btn-block" id="btn-submit">Submit</button>
+    </div>
+    
+</div>
+       
 
     </form>
     @*<div class="col-md-2">

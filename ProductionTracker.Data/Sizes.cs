@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductionTracker.Data
 {
-    public enum Sizes
+    public enum Sizes1
     {
         B3_6 = 10,
         B6_12 = 11,

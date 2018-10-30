@@ -5,71 +5,101 @@
 
 @{ var x = 0;}
 <form action="/item/additems" method="post">
-    <table class="table table-bordered table-hover table-responsive table-striped">
-        <tr>
-            <th>SKU</th>
-            <th>Department</th>
-            <th>Fabric</th>
-            <th>Style</th>
-            <th>Color</th>
-            <th>Sleave</th>
-            <th>Size</th>
-        </tr>
+    <div class="row">
+        <div class="">
+            <h2>This is all the items the was a result of the item adder wizerd, <br /> can change the skus the were genarated the items submted without a sku will not get submited </h2>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-3" style="margin-bottom:15px;">
+                <button class="btn btn-danger btn-block" id="btn-submit">Submit</button>
+            </div>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td><input type="text" class="form-control" name="items[@x].SKU" value="@item.SKU" placeholder="SKU"></td>
-                <td><input type="text" class="form-control" name="items[@x].DepartmentId" value="@item.DepartmentId" disabled></td>
-                <td><input type="text" class="form-control" name="items[@x].BodyStyle" value="@item.BodyStyle" disabled></td>
-                <td><input type="text" class="form-control" name="items[@x].FabricId" value="@item.FabricId" disabled></td>
-                <td><input type="text" class="form-control" name="items[@x].ColorId" value="@item.ColorId" disabled></td>
-                <td><input type="text" class="form-control" name="items[@x].Sleeve" value="@item.Sleeve" disabled></td>
-                <td><input type="text" class="form-control" name="items[@x].Size" value="@item.Size" disabled></td>
-            </tr>
-            @*<div class="col-md-2 col-xs-2">
-        <div class="input-group">
-            <span class="input-group-addon">SKU</span>
-            <input type="text" class="form-control" name="items[@/*x*/].SKU" value="@/*item.SKU*/" placeholder="SKU">
-        </div> /input-group
-    </div>
-    <div class="col-md-2 col-xs-2">
-        <div class="input-group">
-            <span class="input-group-addon">Department</span>
-            <input type="text" class="form-control" name="items[@/*x*/].DepartmentId" value="@/*item.DepartmentId*/" disabled>
+        </div>
+        <div style="overflow:scroll;max-height:1500px;">
+            <table class="table table-bordered table-hover table-responsive">
+                <tr>
+                    <th>SKU</th>
+                    <th>Department</th>
+                    <th>Fabric</th>
+                    <th>Style</th>
+                    <th>Color</th>
+                    <th>Sleave</th>
+                    <th>Size</th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr class="@(item.SKU == null ? "backround-red" : "")">
+                        <td><input type="text" class="form-control sku" name="items[@x].SKU" value="@item.SKU" placeholder="SKU"></td>
+                        <td><input type="text" class="form-control" name="items[@x].DepartmentId" value="@item.DepartmentId" readonly></td>
+                        <td><input type="text" class="form-control" name="items[@x].BodyStyleId" value="@item.BodyStyleId" readonly></td>
+                        <td><input type="text" class="form-control" name="items[@x].MaterialId" value="@item.MaterialId" readonly></td>
+                        <td><input type="text" class="form-control" name="items[@x].ColorId" value="@item.ColorId" readonly></td>
+                        <td><input type="text" class="form-control" name="items[@x].SleeveId" value="@item.SleeveId" readonly></td>
+                        <td><input type="text" class="form-control" name="items[@x].SizeId" value="@item.SizeId" readonly></td>
+                    </tr>
+                    {x++; }
+
+                    @*<div class="col-md-2 col-xs-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">SKU</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].SKU" value="@/*item.SKU*/" placeholder="SKU">
+                            </div> /input-group
+                        </div>
+                        <div class="col-md-2 col-xs-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">Department</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].DepartmentId" value="@/*item.DepartmentId*/" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">Style</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].BodyStyle" value="@/*item.BodyStyle*/" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">Fabric</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].FabricId" value="@/*item.FabricId*/" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">Color</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].ColorId" value="@/*item.ColorId*/" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-1">
+                            <div class="input-group">
+                                <span class="input-group-addon">Sleeve</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].Sleeve" value="@/*item.Sleeve*/" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-1">
+                            <div class="input-group">
+                                <span class="input-group-addon">Color</span>
+                                <input type="text" class="form-control" name="items[@/*x*/].Size" value="@/*item.Size*/" disabled>
+                            </div>
+                        </div>*@
+                }
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-3" style="margin-top:15px;">
+                <button class="btn btn-danger btn-block" id="btn-submit">Submit</button>
+            </div>
+
         </div>
     </div>
-    <div class="col-md-2 col-xs-2">
-        <div class="input-group">
-            <span class="input-group-addon">Style</span>
-            <input type="text" class="form-control" name="items[@/*x*/].BodyStyle" value="@/*item.BodyStyle*/" disabled>
-        </div>
-    </div>
-    <div class="col-md-2 col-xs-2">
-        <div class="input-group">
-            <span class="input-group-addon">Fabric</span>
-            <input type="text" class="form-control" name="items[@/*x*/].FabricId" value="@/*item.FabricId*/" disabled>
-        </div>
-    </div>
-    <div class="col-md-2 col-xs-2">
-        <div class="input-group">
-            <span class="input-group-addon">Color</span>
-            <input type="text" class="form-control" name="items[@/*x*/].ColorId" value="@/*item.ColorId*/" disabled>
-        </div>
-    </div>
-    <div class="col-md-1 col-xs-1">
-        <div class="input-group">
-            <span class="input-group-addon">Sleeve</span>
-            <input type="text" class="form-control" name="items[@/*x*/].Sleeve" value="@/*item.Sleeve*/" disabled>
-        </div>
-    </div>
-    <div class="col-md-1 col-xs-1">
-        <div class="input-group">
-            <span class="input-group-addon">Color</span>
-            <input type="text" class="form-control" name="items[@/*x*/].Size" value="@/*item.Size*/" disabled>
-        </div>
-    </div>*@
-        }
-    </table>
 </form>
-
+@section css{
+    <style>
+        .backround-red{
+            background-color:red;
+        }
+    </style>
+    }
+@section scripts{
+    <script src="~/Scripts/SiteScripts/confirmation-page.js"></script>
+    }
