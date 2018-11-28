@@ -1,4 +1,4 @@
-﻿namespace ProductionTracker.Data
+﻿namespace ProductionTracker.OldData
 {
     public class ItemQuantity
     {

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Linq;
 
-namespace ProductionTracker.Data
+namespace ProductionTracker.OldData
 {
-    public class ProductionRepository
+    public class OldProductionRepository
     {
         private string _connectionString;
-        public ProductionRepository(string connectionString)
+        public OldProductionRepository(string connectionString)
         {
             _connectionString = connectionString;
         }

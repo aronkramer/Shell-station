@@ -7,8 +7,8 @@
     <ProjectGuid>{37D4FA1C-855F-400C-9504-6E54CE2EC45E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProductionTracker.Data</RootNamespace>
-    <AssemblyName>ProductionTracker.Data</AssemblyName>
+    <RootNamespace>ProductionTracker.OldData</RootNamespace>
+    <AssemblyName>ProductionTracker.OldData</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -46,7 +46,7 @@
     <Compile Include="FabricRepository.cs" />
     <Compile Include="ItemQuantity.cs" />
     <Compile Include="ItemRepository.cs" />
-    <Compile Include="ProductionRepository.cs" />
+    <Compile Include="OldProductionRepository.cs" />
     <Compile Include="Production.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -58,6 +58,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Sizes.cs" />
     <Compile Include="Sleeves.cs" />
   </ItemGroup>

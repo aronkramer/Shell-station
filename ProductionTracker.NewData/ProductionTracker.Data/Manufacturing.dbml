@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ManufacturingDB" Class="ManufacturingDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\sqlexpress;Initial Catalog=ManufacturingDB;Integrated Security=True" SettingsObjectName="ProductionTracker.Data.Properties.Settings" SettingsPropertyName="ManufacturingDBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.BodyStyle" Member="BodyStyles">
+    <Type Name="BodyStyle">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="BodyStyle_Item" Member="Items" ThisKey="Id" OtherKey="BodyStyleId" Type="Item" />
+      <Association Name="BodyStyle_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="BodyStyleId" Type="MarkerCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sleeves" Member="Sleeves">
+    <Type Name="Sleeve">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Sleeve_Item" Member="Items" ThisKey="Id" OtherKey="SleeveId" Type="Item" />
+      <Association Name="Sleeve_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="SleeveId" Type="MarkerCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ColorDetails" Member="ColorDetails">
+    <Type Name="ColorDetail">
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Color_ColorDetail" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Colors" Member="Colors">
+    <Type Name="Color">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Color_ColorDetail" Member="ColorDetails" ThisKey="Id" OtherKey="ColorId" Type="ColorDetail" />
+      <Association Name="Color_Item" Member="Items" ThisKey="Id" OtherKey="ColorId" Type="Item" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Departments" Member="Departments">
+    <Type Name="Department">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Department_Item" Member="Items" ThisKey="Id" OtherKey="DepartmentId" Type="Item" />
+      <Association Name="Department_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="DepartmentId" Type="MarkerCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Items" Member="Items">
+    <Type Name="Item">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SKU" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeDescription" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="BodyStyle_Item" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
+      <Association Name="Color_Item" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+      <Association Name="Department_Item" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Sleeve_Item" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
+      <Association Name="Material_Item" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
+      <Association Name="Size_Item" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerCategories" Member="MarkerCategories">
+    <Type Name="MarkerCategory">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerCategory_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="MarkerCatId" Type="MarkerDetail" />
+      <Association Name="BodyStyle_MarkerCategory" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
+      <Association Name="Department_MarkerCategory" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Sleeve_MarkerCategory" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerDetails" Member="MarkerDetails">
+    <Type Name="MarkerDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MarkerCatId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AmountPerLayer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerCategory_MarkerDetail" Member="MarkerCategory" ThisKey="MarkerCatId" OtherKey="Id" Type="MarkerCategory" IsForeignKey="true" />
+      <Association Name="Size_MarkerDetail" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Materials" Member="Materials">
+    <Type Name="Material">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PricePerYard" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Material_Item" Member="Items" ThisKey="Id" OtherKey="MaterialId" Type="Item" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sizes" Member="Sizes">
+    <Type Name="Size">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Size_Item" Member="Items" ThisKey="Id" OtherKey="SizeId" Type="Item" />
+      <Association Name="Size_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="SizeId" Type="MarkerDetail" />
+    </Type>
+  </Table>
+</Database>

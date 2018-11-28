@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Linq;
-using ProductionTracker.Data;
+using ProductionTracker.OldData;
 using ProductionTracker.Web.Models;
 
 namespace ProductionTracker.Web.Controllers
@@ -92,7 +92,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetProductionsWithInfo()
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
             var productions = repo.GetAllProductions();
             
             return Json(productions.Select(p =>
@@ -114,7 +114,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetDeatilsOfAProduction(int id)
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
             var result = repo.GetProductionById(id);
             var details = result.ProductionDetails.Select(pd =>
             {
@@ -145,7 +145,7 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult NewMarker()
         {
             var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
             var vm = new NewMarkerVM
             {
                 Departments = repo.GetDepartments(),
@@ -157,7 +157,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetSizesOfDepartment(int depId)
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
             var sizes = repo.GetAllSizesByDepartment(depId);
                  return Json(sizes.Select(s =>
             {
@@ -167,6 +167,11 @@ namespace ProductionTracker.Web.Controllers
                     Id = s.Id
                 };
             }), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult NewProduction()
+        {
+            return View();
         }
     }
     

@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProductionTracker.Data
+namespace ProductionTracker.OldData
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;
@@ -96,7 +96,7 @@ namespace ProductionTracker.Data
     #endregion
 		
 		public ProductionDataContext() : 
-				base(global::ProductionTracker.Data.Properties.Settings.Default.ProductionDBConnectionString, mappingSource)
+				base(global::ProductionTracker.OldData.Properties.Settings.Default.ProductionDBConnectionString, mappingSource)
 		{
 			OnCreated();
 		}

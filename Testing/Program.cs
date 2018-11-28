@@ -12,7 +12,8 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new ProductionRespository(Properties.Settings.Default.ConStr);
+            #region Old stuff
             //var items = repo.GetAllItemsInProduction();
             //foreach(var item in items)
             //{
@@ -37,7 +38,7 @@ namespace Testing
             //{
             //    Console.WriteLine("we couldnt figer out the sku, or one of the attributs dont exist the department for them");
             //}
-            var stylesNmaes = new List<string> { "3-6 Months", "6-12 Months", "12-18 Months", "18-24 Months", "B", "EES", "ES", "S", "M", "L", "EL", "X", "XX", "XXX" };
+            //var stylesNmaes = new List<string> { "3-6 Months", "6-12 Months", "12-18 Months", "18-24 Months", "B", "EES", "ES", "S", "M", "L", "EL", "X", "XX", "XXX" };
             //var result = stylesNmaes.Select(s =>
             //{
             //    return new Size
@@ -50,12 +51,21 @@ namespace Testing
             //{
             //    Console.WriteLine($"{s.Id} - {s.Name}");
             //}
-            var result = repo.GetAllSizesByDepartment(1).ToList();
-            foreach (var s in result)
-            {
-                Console.WriteLine($"{s.Id} - {s.Name}");
-            }
-
+            //var result = repo.GetAllSizesByDepartment(1).ToList();
+            //foreach (var s in result)
+            //{
+            //    Console.WriteLine($"{s.Id} - {s.Name}");
+            //}
+            #endregion
+            //Console.WriteLine("Sleeves:");
+            //repo.GetAllSleeves().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
+            //Console.WriteLine("Styles:");
+            //repo.GetAllStyles().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
+            //Console.WriteLine("Departments:");
+            //repo.GetDepartments().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
+            //Console.WriteLine("materials:");
+            //repo.GetAllMaterials().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
+            
             Console.ReadKey(true);
         }
         //static string GetSku (Item item)

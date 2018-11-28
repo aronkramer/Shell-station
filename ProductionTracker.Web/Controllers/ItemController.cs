@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Linq;
-using ProductionTracker.Data;
+using ProductionTracker.OldData;
 using ProductionTracker.Web.Models;
 
 namespace ProductionTracker.Web.Controllers
@@ -19,7 +19,7 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult ItemAdder()
         {
             var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
-            var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
             var vm = new ItemAdderVM
             {
                 Departments = repo.GetDepartments(),
@@ -94,7 +94,7 @@ namespace ProductionTracker.Web.Controllers
                                     if (SleeveRuleChecker(dep, sleave))
                                     {
                                         //var sizeList = SizeList(dep, sleave);
-                                        var repo = new ProductionRepository(Properties.Settings.Default.ConStr);
+                                        var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
                                         var sizeList = repo.GetAllSizesByDepartment(dep);
                                         sizeList = sleave == 2 ? sizeList.Where(s => s.Id != 10 && s.Id != 11) : sizeList;
                                         foreach (var color in colorIds)
@@ -188,7 +188,7 @@ namespace ProductionTracker.Web.Controllers
 
         private string GetSku(Item item)
         {
-            var material = material(item.MaterialId);
+            var material = Material(item.MaterialId);
             var size = Size(item.SizeId);
             var sleave = Sleave(item.SleeveId);
             var department = Department(item.DepartmentId);
@@ -198,7 +198,7 @@ namespace ProductionTracker.Web.Controllers
             }
             return $"{material}{item.ColorId.ToString()}{department}{size}{sleave}".ToUpper();
         }
-        private string material(int materialId)
+        private string Material(int materialId)
         {
             if (materialId == 2)
             {
