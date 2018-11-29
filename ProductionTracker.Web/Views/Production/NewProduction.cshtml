@@ -1,13 +1,40 @@
-﻿
+﻿@model  ProductionTracker.Web.Excel.ErrorsAndItems
 @{
     ViewBag.Title = "NewProduction";
 }
-
+<style>
+    [hidden] {
+        display: none !important;
+    }
+</style>
 <h2>NewProduction</h2>
 <div>
-    <form method="post">
-        <input class="form-control" type="file" />
+    <form method="post" enctype="multipart/form-data">
+        @*<label class="btn btn-default">
+            Browse <input type="file" hidden >
+        </label>*@
+        <input style="background-color:aqua;" class="" type="file" name="cuttingTicket"/>
         <button class="btn-danger">Submit</button>
     </form>
 </div>
-
+<div>
+    @if (Model != null && Model.Errors != null && Model.Items != null)
+    {
+        if (Model.Errors.Count > 0)
+        {
+            <h2 style="color:red;">Errors</h2>
+        }
+        foreach (var error in Model.Errors)
+        {
+            <p style="color:red;">@error</p>
+        }
+        if (Model.ItemsWithAmount.Count > 0)
+        {
+            <h2 style="color:blue;">Items</h2>
+        }
+        foreach (var item in Model.ItemsWithAmount)
+        {
+            <p style="color:red;">@item</p>
+        }
+    }
+</div>

@@ -32,5 +32,16 @@ namespace ProductionTracker.Web.Properties {
                 return ((string)(this["ConStr"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\sqlexpress;Initial Catalog=ManufacturingDB;Integrated Security=True" +
+            "")]
+        public string ManufacturingConStr {
+            get {
+                return ((string)(this["ManufacturingConStr"]));
+            }
+        }
     }
 }

@@ -85,7 +85,8 @@ namespace ProductionTracker.Data
             name = name.ToString();
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.MarkerCategories.FirstOrDefault(c => c.Name == name);
+                var marker = context.MarkerCategories.FirstOrDefault(c => c.Name == name);
+                return marker;
             }
         }
 

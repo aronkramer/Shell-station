@@ -166,7 +166,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
-    <Compile Include="Excel.cs" />
+    <Compile Include="Excel\ExcelActions.cs" />
+    <Compile Include="Excel\ProductoinForCt.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -342,6 +343,10 @@
     <ProjectReference Include="..\ProductionTracker.Data\ProductionTracker.OldData.csproj">
       <Project>{37d4fa1c-855f-400c-9504-6e54ce2ec45e}</Project>
       <Name>ProductionTracker.OldData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProductionTracker.NewData\ProductionTracker.Data\ProductionTracker.Data.csproj">
+      <Project>{e2c0726d-51c9-4770-9d27-08a4a6a40558}</Project>
+      <Name>ProductionTracker.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
