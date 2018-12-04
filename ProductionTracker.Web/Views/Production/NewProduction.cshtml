@@ -7,34 +7,87 @@
         display: none !important;
     }
 </style>
-<h2>NewProduction</h2>
-<div>
-    <form method="post" enctype="multipart/form-data">
-        @*<label class="btn btn-default">
-            Browse <input type="file" hidden >
-        </label>*@
-        <input style="background-color:aqua;" class="" type="file" name="cuttingTicket"/>
-        <button class="btn-danger">Submit</button>
-    </form>
-</div>
-<div>
-    @if (Model != null && Model.Errors != null && Model.Items != null)
+<div id="prodApp">
+    @if (Model == null)
     {
-        if (Model.Errors.Count > 0)
-        {
-            <h2 style="color:red;">Errors</h2>
-        }
-        foreach (var error in Model.Errors)
-        {
-            <p style="color:red;">@error</p>
-        }
-        if (Model.ItemsWithAmount.Count > 0)
-        {
-            <h2 style="color:blue;">Items</h2>
-        }
-        foreach (var item in Model.ItemsWithAmount)
-        {
-            <p style="color:red;">@item</p>
-        }
+        <div class="col-md-6 col-md-offset-3">
+            <h2 class="page-header">Browse to add a new cutting ticket</h2>
+            <form method="post" enctype="multipart/form-data">
+                @*<label class="btn btn-default">
+                        Browse <input type="file" hidden >
+                    </label>*@
+                <input style="background-color:aqua;" class="" multiple type="file" name="cuttingTicket" />
+                <button class="btn-danger">Submit</button>
+            </form>
+        </div>
+
     }
+    <div>
+
+
+        @if (Model != null && Model.Errors != null && Model.Items != null)
+        {
+            <form class="col-md-12" action="/production/submitCT" method="post">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="form-row">
+                        <label class="col-md-2 col-form-label" for="date">Date</label>
+                        <input type="date" class=" col-md-4" name="Date" id="date" value="@Model.Date.ToString("yyyy-MM-dd")" />
+                        <label class="col-md-2 col-form-label" for="lot">Lot#</label>
+                        <input type="text" class=" col-md-4" name="Lot_" id="lot" placeholder="optional" />
+                    </div>
+                </div>
+                @if (Model.Errors.Count > 0)
+                {
+                    <div class="col-md-6 col-md-offset-3 well-lg">
+                        <h2 style="color:red;text-align:center;">Errors</h2>
+                        <div style="background-color:lightcoral">
+                            @foreach (var error in Model.Errors)
+                            {
+                                <p style="color:red;"> @error</p>
+                            }
+                        </div>
+                    </div>
+                }
+                @if (Model.Items.Count > 0)
+                {
+                    <div class="col-md-6 col-md-offset-3 well-lg">
+                        @{ var x = 0;}
+                        <h2 style="color:blue; text-align:center">Items</h2>
+                        <div style="overflow:scroll; height:500px;">
+                            <table class="table table-bordered table-responsive table-striped">
+
+                                <tr>
+                                    <th>Id</th>
+                                    <th>SKU</th>
+                                    <th>Quantiy</th>
+                                </tr>
+
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td><input type="text" class="form-control sku" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
+                                        <td><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
+                                        <td><input type="text" class="form-control sku" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
+                                    </tr>
+
+
+                                    { x++; }
+                                }
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg-offset-5">
+                        <button class="btn btn-success btn-block">Submit</button>
+                    </div>
+                }
+            </form>
+
+        }
+    </div>
 </div>
+@section scripts{
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
+}
+

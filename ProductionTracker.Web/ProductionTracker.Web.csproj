@@ -301,6 +301,7 @@
     <Content Include="Scripts\SiteScripts\item-adder.js" />
     <Content Include="Scripts\SiteScripts\new-marker-vue.js" />
     <Content Include="Scripts\SiteScripts\new-marker.js" />
+    <Content Include="Scripts\SiteScripts\new-production-Vue.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />
@@ -322,6 +323,7 @@
     <Content Include="Views\Fabric\ReceivedFabric.cshtml" />
     <Content Include="Views\Home\NewProduction.cshtml" />
     <Content Include="Views\Production\NewProduction.cshtml" />
+    <Content Include="Views\Production\NewProductionConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

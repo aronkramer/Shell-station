@@ -30,11 +30,21 @@
         </div>
     </div>
     <div class="container body-content" style="margin-top:100px;">
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-success">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                @ViewBag.Message
+            </div>
+        }
+        else if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                @ViewBag.ErrorMessage
+            </div>
+        }
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")

@@ -10,9 +10,10 @@ namespace ProductionTracker.Web.Controllers
 {
     public class ProductionController : Controller
     {
-        public ActionResult NewProduction(ErrorsAndItems items)
+        public ActionResult NewProduction()
         {
-           
+            ViewBag.Message = TempData["Message"] != null ? TempData["Message"]: null;
+            var items = Session["ItemsWithErrors"]  != null ? (ErrorsAndItems)Session["ItemsWithErrors"] : null;
             return View(items);
         }
         [HttpPost]
@@ -21,8 +22,23 @@ namespace ProductionTracker.Web.Controllers
             var dT = ExcelActions.ConvertXSLXtoDataTable(cuttingTicket);
             var production = ExcelActions.ConvertCtToProduction(dT);
             var items = ExcelActions.ConvertProductoinToItems(production);
-
-            return RedirectToAction("NewProduction",items);
+            Session["ItemsWithErrors"] = items;
+            return RedirectToAction("NewProduction");
+        }
+        public ActionResult NewProductionConfimation()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionDetail> items)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddCuttingTicket(instruction);
+            items = items.Select(i => { i.CuttingInstructionId = instruction.Id; return i; });
+            repo.AddCTDetails(items);
+            TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
+            Session["ItemsWithErrors"] = null;
+            return RedirectToAction("NewProduction");
         }
     }
 }

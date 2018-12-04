@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using ProductionTracker.Data;
+using System.Globalization;
 
 namespace ProductionTracker.Web.Excel
 {
@@ -60,10 +61,16 @@ namespace ProductionTracker.Web.Excel
 
         public static ErrorsAndItems ConvertProductoinToItems(ProductionForCT production)
         {
-
+            var tempDate = production.Name.Split()[1];
+            DateTime date;
+            var isdate = DateTime.TryParseExact(tempDate, DateTimeFormats(), CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out date);
+            if (!isdate)
+            {
+                date = DateTime.Now;
+                AddErrorMsg($"Sorry the date {tempDate} is in the wrong format we are going to use the current date instead");
+            }
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var items = new List<Item>();
-            var itemString = new List<string>();
+            var items = new List<CuttingInstructionDetail>();
             foreach (var marker in production.Markers)
             {
                 var markerCat = repo.GetMarkerCategory(marker.Name);
@@ -99,11 +106,15 @@ namespace ProductionTracker.Web.Excel
                                     var dbItem = repo.GetItem(item);
                                     if (NotNull(dbItem))
                                     {
-                                        var orginalNumber = colmat.Layers * s.AmountPerLayer;
-                                        items.AddRange(Enumerable.Repeat(dbItem, orginalNumber));
-                                        if (orginalNumber != 0)
+                                        var itemQuantity = colmat.Layers * s.AmountPerLayer;
+                                        if (itemQuantity > 0)
                                         {
-                                            itemString.Add($"{itemString.Count + 1} ) item: {dbItem.SKU} --- {orginalNumber}");
+                                            items.Add(new CuttingInstructionDetail
+                                            {
+                                                ItemId = dbItem.Id,
+                                                Item = dbItem,
+                                                Quantity = itemQuantity
+                                            });
                                         }
                                     }
                                     else
@@ -131,8 +142,8 @@ namespace ProductionTracker.Web.Excel
             var returnItem = new ErrorsAndItems
             {
                 Items = items,
-                ItemsWithAmount = itemString,
-                Errors = _erros
+                Errors = _erros,
+                Date = date
             };
             _erros = new List<string>();
             return returnItem;
@@ -251,7 +262,7 @@ namespace ProductionTracker.Web.Excel
         private static List<SizeWithLayer> NewMarkerSizeConcact(string[] split)
         {
 
-            var repo = new ProductionRespository(Properties.Settings.Default.ConStr);
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var marker = repo.GetMarkerCategory(split[0]);
             var sizeFromMarker = new List<SizeWithLayer>();
             if (marker != null)
@@ -329,6 +340,15 @@ namespace ProductionTracker.Web.Excel
         private static void AddErrorMsg(string typeNotFound, string item)
         {
             _erros.Add($"{_erros.Count + 1}) The {typeNotFound} : [ {item} ] was not found");
+        }
+
+        private static string[] DateTimeFormats()
+        {
+            return new string[] {
+                "M/d/yyyy", "M/dd/yyyy", "MM/d/yyyy", "MM/dd/yyyy",
+                "M.d.yyyy", "M.dd.yyyy", "MM.d.yyyy","MM.dd.yyyy",
+                "M-d-yyyy", "M-dd-yyyy", "MM-d-yyyy","MM-dd-yyyy",
+            };
         }
     }
 }

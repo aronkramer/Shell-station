@@ -147,6 +147,7 @@ namespace ProductionTracker.Data
                 return context.MarkerCategories.ToList();
             }
         }
+
         public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -154,6 +155,7 @@ namespace ProductionTracker.Data
                 return context.MarkerDetails.Where(md => md.MarkerCatId == markerId).ToList();
             }
         }
+
         public int? GetColorDetailsId(string name)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -167,6 +169,23 @@ namespace ProductionTracker.Data
                     }
                 }
                 return null;
+            }
+        }
+        
+        public void AddCuttingTicket(CuttingInstruction instruction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.CuttingInstructions.InsertOnSubmit(instruction);
+                context.SubmitChanges();
+            }
+        }
+        public void AddCTDetails(IEnumerable<CuttingInstructionDetail> instructionDetails)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.CuttingInstructionDetails.InsertAllOnSubmit(instructionDetails);
+                context.SubmitChanges();
             }
         }
     }

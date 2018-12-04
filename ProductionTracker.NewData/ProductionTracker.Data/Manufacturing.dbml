@@ -51,6 +51,7 @@
       <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="SizeDescription" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Item_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="ItemId" Type="CuttingInstructionDetail" />
       <Association Name="BodyStyle_Item" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
       <Association Name="Color_Item" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
       <Association Name="Department_Item" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
@@ -96,6 +97,24 @@
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Size_Item" Member="Items" ThisKey="Id" OtherKey="SizeId" Type="Item" />
       <Association Name="Size_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="SizeId" Type="MarkerDetail" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CuttingInstructions" Member="CuttingInstructions">
+    <Type Name="CuttingInstruction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Lot#" Member="Lot_" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="CuttingInstructionId" Type="CuttingInstructionDetail" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CuttingInstructionDetails" Member="CuttingInstructionDetails">
+    <Type Name="CuttingInstructionDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CuttingInstructionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstruction" ThisKey="CuttingInstructionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
+      <Association Name="Item_CuttingInstructionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

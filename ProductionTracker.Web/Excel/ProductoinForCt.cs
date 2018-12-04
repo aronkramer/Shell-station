@@ -41,8 +41,8 @@ namespace ProductionTracker.Web.Excel
     }
     public class ErrorsAndItems
     {
-        public List<Item> Items { get; set; }
-        public List<string> ItemsWithAmount { get; set; }
+        public DateTime Date { get; set; }
+        public List<CuttingInstructionDetail> Items { get; set; }
         public List<string> Errors { get; set; }
 
     }
