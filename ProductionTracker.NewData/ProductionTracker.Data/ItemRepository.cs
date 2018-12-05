@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductionTracker.OldData
+namespace ProductionTracker.Data
 {
     public class ItemRepository
     {
@@ -14,63 +14,61 @@ namespace ProductionTracker.OldData
         {
             _connectionString = connectionString;
         }
-
         public void AddItem(Item item)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
                 context.Items.InsertOnSubmit(item);
                 context.SubmitChanges();
             }
         }
 
-        public IEnumerable<Item> GetAllItemsInProduction()
+        public IEnumerable<Item> GetItemsInCuttingInstruction()
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
                 return context.Items.ToList();
             }
         }
-
         public ItemQuantity GetQuantitysPerItem(Item item)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
 
 
                 return new ItemQuantity
                 {
-                    AmountOrdered = context.ProductionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity),
-                    AmountReceived = context.ReceivedItems.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity)
+                    AmountOrdered = context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id) != null ? context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity): 0 ,
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id) != null ? context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity) : 0
                 };
 
             }
         }
 
-        public DateTime LastDateOfProductionPerItem(Item item)
+        public DateTime LastDateOfCuttingInstruction(Item item)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.ProductionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.Production.Date).First().Production.Date;
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.CuttingInstruction.Date).First().CuttingInstruction.Date;
             }
         }
 
-        public bool CheckIfItemIsInProduction(Item item)
+        public bool ItemExsitsInCuttingInstruction(Item item)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.ProductionDetails.Where(p => p.ItemId == item.Id).Any();
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).Any();
             }
         }
 
         public Item GetItemWithActivity(int id)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<Item>(i => i.ProductionDetails);
-                loadOptions.LoadWith<Item>(i => i.ReceivedItems);
-                loadOptions.LoadWith<ProductionDetail>(p => p.Production);
+                loadOptions.LoadWith<Item>(i => i.CuttingInstructionDetails);
+                loadOptions.LoadWith<Item>(i => i.ReceivingItemsTransactions);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
                 context.LoadOptions = loadOptions;
                 return context.Items.FirstOrDefault(i => i.Id == id);
 
@@ -79,14 +77,14 @@ namespace ProductionTracker.OldData
 
         public IEnumerable<Item> GetUniqueItemsAndUnquieSKU(List<Item> items)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var uniqueItems = new List<Item>();
                 foreach (var item in items)
                 {
                     var testItem = context.Items.FirstOrDefault(i => (i.DepartmentId == item.DepartmentId && i.MaterialId == item.MaterialId && i.BodyStyleId == item.BodyStyleId
                      && i.ColorId == item.ColorId && i.SleeveId == item.SleeveId && i.SizeId == item.SizeId) || i.SKU == item.SKU);
-                    if(testItem == null)
+                    if (testItem == null)
                     {
                         uniqueItems.Add(item);
                     }
@@ -102,11 +100,12 @@ namespace ProductionTracker.OldData
 
         public void AddItems(IEnumerable<Item> items)
         {
-            using (var context = new ProductionDataContext(_connectionString))
+            using (var context = new ManufacturingDataContext(_connectionString))
             {
                 context.Items.InsertAllOnSubmit(items);
                 context.SubmitChanges();
             }
         }
+
     }
 }

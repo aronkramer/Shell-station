@@ -50,7 +50,7 @@
             this.getProductions();
         },
         getProductions: function () {
-            $.get("/home/GetProductionsWithInfo", result => {
+            $.get("/home/GetCuttingInstructionsWithInfo", result => {
                 this.productions = result;
             });
         },
@@ -63,7 +63,7 @@
             $("#detail-modal").modal();
         },
         getProductionDetails: function (id) {
-            $.get("/home/GetDeatilsOfAProduction", { Id: id }, result => {
+            $.get("/home/GetDeatilsOfACuttingInstruction", { Id: id }, result => {
                 this.currentItem = '';
                 this.currentProduction = result.production;
                 this.productionDetails = result.details;

@@ -188,5 +188,30 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+
+        public CuttingInstruction GetInstruction(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                loadOptions.LoadWith<ReceivingItemsTransaction>(r => r.Item);
+                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.FirstOrDefault(ct => ct.Id == id);
+            }
+        }
+        public IEnumerable<CuttingInstruction> GetInstructions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.ToList();
+            }
+        }
     }
 }

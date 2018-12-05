@@ -66,6 +66,9 @@ namespace ProductionTracker.Data
     partial void InsertCuttingInstructionDetail(CuttingInstructionDetail instance);
     partial void UpdateCuttingInstructionDetail(CuttingInstructionDetail instance);
     partial void DeleteCuttingInstructionDetail(CuttingInstructionDetail instance);
+    partial void InsertReceivingItemsTransaction(ReceivingItemsTransaction instance);
+    partial void UpdateReceivingItemsTransaction(ReceivingItemsTransaction instance);
+    partial void DeleteReceivingItemsTransaction(ReceivingItemsTransaction instance);
     #endregion
 		
 		public ManufacturingDataContext() : 
@@ -191,6 +194,14 @@ namespace ProductionTracker.Data
 			get
 			{
 				return this.GetTable<CuttingInstructionDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ReceivingItemsTransaction> ReceivingItemsTransactions
+		{
+			get
+			{
+				return this.GetTable<ReceivingItemsTransaction>();
 			}
 		}
 	}
@@ -918,6 +929,8 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<CuttingInstructionDetail> _CuttingInstructionDetails;
 		
+		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
+		
 		private EntityRef<BodyStyle> _BodyStyle;
 		
 		private EntityRef<Color> _Color;
@@ -959,6 +972,7 @@ namespace ProductionTracker.Data
 		public Item()
 		{
 			this._CuttingInstructionDetails = new EntitySet<CuttingInstructionDetail>(new Action<CuttingInstructionDetail>(this.attach_CuttingInstructionDetails), new Action<CuttingInstructionDetail>(this.detach_CuttingInstructionDetails));
+			this._ReceivingItemsTransactions = new EntitySet<ReceivingItemsTransaction>(new Action<ReceivingItemsTransaction>(this.attach_ReceivingItemsTransactions), new Action<ReceivingItemsTransaction>(this.detach_ReceivingItemsTransactions));
 			this._BodyStyle = default(EntityRef<BodyStyle>);
 			this._Color = default(EntityRef<Color>);
 			this._Department = default(EntityRef<Department>);
@@ -1205,6 +1219,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivingItemsTransaction", Storage="_ReceivingItemsTransactions", ThisKey="Id", OtherKey="ItemId")]
+		public EntitySet<ReceivingItemsTransaction> ReceivingItemsTransactions
+		{
+			get
+			{
+				return this._ReceivingItemsTransactions;
+			}
+			set
+			{
+				this._ReceivingItemsTransactions.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BodyStyle_Item", Storage="_BodyStyle", ThisKey="BodyStyleId", OtherKey="Id", IsForeignKey=true)]
 		public BodyStyle BodyStyle
 		{
@@ -1436,6 +1463,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_CuttingInstructionDetails(CuttingInstructionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = null;
+		}
+		
+		private void attach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = this;
+		}
+		
+		private void detach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
 		{
 			this.SendPropertyChanging();
 			entity.Item = null;
@@ -2261,6 +2300,8 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<CuttingInstructionDetail> _CuttingInstructionDetails;
 		
+		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2276,6 +2317,7 @@ namespace ProductionTracker.Data
 		public CuttingInstruction()
 		{
 			this._CuttingInstructionDetails = new EntitySet<CuttingInstructionDetail>(new Action<CuttingInstructionDetail>(this.attach_CuttingInstructionDetails), new Action<CuttingInstructionDetail>(this.detach_CuttingInstructionDetails));
+			this._ReceivingItemsTransactions = new EntitySet<ReceivingItemsTransaction>(new Action<ReceivingItemsTransaction>(this.attach_ReceivingItemsTransactions), new Action<ReceivingItemsTransaction>(this.detach_ReceivingItemsTransactions));
 			OnCreated();
 		}
 		
@@ -2352,6 +2394,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_ReceivingItemsTransaction", Storage="_ReceivingItemsTransactions", ThisKey="Id", OtherKey="CuttingInstuctionId")]
+		public EntitySet<ReceivingItemsTransaction> ReceivingItemsTransactions
+		{
+			get
+			{
+				return this._ReceivingItemsTransactions;
+			}
+			set
+			{
+				this._ReceivingItemsTransactions.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2379,6 +2434,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_CuttingInstructionDetails(CuttingInstructionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = null;
+		}
+		
+		private void attach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = this;
+		}
+		
+		private void detach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
 		{
 			this.SendPropertyChanging();
 			entity.CuttingInstruction = null;
@@ -2569,6 +2636,270 @@ namespace ProductionTracker.Data
 					if ((value != null))
 					{
 						value.CuttingInstructionDetails.Add(this);
+						this._ItemId = value.Id;
+					}
+					else
+					{
+						this._ItemId = default(int);
+					}
+					this.SendPropertyChanged("Item");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ReceivingItemsTransactions")]
+	public partial class ReceivingItemsTransaction : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _CuttingInstuctionId;
+		
+		private int _ItemId;
+		
+		private bool _Adjusment;
+		
+		private int _Quantity;
+		
+		private System.DateTime _Date;
+		
+		private EntityRef<CuttingInstruction> _CuttingInstruction;
+		
+		private EntityRef<Item> _Item;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnCuttingInstuctionIdChanging(int value);
+    partial void OnCuttingInstuctionIdChanged();
+    partial void OnItemIdChanging(int value);
+    partial void OnItemIdChanged();
+    partial void OnAdjusmentChanging(bool value);
+    partial void OnAdjusmentChanged();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
+    partial void OnDateChanging(System.DateTime value);
+    partial void OnDateChanged();
+    #endregion
+		
+		public ReceivingItemsTransaction()
+		{
+			this._CuttingInstruction = default(EntityRef<CuttingInstruction>);
+			this._Item = default(EntityRef<Item>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CuttingInstuctionId", DbType="Int NOT NULL")]
+		public int CuttingInstuctionId
+		{
+			get
+			{
+				return this._CuttingInstuctionId;
+			}
+			set
+			{
+				if ((this._CuttingInstuctionId != value))
+				{
+					if (this._CuttingInstruction.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCuttingInstuctionIdChanging(value);
+					this.SendPropertyChanging();
+					this._CuttingInstuctionId = value;
+					this.SendPropertyChanged("CuttingInstuctionId");
+					this.OnCuttingInstuctionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemId", DbType="Int NOT NULL")]
+		public int ItemId
+		{
+			get
+			{
+				return this._ItemId;
+			}
+			set
+			{
+				if ((this._ItemId != value))
+				{
+					if (this._Item.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnItemIdChanging(value);
+					this.SendPropertyChanging();
+					this._ItemId = value;
+					this.SendPropertyChanged("ItemId");
+					this.OnItemIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Adjusment", DbType="Bit NOT NULL")]
+		public bool Adjusment
+		{
+			get
+			{
+				return this._Adjusment;
+			}
+			set
+			{
+				if ((this._Adjusment != value))
+				{
+					this.OnAdjusmentChanging(value);
+					this.SendPropertyChanging();
+					this._Adjusment = value;
+					this.SendPropertyChanged("Adjusment");
+					this.OnAdjusmentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		public int Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="Date NOT NULL")]
+		public System.DateTime Date
+		{
+			get
+			{
+				return this._Date;
+			}
+			set
+			{
+				if ((this._Date != value))
+				{
+					this.OnDateChanging(value);
+					this.SendPropertyChanging();
+					this._Date = value;
+					this.SendPropertyChanged("Date");
+					this.OnDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_ReceivingItemsTransaction", Storage="_CuttingInstruction", ThisKey="CuttingInstuctionId", OtherKey="Id", IsForeignKey=true)]
+		public CuttingInstruction CuttingInstruction
+		{
+			get
+			{
+				return this._CuttingInstruction.Entity;
+			}
+			set
+			{
+				CuttingInstruction previousValue = this._CuttingInstruction.Entity;
+				if (((previousValue != value) 
+							|| (this._CuttingInstruction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CuttingInstruction.Entity = null;
+						previousValue.ReceivingItemsTransactions.Remove(this);
+					}
+					this._CuttingInstruction.Entity = value;
+					if ((value != null))
+					{
+						value.ReceivingItemsTransactions.Add(this);
+						this._CuttingInstuctionId = value.Id;
+					}
+					else
+					{
+						this._CuttingInstuctionId = default(int);
+					}
+					this.SendPropertyChanged("CuttingInstruction");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivingItemsTransaction", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
+		public Item Item
+		{
+			get
+			{
+				return this._Item.Entity;
+			}
+			set
+			{
+				Item previousValue = this._Item.Entity;
+				if (((previousValue != value) 
+							|| (this._Item.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Item.Entity = null;
+						previousValue.ReceivingItemsTransactions.Remove(this);
+					}
+					this._Item.Entity = value;
+					if ((value != null))
+					{
+						value.ReceivingItemsTransactions.Add(this);
 						this._ItemId = value.Id;
 					}
 					else

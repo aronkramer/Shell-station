@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using ProductionTracker.OldData;
+using ProductionTracker.Data;
 
 namespace ProductionTracker.Web.Models
 {
@@ -10,6 +10,6 @@ namespace ProductionTracker.Web.Models
     {
         public Item Item { get; set; }
         public ItemQuantity Quantitys { get; set; }
-        public DateTime LastProductionDate { get; set; }
+        public DateTime LastCuttingInstructionDate { get; set; }
     }
 }

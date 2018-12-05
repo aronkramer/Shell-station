@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ItemQuantity.cs" />
+    <Compile Include="ItemRepository.cs" />
     <Compile Include="ProductionRespository.cs" />
     <Compile Include="Manufacturing.designer.cs">
       <AutoGen>True</AutoGen>

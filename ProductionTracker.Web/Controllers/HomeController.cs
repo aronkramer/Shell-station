@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Linq;
-using ProductionTracker.OldData;
+//using ProductionTracker.OldData;
 using ProductionTracker.Web.Models;
+using ProductionTracker.Data;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -18,26 +19,26 @@ namespace ProductionTracker.Web.Controllers
         
         public ActionResult GetAllItemsWithDetails()
         {
-            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
-            var itemsWithextras = repo.GetAllItemsInProduction().Select(i => {
-                var isInProduction = repo.CheckIfItemIsInProduction(i);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i => {
+                var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i);
                 return new ItemWithQuantityVM
                 {
                     Item = i,
-                    Quantitys = isInProduction ? repo.GetQuantitysPerItem(i) : null,
-                    LastProductionDate = isInProduction ? repo.LastDateOfProductionPerItem(i) : DateTime.MinValue
+                    Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
+                    LastCuttingInstructionDate = isInCuttingInstruction ? repo.LastDateOfCuttingInstruction(i) : DateTime.MinValue
              };
             });
             return Json(itemsWithextras.Select(it => 
             {
-                var isInProduction = repo.CheckIfItemIsInProduction(it.Item);
+                var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item);
                 return new
                 {
                     Id = it.Item.Id,
                     SKU = it.Item.SKU,
-                    LastProductionDate = isInProduction ? it.LastProductionDate.ToShortDateString(): "--------",
-                    ItemsNotReceived = isInProduction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
-                    PercentageRecived = isInProduction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
+                    LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstructionDate.ToShortDateString(): "--------",
+                    ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
+                    PercentageRecived = isInCuttingInstruction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
                     //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                 };
             }), JsonRequestBehavior.AllowGet);
@@ -45,27 +46,27 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetAllActivityOfAItem (int id)
         {
-            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             var item = repo.GetItemWithActivity(id);
             var activity = new List<ItemActivity>();
-            foreach (var recived in item.ReceivedItems)
+            foreach (var recived in item.ReceivingItemsTransactions)
             {
                 activity.Add(new ItemActivity
                 {
                     Type = $"Recived",
                     Date = recived.Date.ToShortDateString(),
                     Quantity = recived.Quantity,
-                    ProductionId = recived.ProductionId
+                    CuttingInstructionId = recived.CuttingInstuctionId
                 });
             }
-            foreach (var production in item.ProductionDetails)
+            foreach (var CuttingInstruction in item.CuttingInstructionDetails)
             {
                 activity.Add(new ItemActivity
                 {
-                    Type = $"Production :{production.Production.Name}",
-                    Date = production.Production.Date.ToShortDateString(),
-                    Quantity = production.Quantity,
-                    ProductionId = production.ProductionId
+                    Type = $"CuttingInstruction :{CuttingInstruction.CuttingInstruction.Date}",
+                    Date = CuttingInstruction.CuttingInstruction.Date.ToShortDateString(),
+                    Quantity = CuttingInstruction.Quantity,
+                    CuttingInstructionId = CuttingInstruction.CuttingInstructionId
                 });
             }
             return Json(new
@@ -90,50 +91,50 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetProductionsWithInfo()
+        public ActionResult GetCuttingInstructionsWithInfo()
         {
-            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
-            var productions = repo.GetAllProductions();
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var CuttingInstructions = repo.GetInstructions();
             
-            return Json(productions.Select(p =>
+            return Json(CuttingInstructions.Select(p =>
             {
-                var sumor = p.ProductionDetails.Sum(pd => pd.Quantity);
-                var sumre = p.ReceivedItems.Sum(re => re.Quantity);
+                var sumor = p.CuttingInstructionDetails.Sum(pd => pd.Quantity);
+                var sumre = p.ReceivingItemsTransactions.Sum(re => re.Quantity);
                 return new
                 {
                     Date = p.Date.ToShortDateString(),
-                    Name = p.Name,
+                    Lot = p.Lot_,
                     Id = p.Id,
                     TotalItems = sumor,
                     ItemsNotReceived = sumor - sumre,
-                    PercentageFilled = String.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
+                    PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
 
                 };
             }).OrderByDescending(p => p.Date), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetDeatilsOfAProduction(int id)
+        public ActionResult GetDeatilsOfACuttingInstruction(int id)
         {
-            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
-            var result = repo.GetProductionById(id);
-            var details = result.ProductionDetails.Select(pd =>
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var result = repo.GetInstruction(id);
+            var details = result.CuttingInstructionDetails.Select(pd =>
             {
-                var received = result.ReceivedItems.Where(ri => ri.ProductionId == result.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity);
+                var received = result.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == result.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity);
                 return new
                 {
                     Id = pd.ItemId,
                     SKU = pd.Item.SKU,
                     Ordered = pd.Quantity,
                     Received = received,
-                    PercentageFilled = String.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity)
+                    PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity)
                 };
 
             });
             return Json(new
             {
-                production = new
+                CuttingInstruction = new
                 {
-                   Name = result.Name,
+                   Name = result.Lot_,
                    Id = result.Id,
                    Date = result.Date.ToShortDateString()
                     
@@ -142,34 +143,34 @@ namespace ProductionTracker.Web.Controllers
             },JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult NewMarker()
-        {
-            var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
-            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
-            var vm = new NewMarkerVM
-            {
-                Departments = repo.GetDepartments(),
-                Sleeves = repo.GetAllSleeves(),
-                Styles = repo.GetAllStyles()
-            };
-            return View(vm);
-        }
+        //public ActionResult NewMarker()
+        //{
+        //    var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
+        //    var repo = new OldCuttingInstructionRepository(Properties.Settings.Default.ConStr);
+        //    var vm = new NewMarkerVM
+        //    {
+        //        Departments = repo.GetDepartments(),
+        //        Sleeves = repo.GetAllSleeves(),
+        //        Styles = repo.GetAllStyles()
+        //    };
+        //    return View(vm);
+        //}
 
-        public ActionResult GetSizesOfDepartment(int depId)
-        {
-            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
-            var sizes = repo.GetAllSizesByDepartment(depId);
-                 return Json(sizes.Select(s =>
-            {
-                return new
-                {
-                    Name = s.Name,
-                    Id = s.Id
-                };
-            }), JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult GetSizesOfDepartment(int depId)
+        //{
+        //    var repo = new OldCuttingInstructionRepository(Properties.Settings.Default.ConStr);
+        //    var sizes = repo.GetAllSizesByDepartment(depId);
+        //         return Json(sizes.Select(s =>
+        //    {
+        //        return new
+        //        {
+        //            Name = s.Name,
+        //            Id = s.Id
+        //        };
+        //    }), JsonRequestBehavior.AllowGet);
+        //}
 
-        public ActionResult NewProduction()
+        public ActionResult NewCuttingInstruction()
         {
             return View();
         }
