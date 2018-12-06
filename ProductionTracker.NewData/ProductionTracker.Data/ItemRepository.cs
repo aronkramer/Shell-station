@@ -30,18 +30,24 @@ namespace ProductionTracker.Data
                 return context.Items.ToList();
             }
         }
+
+        public IEnumerable<Item> GetItemsInCuttingInstruction(bool isInCuttingTicket)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return isInCuttingTicket ? context.CuttingInstructionDetails.Select(i => i.Item).Distinct().ToList() : GetItemsInCuttingInstruction();
+            }
+        }
+
         public ItemQuantity GetQuantitysPerItem(Item item)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-
-
                 return new ItemQuantity
                 {
                     AmountOrdered = context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id) != null ? context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity): 0 ,
-                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id) != null ? context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity) : 0
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id).Sum(p => p.Quantity) : 0
                 };
-
             }
         }
 
@@ -53,11 +59,11 @@ namespace ProductionTracker.Data
             }
         }
 
-        public bool ItemExsitsInCuttingInstruction(Item item)
+        public bool ItemExsitsInCuttingInstruction(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).Any();
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == id).Any();
             }
         }
 
@@ -68,7 +74,7 @@ namespace ProductionTracker.Data
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Item>(i => i.CuttingInstructionDetails);
                 loadOptions.LoadWith<Item>(i => i.ReceivingItemsTransactions);
-                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstruction);
                 context.LoadOptions = loadOptions;
                 return context.Items.FirstOrDefault(i => i.Id == id);
 

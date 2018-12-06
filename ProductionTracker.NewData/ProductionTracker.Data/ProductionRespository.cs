@@ -180,11 +180,21 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+
         public void AddCTDetails(IEnumerable<CuttingInstructionDetail> instructionDetails)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 context.CuttingInstructionDetails.InsertAllOnSubmit(instructionDetails);
+                context.SubmitChanges();
+            }
+        }
+
+        public void AddItemsRecived(IEnumerable<ReceivingItemsTransaction> items)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.ReceivingItemsTransactions.InsertAllOnSubmit(items);
                 context.SubmitChanges();
             }
         }

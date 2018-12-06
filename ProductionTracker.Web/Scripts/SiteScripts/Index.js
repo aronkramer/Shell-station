@@ -6,7 +6,7 @@
         });
         this.pageHeader = 'Items In Production';
         this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items Not Received', 'Percentage Filled','actions'];
-        this.loadSkus();
+        this.loadSkus(true);
     },
     data: {
         detailHeaders: [],
@@ -20,16 +20,19 @@
         isSkus: false,
         productionDetails: [],
         isProd: false,
-        backButton: false
+        backButton: false,
+        recivedItems: [],
+        recivedItemProduction: ''
     },
     methods: {
-        loadSkus: function () {
-            $.get("/home/GetAllItemsWithDetails", SKU => {
+        loadSkus: function (isInCuttingTicket) {
+            $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
             });
         },
         detailsForItem: function (event) {
             this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
+            this.currentProduction = '';
             var id = event.target.id;
             this.getActivitysByItem(id, function (result) {
                 this.itemActivty = result.activity;
@@ -62,19 +65,22 @@
             this.isProd = true;
             $("#detail-modal").modal();
         },
-        getProductionDetails: function (id) {
+        getProductionDetails: function (id,func) {
             $.get("/home/GetDeatilsOfACuttingInstruction", { Id: id }, result => {
                 this.currentItem = '';
-                this.currentProduction = result.production;
+                this.currentProduction = result.CuttingInstruction;
                 this.productionDetails = result.details;
                 console.log(this.productionDetails);
+                if (func) {
+                    func();
+                }
             });
         },
         skuProdDeatails: function (event) {
             this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
             var id = event.target.id;
             this.getActivitysByItem(id, function (result) {
-                this.itemActivty = result.activity.filter(a => a.ProductionId === this.currentProduction.Id);
+                this.itemActivty = result.activity.filter(a => a.CuttingInstructionId === this.currentProduction.Id);
                 this.currentItem = result.item;
                 console.log(this.itemActivty);
                 this.backButton = true;
@@ -89,11 +95,55 @@
             this.isProd = true;
             this.backButton = false;
             this.currentItem = '';
+        },
+        recivedItemButton: function (event) {
+            var id = event.target.id;
+            this.getProductionDetails(id,  () => {
+                var temp = this.productionDetails;
+                this.recivedItems = temp.map(p => {
+                    return {
+                        Id: p.Id,
+                        SKU: p.SKU,
+                        Ordered: p.Ordered,
+                        Received: p.Received,
+                        PercentageFilled: p.PercentageFilled,
+                        ItemsRecived: 0
+                    };
+                });
+                this.recivedItemProduction = { Id: this.currentProduction.Id, Date: this.getDateInputFormat() };
+            });
+            
+            this.detailHeaders = ['Sku', 'Quantity Ordered', 'Quantity Recived', 'Percent Filled', 'Recived'];
+
+            $("#recive-items-modal").modal();
+        },
+        getDateInputFormat: function () {
+            var date = new Date();
+            day = fixDigit(date.getDate());
+            month = fixDigit(date.getMonth() + 1);
+            year = date.getFullYear();
+            return [year, month, day].join('-');
+        },
+        submitRecivedItems: function () {
+            var items = this.recivedItems.map(p => {
+                return {
+                    ItemId: p.Id,
+                    CuttingInstuctionId: this.recivedItemProduction.Id,
+                    Date: this.recivedItemProduction.Date,
+                    Quantity: p.ItemsRecived
+                };
+            });
+            $.post("/home/AddRecivedItems", { items }, () => { this.getProductions(); });
+            $("#recive-items-modal").modal('hide');
+            
         }
+
 
     },
 });
-
+function fixDigit(val) {
+    return val.toString().length === 1 ? "0" + val : val;
+}
 //function getActivitysByItem(id) {
 //    var stuff;
 //    $.get("/home/GetAllActivityOfAItem", { Id: id }, result => {

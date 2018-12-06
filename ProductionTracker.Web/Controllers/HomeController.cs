@@ -17,31 +17,59 @@ namespace ProductionTracker.Web.Controllers
             return View();
         }
         
-        public ActionResult GetAllItemsWithDetails()
+        public ActionResult GetAllItemsWithDetails(bool isInCuttingTicket)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i => {
-                var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i);
-                return new ItemWithQuantityVM
-                {
-                    Item = i,
-                    Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
-                    LastCuttingInstructionDate = isInCuttingInstruction ? repo.LastDateOfCuttingInstruction(i) : DateTime.MinValue
-             };
-            });
-            return Json(itemsWithextras.Select(it => 
+            if (isInCuttingTicket)
             {
-                var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item);
-                return new
+                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select(i =>
                 {
-                    Id = it.Item.Id,
-                    SKU = it.Item.SKU,
-                    LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstructionDate.ToShortDateString(): "--------",
-                    ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
-                    PercentageRecived = isInCuttingInstruction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
+                    return new ItemWithQuantityVM
+                    {
+                        Item = i,
+                        Quantitys = repo.GetQuantitysPerItem(i),
+                        LastCuttingInstructionDate =  repo.LastDateOfCuttingInstruction(i)
+                    };
+                });
+                return Json(itemsWithextras.Select(it =>
+                {
+                    return new
+                    {
+                        it.Item.Id,
+                        it.Item.SKU,
+                        LastCuttingInstructionDate = it.LastCuttingInstructionDate.ToShortDateString(),
+                        ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
+                        PercentageRecived = string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered)
+                        //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
+                    };
+                }), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i =>
+                {
+                    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i.Id);
+                    return new ItemWithQuantityVM
+                    {
+                        Item = i,
+                        Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
+                        LastCuttingInstructionDate = isInCuttingInstruction ? repo.LastDateOfCuttingInstruction(i) : DateTime.MinValue
+                    };
+                });
+                return Json(itemsWithextras.Select(it =>
+                {
+                    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item.Id);
+                    return new
+                    {
+                        it.Item.Id,
+                        it.Item.SKU,
+                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstructionDate.ToShortDateString() : "--------",
+                        ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
+                        PercentageRecived = isInCuttingInstruction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
                     //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                 };
-            }), JsonRequestBehavior.AllowGet);
+                }), JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult GetAllActivityOfAItem (int id)
@@ -63,7 +91,7 @@ namespace ProductionTracker.Web.Controllers
             {
                 activity.Add(new ItemActivity
                 {
-                    Type = $"CuttingInstruction :{CuttingInstruction.CuttingInstruction.Date}",
+                    Type = $"CuttingInstruction From{CuttingInstruction.CuttingInstruction.Date.ToShortDateString()} : Lot # :{CuttingInstruction.CuttingInstruction.Lot_}",
                     Date = CuttingInstruction.CuttingInstruction.Date.ToShortDateString(),
                     Quantity = CuttingInstruction.Quantity,
                     CuttingInstructionId = CuttingInstruction.CuttingInstructionId
@@ -78,15 +106,6 @@ namespace ProductionTracker.Web.Controllers
                     Name = item.SKU
                 },
                 activity = activity
-                //.Select(a =>
-                //{
-                //    return new
-                //    {
-                //        Type = a.Type,
-                //        Date = a.Date.ToShortDateString(),
-                //        Quantity = a.Quantity
-                //    };
-                //})
                 .OrderByDescending(a => a.Date)
             }, JsonRequestBehavior.AllowGet);
         }
@@ -134,13 +153,22 @@ namespace ProductionTracker.Web.Controllers
             {
                 CuttingInstruction = new
                 {
-                   Name = result.Lot_,
+                   Name = $"Cutting ticket from {result.Date.ToShortDateString()}",
+                   Lot = result.Lot_,
                    Id = result.Id,
                    Date = result.Date.ToShortDateString()
                     
                 },
                 details
             },JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public void AddRecivedItems(IEnumerable<ReceivingItemsTransaction> items)
+        {
+            items = items.Where(i => i.Quantity > 0).Select(i => { i.Adjusment = false; return i; });
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddItemsRecived(items);
         }
 
         //public ActionResult NewMarker()
