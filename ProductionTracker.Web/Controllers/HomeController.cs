@@ -22,7 +22,7 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             if (isInCuttingTicket)
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select(i =>
+                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select((Func<Data.Item, ItemWithQuantityVM>)(i =>
                 {
                     return new ItemWithQuantityVM
                     {
@@ -30,7 +30,7 @@ namespace ProductionTracker.Web.Controllers
                         Quantitys = repo.GetQuantitysPerItem(i),
                         LastCuttingInstructionDate =  repo.LastDateOfCuttingInstruction(i)
                     };
-                });
+                }));
                 return Json(itemsWithextras.Select(it =>
                 {
                     return new
@@ -46,7 +46,7 @@ namespace ProductionTracker.Web.Controllers
             }
             else
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i =>
+                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select((Func<Data.Item, ItemWithQuantityVM>)(i =>
                 {
                     var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i.Id);
                     return new ItemWithQuantityVM
@@ -55,7 +55,7 @@ namespace ProductionTracker.Web.Controllers
                         Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
                         LastCuttingInstructionDate = isInCuttingInstruction ? repo.LastDateOfCuttingInstruction(i) : DateTime.MinValue
                     };
-                });
+                }));
                 return Json(itemsWithextras.Select(it =>
                 {
                     var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item.Id);
@@ -166,7 +166,7 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public void AddRecivedItems(IEnumerable<ReceivingItemsTransaction> items)
         {
-            items = items.Where(i => i.Quantity > 0).Select(i => { i.Adjusment = false; return i; });
+            items = items.Where(i => i.Quantity != 0).Select(i => { i.Adjusment = false; return i; });
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             repo.AddItemsRecived(items);
         }

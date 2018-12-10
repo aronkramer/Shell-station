@@ -52,7 +52,7 @@ namespace ProductionTracker.Web.Controllers
             return RedirectToAction("ItemAdder");
         }
         [HttpPost]
-        public ActionResult AddItems(List<Item> items)
+        public ActionResult AddItems(List<OldData.Item> items)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ConStr);
             items = items.Where(i => i.SKU != null).ToList();
@@ -75,9 +75,9 @@ namespace ProductionTracker.Web.Controllers
             return RedirectToAction("Colors");
         }
 
-        private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
+        private IEnumerable<OldData.Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
-            var ItemList = new List<Item>();
+            var ItemList = new List<OldData.Item>();
             
             foreach (var dep in departmentIds)
             {
@@ -101,7 +101,7 @@ namespace ProductionTracker.Web.Controllers
                                         {
                                             foreach(var size in sizeList)
                                             {
-                                                ItemList.Add(new Item
+                                                ItemList.Add(new OldData.Item
                                                 {
                                                     DepartmentId = dep,
                                                     BodyStyleId = style,
@@ -186,7 +186,7 @@ namespace ProductionTracker.Web.Controllers
         //    return null;
         //}
 
-        private string GetSku(Item item)
+        private string GetSku(OldData.Item item)
         {
             var material = Material(item.MaterialId);
             var size = Size(item.SizeId);

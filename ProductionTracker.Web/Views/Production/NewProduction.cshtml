@@ -50,6 +50,7 @@
                 }
                 @if (Model.Items.Count > 0)
                 {
+                    <div class="row">
                     <div class="col-md-6 col-md-offset-3 well-lg">
                         @{ var x = 0;}
                         <h2 style="color:blue; text-align:center">Items</h2>
@@ -65,9 +66,9 @@
                                 @foreach (var item in Model.Items)
                                 {
                                     <tr>
-                                        <td><input type="text" class="form-control sku" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
-                                        <td><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
-                                        <td><input type="text" class="form-control sku" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
+                                        <td><input type="text" readonly class="form-control" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
+                                        <td><label hidden style="color:red" >Item is not found</label><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
+                                        <td><input type="text" class="form-control" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
                                     </tr>
 
 
@@ -77,9 +78,13 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-3 col-lg-offset-5">
-                        <button class="btn btn-success btn-block">Submit</button>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <button class="btn btn-success btn-block submit-btn">Submit</button>
+                        </div>
                     </div>
+                    
                 }
             </form>
 
@@ -89,5 +94,6 @@
 @section scripts{
     <script src="~/Scripts/vue.min.js"></script>
     <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
+    <script src="~/Scripts/SiteScripts/new-production.js"></script>
 }
 

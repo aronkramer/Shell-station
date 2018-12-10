@@ -136,10 +136,36 @@
             $.post("/home/AddRecivedItems", { items }, () => { this.getProductions(); });
             $("#recive-items-modal").modal('hide');
             
-        }
+        },
+        itemRecivedChange: function () {
+            //$('#submitRecivedItems').prop('disabled', this.checkVal());
+        },
+        //checkVal: function () {
+        //    var temp = this.recivedItems;
+        //    //var isRight = $(temp).is(function (i) { return i.ItemsRecived > (i.Ordered - i.Received); });
+        //    //var isRight = $.grep(temp, function (i) { return i.ItemsRecived > (i.Ordered - i.Received); });
+        //    var isRight = temp.some(function (i) {
+        //        return i.ItemsRecived > (i.Ordered - i.Received);
+        //    });
+        //    console.log(isRight);
+        //    return $(isRight).size() > 0;
+        //},
 
 
     },
+    computed: {
+        checkVal: function () {
+            var temp = this.recivedItems;
+            var tooMuch = temp.some(function (i) {
+                return i.ItemsRecived > (i.Ordered - i.Received);
+            });
+            var hasValues = temp.some(function (i) {
+                return i.ItemsRecived > 0;
+            });
+            console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
+            return tooMuch || !hasValues;
+        },
+    }
 });
 function fixDigit(val) {
     return val.toString().length === 1 ? "0" + val : val;

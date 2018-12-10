@@ -25,9 +25,9 @@ namespace ProductionTracker.Web.Controllers
             Session["ItemsWithErrors"] = items;
             return RedirectToAction("NewProduction");
         }
-        public ActionResult NewProductionConfimation()
+        public ActionResult NewProductionConfimation(ErrorsAndItems items)
         {
-            return View();
+            return View(items);
         }
         [HttpPost]
         public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionDetail> items)
@@ -39,6 +39,13 @@ namespace ProductionTracker.Web.Controllers
             TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
             Session["ItemsWithErrors"] = null;
             return RedirectToAction("NewProduction");
+        }
+        public ActionResult GetItemId(string sku)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var item = repo.GetItem(sku);
+
+            return item != null ? Json(new { item.Id, item.SKU }, JsonRequestBehavior.AllowGet): null;
         }
     }
 }

@@ -176,6 +176,7 @@
     <Compile Include="Models\ItemAdderVM.cs" />
     <Compile Include="Models\ItemWithQuantityVM.cs" />
     <Compile Include="Models\NewMarkerVM.cs" />
+    <Compile Include="Models\NewProductionVM.cs" />
     <Compile Include="Models\ProductionWithInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -302,6 +303,7 @@
     <Content Include="Scripts\SiteScripts\new-marker-vue.js" />
     <Content Include="Scripts\SiteScripts\new-marker.js" />
     <Content Include="Scripts\SiteScripts\new-production-Vue.js" />
+    <Content Include="Scripts\SiteScripts\new-production.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />
@@ -323,7 +325,7 @@
     <Content Include="Views\Fabric\ReceivedFabric.cshtml" />
     <Content Include="Views\Home\NewProduction.cshtml" />
     <Content Include="Views\Production\NewProduction.cshtml" />
-    <Content Include="Views\Production\NewProductionConfirmation.cshtml" />
+    <Content Include="Views\Production\NewProductionConfimation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

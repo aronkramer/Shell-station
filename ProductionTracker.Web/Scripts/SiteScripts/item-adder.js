@@ -25,7 +25,7 @@
             optionClass: function (element) {
                 var value = $(element).val();
 
-                if (value % 2 == 0) {
+                if (value % 2 === 0) {
                     return 'even';
                 }
                 else {

@@ -57,7 +57,7 @@
                                     <td>{{item.PercentageFilled}}</td>
                                     <td>
                                     <button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForProduction($event)">Details</button>
-                                    <button v-bind:id="item.Id" class="btn btn-success" v-on:click="recivedItemButton($event)">Recived Items</button>
+                                    <button v-bind:id="item.Id" :disabled="item.ItemsNotReceived <= 0" class="btn btn-success" v-on:click="recivedItemButton($event)">Recived Items</button>
                                     </td>
                                 </tr>
                             </template>
@@ -126,35 +126,37 @@
                     <h4 class="modal-title">Recived items for {{currentProduction.Name}}</h4>
                 </div>
                 <div class="modal-body">
-                    <label for="date">Date</label>
-                    <input type="date" name="date" v-model="recivedItemProduction.Date" />
-                    <div style="overflow:scroll; max-height:750px;">
+                    <template v-for="item in recivedItems">
+                        </template>
+                        <label for="date">Date</label>
+                        <input type="date" name="date" v-model="recivedItemProduction.Date" />
+                        <div style="overflow:scroll; max-height:750px;">
 
-                        <table class="table table-bordered table-hover table-responsive">
-                            <tr>
-                                <template v-for="header in detailHeaders">
-                                    <th>{{header}}</th>
-                                </template>
-                            </tr>
-                            <template v-for="(item,key,index) in recivedItems">
+                            <table class="table table-bordered table-hover table-responsive">
                                 <tr>
-                                    <td><a v-bind:Id="item.Id" v-on:click="skuProdDeatails" href="#">{{item.SKU}}</a></td>
-                                    <td>{{item.Ordered}}</td>
-                                    <td>{{item.Received}}</td>
-                                    <td>{{item.PercentageFilled}}</td>
-                                    <td><input type="text" v-model="item.ItemsRecived" class="form-control" name="item.Id" /></td>
+                                    <template v-for="header in detailHeaders">
+                                        <th>{{header}}</th>
+                                    </template>
                                 </tr>
-                            </template>
-                        </table>
-                    </div>
+                                <template v-for="(item,key,index) in recivedItems">
+                                    <tr>
+                                        <td><a v-bind:Id="item.Id" href="#">{{item.SKU}}</a></td>
+                                        <td>{{item.Ordered}}</td>
+                                        <td>{{item.Received}}</td>
+                                        <td>{{item.PercentageFilled}}</td>
+                                        <td><label style="color:red" v-if="item.ItemsRecived > (item.Ordered - item.Received)" for="item.Id">You entered to many items!</label><input type="text" v-on:change="itemRecivedChange" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control" name="item.Id" /></td>
+                                    </tr>
+                                </template>
+                            </table>
+                        </div>
 
                 </div>
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-3 col-md-offset-2">
-                            <button v-on:click="submitRecivedItems" class="btn btn-success btn-block">Submit</button>
+                            <button v-on:click="submitRecivedItems" :disabled="checkVal" id="submitRecivedItems" class="btn btn-success btn-block">Submit</button>
                         </div>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div><!-- /.modal-content -->

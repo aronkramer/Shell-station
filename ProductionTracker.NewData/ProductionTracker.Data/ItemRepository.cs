@@ -113,5 +113,19 @@ namespace ProductionTracker.Data
             }
         }
 
+        public Item GetItem(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Items.FirstOrDefault(i => i.Id == id);
+            }
+        }
+        public Item GetItem(string sku)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Items.FirstOrDefault(i => i.SKU == sku.ToUpper());
+            }
+        }
     }
 }
