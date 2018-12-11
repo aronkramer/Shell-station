@@ -107,7 +107,7 @@
                         Ordered: p.Ordered,
                         Received: p.Received,
                         PercentageFilled: p.PercentageFilled,
-                        ItemsRecived: 0
+                        ItemsRecived: null
                     };
                 });
                 this.recivedItemProduction = { Id: this.currentProduction.Id, Date: this.getDateInputFormat() };

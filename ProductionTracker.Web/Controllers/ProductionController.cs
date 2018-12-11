@@ -10,10 +10,12 @@ namespace ProductionTracker.Web.Controllers
 {
     public class ProductionController : Controller
     {
-        public ActionResult NewProduction()
+        public ActionResult NewProduction(ErrorsAndItems items)
         {
-            ViewBag.Message = TempData["Message"] != null ? TempData["Message"]: null;
-            var items = Session["ItemsWithErrors"]  != null ? (ErrorsAndItems)Session["ItemsWithErrors"] : null;
+            //ViewBag.Message = TempData["Message"] != null ? TempData["Message"]: null;
+            //var items = Session["ItemsWithErrors"]  != null ? (ErrorsAndItems)Session["ItemsWithErrors"] : null;
+            //Session["ItemsWithErrors"] = null;
+            items = items != null ? items : null;
             return View(items);
         }
         [HttpPost]
@@ -23,7 +25,7 @@ namespace ProductionTracker.Web.Controllers
             var production = ExcelActions.ConvertCtToProduction(dT);
             var items = ExcelActions.ConvertProductoinToItems(production);
             Session["ItemsWithErrors"] = items;
-            return RedirectToAction("NewProduction");
+            return RedirectToAction("NewProduction",items);
         }
         public ActionResult NewProductionConfimation(ErrorsAndItems items)
         {

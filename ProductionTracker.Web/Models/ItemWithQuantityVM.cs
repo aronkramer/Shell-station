@@ -10,6 +10,6 @@ namespace ProductionTracker.Web.Models
     {
         public Item Item { get; set; }
         public ItemQuantity Quantitys { get; set; }
-        public DateTime LastCuttingInstructionDate { get; set; }
+        public CuttingInstruction LastCuttingInstruction { get; set; }
     }
 }

@@ -19,43 +19,46 @@ namespace ProductionTracker.Web.Controllers
         
         public ActionResult GetAllItemsWithDetails(bool isInCuttingTicket)
         {
+            var ProdRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var openedCTIDs = ProdRepo.GetOpenedInstructionsIds();
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             if (isInCuttingTicket)
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select((Func<Data.Item, ItemWithQuantityVM>)(i =>
+                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select(i =>
                 {
                     return new ItemWithQuantityVM
                     {
                         Item = i,
                         Quantitys = repo.GetQuantitysPerItem(i),
-                        LastCuttingInstructionDate =  repo.LastDateOfCuttingInstruction(i)
+                        LastCuttingInstruction =  repo.LastCuttingInstruction(i)
                     };
-                }));
+                });
                 return Json(itemsWithextras.Select(it =>
                 {
+                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item, openedCTIDs.ToList());
                     return new
                     {
                         it.Item.Id,
                         it.Item.SKU,
-                        LastCuttingInstructionDate = it.LastCuttingInstructionDate.ToShortDateString(),
+                        LastCuttingInstructionDate = it.LastCuttingInstruction.Date.ToShortDateString(),
                         ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
-                        PercentageRecived = string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered)
+                        PercentageRecived = string.Format("{0:P}", double.Parse(lastCuttingInstructionQuantitys.AmountReceived.ToString()) / lastCuttingInstructionQuantitys.AmountOrdered)
                         //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                     };
                 }), JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select((Func<Data.Item, ItemWithQuantityVM>)(i =>
+                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i =>
                 {
                     var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i.Id);
                     return new ItemWithQuantityVM
                     {
                         Item = i,
                         Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
-                        LastCuttingInstructionDate = isInCuttingInstruction ? repo.LastDateOfCuttingInstruction(i) : DateTime.MinValue
+                        LastCuttingInstruction = isInCuttingInstruction ? repo.LastCuttingInstruction(i) : null
                     };
-                }));
+                });
                 return Json(itemsWithextras.Select(it =>
                 {
                     var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item.Id);
@@ -63,9 +66,9 @@ namespace ProductionTracker.Web.Controllers
                     {
                         it.Item.Id,
                         it.Item.SKU,
-                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstructionDate.ToShortDateString() : "--------",
+                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstruction.Date.ToShortDateString() : "--------",
                         ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
-                        PercentageRecived = isInCuttingInstruction ? String.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
+                        PercentageRecived = isInCuttingInstruction ? string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
                     //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                 };
                 }), JsonRequestBehavior.AllowGet);
@@ -113,7 +116,7 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult GetCuttingInstructionsWithInfo()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var CuttingInstructions = repo.GetInstructions();
+            var CuttingInstructions = repo.GetOpenedInstructions();
             
             return Json(CuttingInstructions.Select(p =>
             {

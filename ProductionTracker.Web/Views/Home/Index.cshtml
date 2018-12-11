@@ -140,11 +140,11 @@
                                 </tr>
                                 <template v-for="(item,key,index) in recivedItems">
                                     <tr>
-                                        <td><a v-bind:Id="item.Id" href="#">{{item.SKU}}</a></td>
+                                        <td>{{item.SKU}}</td>
                                         <td>{{item.Ordered}}</td>
                                         <td>{{item.Received}}</td>
                                         <td>{{item.PercentageFilled}}</td>
-                                        <td><label style="color:red" v-if="item.ItemsRecived > (item.Ordered - item.Received)" for="item.Id">You entered to many items!</label><input type="text" v-on:change="itemRecivedChange" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control" name="item.Id" /></td>
+                                        <td><label style="color:red" v-if="item.ItemsRecived > (item.Ordered - item.Received)" for="item.Id">You entered to many items!</label><input type="text" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control" name="item.Id" /></td>
                                     </tr>
                                 </template>
                             </table>

@@ -51,11 +51,33 @@ namespace ProductionTracker.Data
             }
         }
 
-        public DateTime LastDateOfCuttingInstruction(Item item)
+        public ItemQuantity GetQuantitysPerItemFromOpenCTs(Item item, List<int> openedCTIDs)
+        {
+           
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+               
+                return new ItemQuantity
+                {
+                    AmountOrdered = context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstructionId)).Count() > 0 ? context.CuttingInstructionDetails.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstructionId)).Sum(p => p.Quantity) : 0,
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Sum(p => p.Quantity) : 0
+                };
+            }
+        }
+
+        public CuttingInstruction LastCuttingInstruction(Item item)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.CuttingInstruction.Date).First().CuttingInstruction.Date;
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.CuttingInstruction.Date).First().CuttingInstruction;
+            }
+        }
+
+        public IEnumerable<CuttingInstruction> LastCuttingInstruction(Item item, List<int> openedCTIDs)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id && openedCTIDs.Contains(p.CuttingInstructionId)).OrderByDescending(p => p.CuttingInstruction.Date).Select(p => p.CuttingInstruction).ToList();
             }
         }
 

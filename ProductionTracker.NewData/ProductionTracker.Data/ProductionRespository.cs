@@ -223,5 +223,32 @@ namespace ProductionTracker.Data
                 return context.CuttingInstructions.ToList();
             }
         }
+        public IEnumerable<CuttingInstruction> GetOpenedInstructions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.Where(i =>
+                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(d => d.Quantity): 0)
+                != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).ToList();
+                
+            }
+        }
+        public IEnumerable<int> GetOpenedInstructionsIds()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.Where(i =>
+                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(d => d.Quantity) : 0)
+                != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
+            }
+        }
     }
 }
