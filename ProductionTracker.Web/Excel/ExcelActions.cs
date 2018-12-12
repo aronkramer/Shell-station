@@ -267,10 +267,13 @@ namespace ProductionTracker.Web.Excel
             var sizeFromMarker = new List<SizeWithLayer>();
             if (marker != null)
             {
-                sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
+                if (split.Count() > 2 && int.TryParse(split[2], out int amountInt))
                 {
-                    return new SizeWithLayer { SizeId = md.SizeId };
-                }).ToList();
+                    sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
+                    {
+                        return new SizeWithLayer { SizeId = md.SizeId };
+                    }).ToList();
+                }
             }
             else
             {
@@ -297,7 +300,6 @@ namespace ProductionTracker.Web.Excel
                     var tempSplit = split[z].Split('_');
                     if (tempSplit.Count() > 1)
                     {
-                        sizeFromMarker.Clear();
                         var tempSize = tempSplit[0];
                         var tempAmount = tempSplit[1];
                         var sizeId = repo.GetSizeId(tempSize);

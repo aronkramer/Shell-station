@@ -212,6 +212,7 @@ namespace ProductionTracker.Data
                 return context.CuttingInstructions.FirstOrDefault(ct => ct.Id == id);
             }
         }
+
         public IEnumerable<CuttingInstruction> GetInstructions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -223,6 +224,7 @@ namespace ProductionTracker.Data
                 return context.CuttingInstructions.ToList();
             }
         }
+
         public IEnumerable<CuttingInstruction> GetOpenedInstructions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -237,6 +239,7 @@ namespace ProductionTracker.Data
                 
             }
         }
+
         public IEnumerable<int> GetOpenedInstructionsIds()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -250,5 +253,21 @@ namespace ProductionTracker.Data
                 != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
             }
         }
+
+        public CuttingInstructionDetail GetInstructionDetail(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.CuttingInstructionDetails.FirstOrDefault(d => d.Id == id);
+            }
+        }
+
+        public void UpdateCID(int Id, int quantity)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.ExecuteCommand("UPDATE CuttingInstructionDetails SET Quantity = {0} WHERE Id = {1}", quantity, Id);
+            }
+        } 
     }
 }

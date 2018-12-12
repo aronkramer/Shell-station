@@ -84,7 +84,8 @@ namespace ProductionTracker.Web.Controllers
             {
                 activity.Add(new ItemActivity
                 {
-                    Type = $"Recived",
+                    Id = recived.Id,
+                    Type = ActivityType.Received,
                     Date = recived.Date.ToShortDateString(),
                     Quantity = recived.Quantity,
                     CuttingInstructionId = recived.CuttingInstuctionId
@@ -94,10 +95,12 @@ namespace ProductionTracker.Web.Controllers
             {
                 activity.Add(new ItemActivity
                 {
-                    Type = $"CuttingInstruction From{CuttingInstruction.CuttingInstruction.Date.ToShortDateString()} : Lot # :{CuttingInstruction.CuttingInstruction.Lot_}",
+                    Id = CuttingInstruction.Id,
+                    Type = ActivityType.Ordered,
                     Date = CuttingInstruction.CuttingInstruction.Date.ToShortDateString(),
                     Quantity = CuttingInstruction.Quantity,
-                    CuttingInstructionId = CuttingInstruction.CuttingInstructionId
+                    CuttingInstructionId = CuttingInstruction.CuttingInstructionId,
+
                 });
             }
             return Json(new
@@ -146,6 +149,7 @@ namespace ProductionTracker.Web.Controllers
                 {
                     Id = pd.ItemId,
                     SKU = pd.Item.SKU,
+                    OrderedId = pd.Id,
                     Ordered = pd.Quantity,
                     Received = received,
                     PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity)
@@ -167,11 +171,22 @@ namespace ProductionTracker.Web.Controllers
         }
 
         [HttpPost]
-        public void AddRecivedItems(IEnumerable<ReceivingItemsTransaction> items)
+        public void AddRecivedItems(IEnumerable<RecivingItemWithOrdered> items)
         {
-            items = items.Where(i => i.Quantity != 0).Select(i => { i.Adjusment = false; return i; });
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            repo.AddItemsRecived(items);
+            UpdateCuttinginstructions(items);
+            var itemsRecived = items.Where(i => i.Quantity != 0).Select(i => 
+            {
+                return new ReceivingItemsTransaction
+                {
+                    Adjusment = false,
+                    ItemId = i.ItemId,
+                    CuttingInstuctionId = i.CuttingInstuctionId,
+                    Date = i.Date,
+                    Quantity =i.Quantity
+                };
+            });
+            repo.AddItemsRecived(itemsRecived);
         }
 
         //public ActionResult NewMarker()
@@ -204,6 +219,21 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult NewCuttingInstruction()
         {
             return View();
+        }
+
+        private void UpdateCuttinginstructions (IEnumerable< RecivingItemWithOrdered> recivingItemWithOrdereds)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            foreach (var item in recivingItemWithOrdereds)
+            {
+                var Quantys = repo.GetQuantitysPerItemFromCT(item.ItemId, item.CuttingInstuctionId);
+                if(Quantys.AmountOrdered < Quantys.AmountReceived + item.Quantity)
+                {
+                    prodRepo.UpdateCID(item.OrderedId, Quantys.AmountReceived + item.Quantity);
+                }
+
+            }
         }
     }
     

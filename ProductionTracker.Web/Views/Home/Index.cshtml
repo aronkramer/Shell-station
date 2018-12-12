@@ -91,7 +91,9 @@
 
                         <template v-if="isSkus" v-for="item in itemActivty">
                             <tr>
-                                <td>{{item.Type}}</td>
+                                <td hidden>{{item.Type}}</td>
+                                <td style="background-color:lightsalmon" v-if="item.Type == 1">Recived:</td>
+                                <td  style="background-color:lightblue" v-else>Ordered: {{item.Date}}</td>
                                 <td>{{item.Date}}</td>
                                 <td>{{item.Quantity}}</td>
                             </tr>
@@ -130,13 +132,14 @@
                         </template>
                         <label for="date">Date</label>
                         <input type="date" name="date" v-model="recivedItemProduction.Date" />
-                        <div style="overflow:scroll; max-height:750px;">
-
+                        <div style="overflow:scroll; max-height:450px;">
                             <table class="table table-bordered table-hover table-responsive">
                                 <tr>
-                                    <template v-for="header in detailHeaders">
-                                        <th>{{header}}</th>
-                                    </template>
+                                    <th>Sku</th>
+                                    <th>Quantity Ordered</th>
+                                    <th>Quantity Recived</th>
+                                    <th>Percent Filled</th>
+                                    <th>Recived <button class="btn btn-success" v-on:click="fillAll">{{fillBtnText}}</button></th>
                                 </tr>
                                 <template v-for="(item,key,index) in recivedItems">
                                     <tr>

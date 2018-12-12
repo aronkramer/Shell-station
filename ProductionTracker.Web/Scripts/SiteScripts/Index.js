@@ -22,7 +22,8 @@
         isProd: false,
         backButton: false,
         recivedItems: [],
-        recivedItemProduction: ''
+        recivedItemProduction: '',
+        fillBtnText:''
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
@@ -105,6 +106,7 @@
                         Id: p.Id,
                         SKU: p.SKU,
                         Ordered: p.Ordered,
+                        OrderedId: p.OrderedId,
                         Received: p.Received,
                         PercentageFilled: p.PercentageFilled,
                         ItemsRecived: null
@@ -112,9 +114,7 @@
                 });
                 this.recivedItemProduction = { Id: this.currentProduction.Id, Date: this.getDateInputFormat() };
             });
-            
-            this.detailHeaders = ['Sku', 'Quantity Ordered', 'Quantity Recived', 'Percent Filled', 'Recived'];
-
+            this.fillBtnText = 'Fill All';
             $("#recive-items-modal").modal();
         },
         getDateInputFormat: function () {
@@ -130,7 +130,9 @@
                     ItemId: p.Id,
                     CuttingInstuctionId: this.recivedItemProduction.Id,
                     Date: this.recivedItemProduction.Date,
-                    Quantity: p.ItemsRecived
+                    Quantity: p.ItemsRecived,
+                    OrderedId: p.OrderedId
+
                 };
             });
             $.post("/home/AddRecivedItems", { items }, () => { this.getProductions(); });
@@ -140,6 +142,22 @@
         itemRecivedChange: function () {
             //$('#submitRecivedItems').prop('disabled', this.checkVal());
         },
+        fillAll: function () {
+            if (this.fillBtnText === 'Fill All') {
+                this.recivedItems = this.recivedItems.map(p => {
+                    p.ItemsRecived = p.Ordered - p.Received;
+                    return p;
+                });
+                this.fillBtnText = 'Reset';
+            }
+            else {
+                this.recivedItems = this.recivedItems.map(p => {
+                    p.ItemsRecived = null;
+                    return p;
+                });
+                this.fillBtnText = 'Fill All';
+            }
+        }
         //checkVal: function () {
         //    var temp = this.recivedItems;
         //    //var isRight = $(temp).is(function (i) { return i.ItemsRecived > (i.Ordered - i.Received); });
@@ -156,15 +174,15 @@
     computed: {
         checkVal: function () {
             var temp = this.recivedItems;
-            var tooMuch = temp.some(function (i) {
-                return i.ItemsRecived > (i.Ordered - i.Received);
-            });
+            ////var tooMuch = temp.some(function (i) {
+            //    return i.ItemsRecived > (i.Ordered - i.Received);
+            //});
             var hasValues = temp.some(function (i) {
                 return i.ItemsRecived > 0;
             });
-            console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
-            return tooMuch || !hasValues;
-        },
+            //console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
+            return !hasValues;
+        }
     }
 });
 function fixDigit(val) {

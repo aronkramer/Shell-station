@@ -65,6 +65,20 @@ namespace ProductionTracker.Data
             }
         }
 
+        public ItemQuantity GetQuantitysPerItemFromCT(int Id, int cuttingTicketId)
+        {
+
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+
+                return new ItemQuantity
+                {
+                    AmountOrdered = context.CuttingInstructionDetails.Where(i => i.ItemId == Id && i.CuttingInstructionId == cuttingTicketId).Count() > 0 ? context.CuttingInstructionDetails.Where(i => i.ItemId == Id && i.CuttingInstructionId == cuttingTicketId).Sum( p=> p.Quantity) : 0,
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Sum(p => p.Quantity) : 0
+                };
+            }
+        }
+
         public CuttingInstruction LastCuttingInstruction(Item item)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
