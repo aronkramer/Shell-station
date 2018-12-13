@@ -90,7 +90,7 @@
                         </tr>
 
                         <template v-if="isSkus" v-for="item in itemActivty">
-                            <tr>
+                            <tr >
                                 <td hidden>{{item.Type}}</td>
                                 <td style="background-color:lightsalmon" v-if="item.Type == 1">Recived:</td>
                                 <td  style="background-color:lightblue" v-else>Ordered: {{item.Date}}</td>
