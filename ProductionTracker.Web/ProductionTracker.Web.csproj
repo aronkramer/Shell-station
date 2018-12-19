@@ -172,6 +172,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ColorVM.cs" />
+    <Compile Include="Models\CutingIntructionDetails.cs" />
     <Compile Include="Models\ItemActivity.cs" />
     <Compile Include="Models\ItemAdderVM.cs" />
     <Compile Include="Models\ItemWithQuantityVM.cs" />
@@ -207,11 +208,13 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\bootstrap-select.css.map" />
+    <Content Include="libman.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Scripts\bootstrap-select.js.map" />
+    <Content Include="Scripts\SiteScripts\Marker.vue" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\defaults-ar_AR.js" />
     <Content Include="Scripts\i18n\defaults-ar_AR.min.js" />

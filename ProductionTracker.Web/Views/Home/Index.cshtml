@@ -40,7 +40,7 @@
 
                             <tr>
                                 <th>Id </th>
-                                <th>Lot #</th>
+                                <th>Lot #s</th>
                                 <th>Date</th>
                                 <th>Total Items</th>
                                 <th>Items Not Recived</th>
@@ -101,9 +101,11 @@
                         <template v-if="isProd" v-for="item in productionDetails">
                             <tr>
                                 <td><a v-bind:Id="item.Id" v-on:click="skuProdDeatails" href="#">{{item.SKU}}</a></td>
+                                <td>{{item.Lot}}</td>
                                 <td>{{item.Ordered}}</td>
                                 <td>{{item.Received}}</td>
                                 <td>{{item.PercentageFilled}}</td>
+
                             </tr>
                         </template>
                     </table>

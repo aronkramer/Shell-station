@@ -35,6 +35,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
+                
                 return isInCuttingTicket ? context.CuttingInstructionDetails.Select(i => i.Item).Distinct().ToList() : GetItemsInCuttingInstruction();
             }
         }
@@ -83,7 +84,10 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.CuttingInstruction.Date).First().CuttingInstruction;
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id).OrderByDescending(p => p.CuttingInstruction.Production.Date).First().CuttingInstruction;
             }
         }
 
@@ -91,7 +95,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id && openedCTIDs.Contains(p.CuttingInstructionId)).OrderByDescending(p => p.CuttingInstruction.Date).Select(p => p.CuttingInstruction).ToList();
+                return context.CuttingInstructionDetails.Where(p => p.ItemId == item.Id && openedCTIDs.Contains(p.CuttingInstructionId)).OrderByDescending(p => p.CuttingInstruction.Production.Date).Select(p => p.CuttingInstruction).ToList();
             }
         }
 
@@ -111,6 +115,7 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<Item>(i => i.CuttingInstructionDetails);
                 loadOptions.LoadWith<Item>(i => i.ReceivingItemsTransactions);
                 loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstruction);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
                 context.LoadOptions = loadOptions;
                 return context.Items.FirstOrDefault(i => i.Id == id);
 

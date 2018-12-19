@@ -17,6 +17,7 @@ namespace ProductionTracker.Web.Excel
         public string Size { get; set; }
         public List<SizeWithLayer> Sizes { get; set; }
         public List<ColorMaterial> ColorMaterials { get; set; }
+        public int LotNumber { get; set; }
     }
     public class ProductionForCT
     {

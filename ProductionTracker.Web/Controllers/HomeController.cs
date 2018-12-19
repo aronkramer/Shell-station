@@ -40,7 +40,7 @@ namespace ProductionTracker.Web.Controllers
                     {
                         it.Item.Id,
                         it.Item.SKU,
-                        LastCuttingInstructionDate = it.LastCuttingInstruction.Date.ToShortDateString(),
+                        LastCuttingInstructionDate = it.LastCuttingInstruction.Production.Date.ToShortDateString(),
                         ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
                         PercentageRecived = string.Format("{0:P}", double.Parse(lastCuttingInstructionQuantitys.AmountReceived.ToString()) / lastCuttingInstructionQuantitys.AmountOrdered)
                         //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
@@ -66,7 +66,7 @@ namespace ProductionTracker.Web.Controllers
                     {
                         it.Item.Id,
                         it.Item.SKU,
-                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstruction.Date.ToShortDateString() : "--------",
+                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstruction.Production.Date.ToShortDateString() : "--------",
                         ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
                         PercentageRecived = isInCuttingInstruction ? string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
                     //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
@@ -97,7 +97,7 @@ namespace ProductionTracker.Web.Controllers
                 {
                     Id = CuttingInstruction.Id,
                     Type = ActivityType.Ordered,
-                    Date = CuttingInstruction.CuttingInstruction.Date.ToShortDateString(),
+                    Date = CuttingInstruction.CuttingInstruction.Production.Date.ToShortDateString(),
                     Quantity = CuttingInstruction.Quantity,
                     CuttingInstructionId = CuttingInstruction.CuttingInstructionId,
 
@@ -119,16 +119,16 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult GetCuttingInstructionsWithInfo()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var CuttingInstructions = repo.GetOpenedInstructions();
+            var CuttingInstructions = repo.GetOpenedProductions();
             
             return Json(CuttingInstructions.Select(p =>
             {
-                var sumor = p.CuttingInstructionDetails.Sum(pd => pd.Quantity);
-                var sumre = p.ReceivingItemsTransactions.Sum(re => re.Quantity);
+                var sumor = p.CuttingInstructions.Sum(c=>  c.CuttingInstructionDetails.Sum(pd => pd.Quantity));
+                var sumre = p.CuttingInstructions.Sum(c => c.ReceivingItemsTransactions.Sum(re => re.Quantity));
                 return new
                 {
                     Date = p.Date.ToShortDateString(),
-                    Lot = p.Lot_,
+                    Lot = string.Join(",",p.CuttingInstructions.Select(c=> c.LotNumber)),
                     Id = p.Id,
                     TotalItems = sumor,
                     ItemsNotReceived = sumor - sumre,
@@ -141,29 +141,33 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult GetDeatilsOfACuttingInstruction(int id)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var result = repo.GetInstruction(id);
-            var details = result.CuttingInstructionDetails.Select(pd =>
+            var result = repo.GetProduction(id);
+            var details = new List<CutingIntructionDetailsVM>();
+                result.CuttingInstructions.ToList().ForEach(c => c.CuttingInstructionDetails.ToList().ForEach(pd =>
             {
-                var received = result.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == result.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity);
-                return new
-                {
-                    Id = pd.ItemId,
-                    SKU = pd.Item.SKU,
-                    OrderedId = pd.Id,
-                    Ordered = pd.Quantity,
-                    Received = received,
-                    PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity)
-                };
+                var received = result.CuttingInstructions.Select(rt => rt.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == c.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity)).Sum();
 
-            });
+                details.Add (new CutingIntructionDetailsVM
+                 {
+                     Id = pd.ItemId,
+                     SKU = pd.Item.SKU,
+                     OrderedId = pd.Id,
+                     Ordered = pd.Quantity,
+                     Received = received,
+                     PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity),
+                     Lot = pd.CuttingInstruction.LotNumber,
+                     CuttingInstructionId = pd.CuttingInstructionId
+                 });
+
+            }));
             return Json(new
             {
-                CuttingInstruction = new
+                Production = new
                 {
-                   Name = $"Cutting ticket from {result.Date.ToShortDateString()}",
-                   Lot = result.Lot_,
+                   Name = $"Production from {result.Date.ToShortDateString()}",
                    Id = result.Id,
-                   Date = result.Date.ToShortDateString()
+                   Date = result.Date.ToShortDateString(),
+                   CuttingIntrustionIds = result.CuttingInstructions.Select(c => c.Id)
                     
                 },
                 details

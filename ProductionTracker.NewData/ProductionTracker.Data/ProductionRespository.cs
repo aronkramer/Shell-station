@@ -225,18 +225,72 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<CuttingInstruction> GetOpenedInstructions()
+        public IEnumerable<Production> GetProductions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
+                context.LoadOptions = loadOptions;
+                return context.Productions.ToList();
+            }
+        }
+
+        public Production GetProduction(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
+                loadOptions.LoadWith<ReceivingItemsTransaction>(r => r.Item);
+                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                context.LoadOptions = loadOptions;
+                return context.Productions.FirstOrDefault(p => p.Id == id);
+            }
+        }
+
+        public IEnumerable<CuttingInstruction> GetOpenedInstructions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 context.LoadOptions = loadOptions;
                 return context.CuttingInstructions.Where(i =>
                 (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(d => d.Quantity): 0)
                 != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).ToList();
                 
+            }
+        }
+        public IEnumerable<Production> GetOpenedProductions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
+                context.LoadOptions = loadOptions;
+                var prods = new List<Production>();
+                foreach(var productin in context.Productions)
+                {
+                    if(productin.CuttingInstructions.Count() > 0)
+                    {
+                        var cuttingInstructionDetailsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionDetails.Count() > 0).Sum(c => c.CuttingInstructionDetails.Sum(cd => cd.Quantity));
+                        var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
+                        if(cuttingInstructionDetailsSum != recivedItemSum)
+                        {
+                            prods.Add(productin);
+                        }
+                    }
+                }
+                return prods.ToList();
             }
         }
 

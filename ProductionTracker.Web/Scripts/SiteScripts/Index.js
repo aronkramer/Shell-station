@@ -1,4 +1,5 @@
-﻿new Vue({
+﻿
+new Vue({
     el: '#app',
     mounted: function () {
         $(function () {
@@ -61,7 +62,7 @@
         detailsForProduction: function (event) {
             var id = event.target.id;
             this.getProductionDetails(id);
-            this.detailHeaders = ['Sku', 'Quantity Ordered', 'Quantity Recived', 'Percent Filled'];
+            this.detailHeaders = ['Sku', 'Lot Number','Quantity Ordered', 'Quantity Recived', 'Percent Filled'];
             this.isSkus = false;
             this.isProd = true;
             $("#detail-modal").modal();
@@ -69,7 +70,7 @@
         getProductionDetails: function (id,func) {
             $.get("/home/GetDeatilsOfACuttingInstruction", { Id: id }, result => {
                 this.currentItem = '';
-                this.currentProduction = result.CuttingInstruction;
+                this.currentProduction = result.Production;
                 this.productionDetails = result.details;
                 console.log(this.productionDetails);
                 if (func) {
@@ -81,7 +82,7 @@
             this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
             var id = event.target.id;
             this.getActivitysByItem(id, function (result) {
-                this.itemActivty = result.activity.filter(a => a.CuttingInstructionId === this.currentProduction.Id);
+                this.itemActivty = result.activity.filter(a => this.currentProduction.CuttingIntrustionIds.includes(a.CuttingInstructionId));
                 this.currentItem = result.item;
                 console.log(this.itemActivty);
                 this.backButton = true;
@@ -109,7 +110,8 @@
                         OrderedId: p.OrderedId,
                         Received: p.Received,
                         PercentageFilled: p.PercentageFilled,
-                        ItemsRecived: null
+                        ItemsRecived: null,
+                        CuttingInstructionId: p.CuttingInstructionId
                     };
                 });
                 this.recivedItemProduction = { Id: this.currentProduction.Id, Date: this.getDateInputFormat() };
@@ -128,7 +130,7 @@
             var items = this.recivedItems.map(p => {
                 return {
                     ItemId: p.Id,
-                    CuttingInstuctionId: this.recivedItemProduction.Id,
+                    CuttingInstuctionId: p.CuttingInstructionId,
                     Date: this.recivedItemProduction.Date,
                     Quantity: p.ItemsRecived,
                     OrderedId: p.OrderedId
