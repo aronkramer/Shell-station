@@ -9,60 +9,99 @@
     .remove-btn{
         
         font-weight:800;
-        font-size:15px;
+        font-size:13px;
     }
+    .size-remove-btn{
+        font-size:5px;
+
+    }
+    .size-container {
+        position: relative;
+        width: 50px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add-size-btn {
+        height: 25px;
+        width: 15px;
+        text-align:left;
+    }
+    .size-element button {
+        height:4px;
+        width: 15px;
+        position: center;
+    }
+
+    .size-element {
+        width: 50px;
+        height: 15px;
+        margin: 5px auto;
+    }
+    
 </style>
 <div id="prodApp">
-    @if (Model == null)
-    {
-        <div class="col-md-6 col-md-offset-3">
+       <div class="col-md-6 col-md-offset-3" v-if="production == null">
             <h2 class="page-header">Browse to add a new cutting ticket</h2>
             <form method="post" enctype="multipart/form-data">
                 @*<label class="btn btn-default">
                         Browse <input type="file" hidden >
                     </label>*@
                 <input style="background-color:aqua;" v-on:change="file = $event.target.files[0]"   type="file" name="cuttingTicket" />
-                <button type="button" v-on:click="fileUpload"class="btn-danger">Submit</button>
+                <button type="button" :disabled="file == null" v-on:click="fileUpload"class="btn-danger">Submit</button>
             </form>
         </div>
 
-    }
+    
     <button v-on:click="loadProd">Load</button>
-    <div v-if="production" style="margin-top:100px; padding-top:50px">
-        
+    <div v-if="production" style="margin-top:100px;margin-bottom:150px; padding-top:50px">
+
         <template v-for="(marker, MarkerIndex) in production.Markers">
-            <div class="row" style="margin-top:15px">
+            <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
                 <div class="col-md-1" style="height:100%">
-                    <button :index="MarkerIndex" v-on:click="removeMarker($event.target.index)" class="btn btn-danger btn-block remove-btn">Remove</button>
+                    <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
                 </div>
                 <div class="col-md-10 col-md-offset-1">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
                         <input type="text" class="col-md-1" name="MarkerName" v-model="marker.Name" />
-                        <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
-                        <div class="col-md-5">
-                            <template v-for="size in marker.Sizes">
-                                <input type="text" class="col-md-2" name="Size" v-model="size.SizeId" />
-                            </template>
-                        </div>
+
                         <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
                         <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
-                        <div v-if="marker.Sizes.length > 1">
-                            <label class="col-md-3"></label>
+                        <div class="size-container col-md-1">
+                            <button v-if="marker.Sizes.length < 1" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success">Add a Size</button>
+                            <div class="size-element" v-else>
 
-                            <label class="col-md-1 col-form-label" for="Size">Layers:</label>
-                            <div class="col-md-5">
-                                <template v-for="size in marker.Sizes">
-
-                                    <input type="text" class="col-md-2" name="Size" v-model="size.AmountPerLayer" />
-                                </template>
                             </div>
+                            <div class="size-element">
+                                <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                            </div>
+                            <div class="size-element" v-if="marker.Sizes.length > 1">
+                                <label class="col-md-1 col-form-label" for="Size">Layers:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <template v-for="(size, sizeIndex) in marker.Sizes">
+                                <div class="size-container col-md-2">
+                                    <div class="size-element">
+                                        <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-danger btn-block size-remove-btn">X</button>
+                                    </div>
+                                    <div class="size-element">
+                                        <input type="text" class="" style="width:100%" name="Size" v-model="size.SizeId" />
+                                    </div>
+                                    <div class="size-element" v-if="marker.Sizes.length > 1">
+                                        <input type="text" class="" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1"  v-if="marker.Sizes.length-1==sizeIndex">
+                                    <button :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success remove-btn add-size-btn">+</button>
+                                </div>
+                            </template>
                         </div>
                         <div class="row" v-if="marker.ColorMaterials.length > 0">
                             <table class="table table-bordered table-striped table-responsive">
                                 <tr>
                                     <th>Color</th>
-                                    <th>Matereal</th>
+                                    <th>Material</th>
                                     <th>Layers</th>
                                     <th>Pakaging</th>
                                 </tr>
@@ -78,10 +117,18 @@
                                 </template>
                             </table>
                         </div>
-                    </div>
-                    </div>
-        </template>
+                        <div class="row" v-else>
+                            <div class="col-md-4 col-md-offset-4">
+                                <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn-block btn btn-success">Add The Color and Material</button>
+                            </div>
+                        </div>
 
+                    </div>
+                </div>
+        </template>
+        <div class="col-md-4 col-md-offset-4">
+            <button v-on:click="addMarker" class="btn btn-success btn-block">Add Marker</button>
+        </div>
     </div>
     <div>
 

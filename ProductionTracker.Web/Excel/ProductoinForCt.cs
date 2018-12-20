@@ -36,6 +36,7 @@ namespace ProductionTracker.Web.Excel
     }
     public class SizeWithLayer
     {
+        public string Name { get; set; }
         public int SizeId { get; set; }
         public int AmountPerLayer { get; set; }
 

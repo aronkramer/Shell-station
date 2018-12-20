@@ -16,7 +16,7 @@
         hi: 'sdjfl;jas;lkj',
         production: null,
         isProduction: false,
-        file: ''
+        file: null
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -45,7 +45,8 @@
             this.production.Markers[marIndex].ColorMaterials.splice(Index, 1);
         },
         addColorMatLine: function (event, marIndex) {
-            for (var i = 0; i < 10; i++) this.production.Markers[marIndex].ColorMaterials.push({});
+            //for (var i = 0; i < 10; i++)
+                this.production.Markers[marIndex].ColorMaterials.push({});
         },
         fileUpload: function () {
             //this.file = file[0];
@@ -67,7 +68,18 @@
             
                 
             });
-        }
+        },
+        addMarker: function () {
+            //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
+             this.production.Markers.push({ Sizes: [], "ColorMaterials": []});
+        },
+        removeSize: function (event,marIndex,Index) {
+            this.production.Markers[marIndex].Sizes.splice(Index, 1);
+        },
+        addSize: function (event, marIndex) {
+            //for (var i = 0; i < 10; i++)
+            this.production.Markers[marIndex].Sizes.push({});
+        },
         
 
     },

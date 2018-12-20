@@ -29,6 +29,7 @@ namespace ProductionTracker.Web.Controllers
             Session["ItemsWithErrors"] = items;
             return Json(production,JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
         public ActionResult NewProductionConfimation(ErrorsAndItems items)
         {
             return View(items);

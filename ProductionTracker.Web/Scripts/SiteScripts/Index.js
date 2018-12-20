@@ -1,5 +1,4 @@
-﻿
-new Vue({
+﻿new Vue({
     el: '#app',
     mounted: function () {
         $(function () {
