@@ -12,8 +12,10 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            var repo = new ItemRepository(Properties.Settings.Default.ManuConst);
-            repo.GetItemsInCuttingInstruction(true).ToList().ForEach(i => Console.WriteLine($"{i.Id} {i.SKU}"));
+            var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
+            Console.WriteLine(repo.LastLotNumber());
+            //    var repo = new ItemRepository(Properties.Settings.Default.ManuConst);
+            //    repo.GetItemsInCuttingInstruction(true).ToList().ForEach(i => Console.WriteLine($"{i.Id} {i.SKU}"));
             #region Old stuff
             //var items = repo.GetAllItemsInProduction();
             //foreach(var item in items)
@@ -66,7 +68,7 @@ namespace Testing
             //repo.GetDepartments().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
             //Console.WriteLine("materials:");
             //repo.GetAllMaterials().ToList().ForEach(s => Console.WriteLine($"Id - {s.Id} Name - {s.Name}"));
-            
+
             Console.ReadKey(true);
         }
         //static string GetSku (Item item)

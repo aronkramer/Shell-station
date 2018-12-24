@@ -23,6 +23,14 @@ namespace ProductionTracker.Data
                 return context.Colors.FirstOrDefault(c => c.Id == id);
             }
         }
+        
+        public int LastLotNumber()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.CuttingInstructions.OrderByDescending(c => c.LotNumber).First().LotNumber;
+            }
+        }
 
         public Color GetColor(string name)
         {
@@ -152,6 +160,9 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<MarkerDetail>(mc => mc.Size);
+                context.LoadOptions = loadOptions;
                 return context.MarkerDetails.Where(md => md.MarkerCatId == markerId).ToList();
             }
         }

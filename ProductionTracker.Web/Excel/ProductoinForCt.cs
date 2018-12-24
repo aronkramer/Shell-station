@@ -18,6 +18,7 @@ namespace ProductionTracker.Web.Excel
         public List<SizeWithLayer> Sizes { get; set; }
         public List<ColorMaterial> ColorMaterials { get; set; }
         public int LotNumber { get; set; }
+        public bool AllSizes { get; set; }
     }
     public class ProductionForCT
     {
@@ -27,6 +28,8 @@ namespace ProductionTracker.Web.Excel
         }
         public string Name { get; set; }
         public List<MarkerWithColorMaterials> Markers { get; set; }
+        public DateTime Date { get; set; }
+        public int LastLotNumber { get; set; }
     }
     public class ColorMaterial
     {

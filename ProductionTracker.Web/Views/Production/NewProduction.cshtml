@@ -7,13 +7,11 @@
         display: none !important;
     }
     .remove-btn{
-        
         font-weight:800;
         font-size:13px;
     }
     .size-remove-btn{
         font-size:5px;
-
     }
     .size-container {
         position: relative;
@@ -40,169 +38,187 @@
     
 </style>
 <div id="prodApp">
-       <div class="col-md-6 col-md-offset-3" v-if="production == null">
-            <h2 class="page-header">Browse to add a new cutting ticket</h2>
-            <form method="post" enctype="multipart/form-data">
-                @*<label class="btn btn-default">
-                        Browse <input type="file" hidden >
-                    </label>*@
-                <input style="background-color:aqua;" v-on:change="file = $event.target.files[0]"   type="file" name="cuttingTicket" />
-                <button type="button" :disabled="file == null" v-on:click="fileUpload"class="btn-danger">Submit</button>
-            </form>
-        </div>
-
-    
-    <button v-on:click="loadProd">Load</button>
-    <div v-if="production" style="margin-top:100px;margin-bottom:150px; padding-top:50px">
-
-        <template v-for="(marker, MarkerIndex) in production.Markers">
-            <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
-                <div class="col-md-1" style="height:100%">
-                    <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
-                </div>
-                <div class="col-md-10 col-md-offset-1">
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                        <input type="text" class="col-md-1" name="MarkerName" v-model="marker.Name" />
-
-                        <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
-                        <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
-                        <div class="size-container col-md-1">
-                            <button v-if="marker.Sizes.length < 1" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success">Add a Size</button>
-                            <div class="size-element" v-else>
-
-                            </div>
-                            <div class="size-element">
-                                <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
-                            </div>
-                            <div class="size-element" v-if="marker.Sizes.length > 1">
-                                <label class="col-md-1 col-form-label" for="Size">Layers:</label>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <template v-for="(size, sizeIndex) in marker.Sizes">
-                                <div class="size-container col-md-2">
-                                    <div class="size-element">
-                                        <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-danger btn-block size-remove-btn">X</button>
-                                    </div>
-                                    <div class="size-element">
-                                        <input type="text" class="" style="width:100%" name="Size" v-model="size.SizeId" />
-                                    </div>
-                                    <div class="size-element" v-if="marker.Sizes.length > 1">
-                                        <input type="text" class="" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
-                                    </div>
-                                </div>
-                                <div class="col-md-1"  v-if="marker.Sizes.length-1==sizeIndex">
-                                    <button :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success remove-btn add-size-btn">+</button>
-                                </div>
-                            </template>
-                        </div>
-                        <div class="row" v-if="marker.ColorMaterials.length > 0">
-                            <table class="table table-bordered table-striped table-responsive">
-                                <tr>
-                                    <th>Color</th>
-                                    <th>Material</th>
-                                    <th>Layers</th>
-                                    <th>Pakaging</th>
-                                </tr>
-                                <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
-                                    <tr>
-                                        <td><input type="text" v-model="colMat.Color" /></td>
-                                        <td><input type="text" v-model="colMat.Material" /></td>
-                                        <td><input type="text" v-model="colMat.Layers" /> </td>
-                                        <td><input type="text" /></td>
-                                        <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-danger remove-btn">X</button></td>
-                                        <button v-if="marker.ColorMaterials.length-1==cmIndex" :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-success remove-btn">+</button>
-                                    </tr>
-                                </template>
-                            </table>
-                        </div>
-                        <div class="row" v-else>
-                            <div class="col-md-4 col-md-offset-4">
-                                <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn-block btn btn-success">Add The Color and Material</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-        </template>
-        <div class="col-md-4 col-md-offset-4">
-            <button v-on:click="addMarker" class="btn btn-success btn-block">Add Marker</button>
-        </div>
+    <div class="col-md-6 col-md-offset-3" v-if="production == null">
+        <h2 class="page-header">Browse to add a new cutting ticket</h2>
+        <form method="post" enctype="multipart/form-data">
+            @*<label class="btn btn-default">
+                    Browse <input type="file" hidden >
+                </label>*@
+            <input style="background-color:aqua;" v-on:change="file = $event.target.files[0]" type="file" name="cuttingTicket" />
+            <button type="button" :disabled="file == null" v-on:click="fileUpload" class="btn-danger">Submit</button>
+        </form>
     </div>
-    <div>
 
 
-        @*@if (Model != null && Model.Errors != null && Model.Items != null)
-            {
-                <form class="col-md-12" action="/production/submitCT" method="post">
-                    <div class="col-md-6 col-md-offset-3">
-                        <div class="form-row">
-                            <label class="col-md-2 col-form-label" for="date">Date</label>
-                            <input type="date" class=" col-md-4" name="Date" id="date" value="@Model.Date.ToString("yyyy-MM-dd")" />
-                            <label class="col-md-2 col-form-label" for="lot">Lot#</label>
-                            <input type="text" class=" col-md-4" name="Lot_" id="lot" placeholder="optional" />
-                        </div>
+    <button v-on:click="loadProd">Load</button>
+    <div class="row" v-if="errors && errors.length > 0" >
+        <div class="col-md-6 col-md-offset-3" style="margin-top:25px;margin-bottom:25px; padding-top:50px">
+            <h2 class="text-center">Erros</h2>
+            <div class="well">
+                <template v-for="e in errors">
+                    <p style="color:red">{{e}}</p>
+                </template>
+            </div>
+            </div>
+        </div>
+        <div class="row" v-if="production" style="margin-bottom:50px;">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="form-row">
+                    <label class="col-md-2 col-form-label" for="date">Date</label>
+                    <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
+                    <label class="col-md-2 col-form-label" for="lot">Lot#</label>
+                    <input type="text" class=" col-md-4" name="Lot_" v-model="production.LastLotNumber" />
+                </div>
+            </div>
+
+            <template v-for="(marker, MarkerIndex) in production.Markers">
+                <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
+                    <div class="col-md-1" style="height:100%">
+                        <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
                     </div>
-                    @if (Model.Errors.Count > 0)
-                    {
-                        <div class="col-md-6 col-md-offset-3 well-lg">
-                            <h2 style="color:red;text-align:center;">Errors</h2>
-                            <div style="background-color:lightcyan">
-                                @foreach (var error in Model.Errors)
-                                {
-                                    <p> @error</p>
-                                }
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
+                            <input type="text" class="col-md-1" name="MarkerName" v-model="marker.Name" />
+
+                            <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
+                            <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
+                            <div class="size-container col-md-1">
+                                <button v-if="marker.Sizes.length < 1" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success">Add a Size</button>
+                                <div class="size-element" v-else>
+
+                                </div>
+                                <div class="size-element">
+                                    <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                                </div>
+                                <div class="size-element" v-if="marker.Sizes.length > 1">
+                                    <label class="col-md-1 col-form-label" for="Size">Layers:</label>
+                                </div>
                             </div>
-                        </div>
-                    }
-                    @if (Model.Items.Count > 0)
-                    {
-                        <div class="row">
-                        <div class="col-md-6 col-md-offset-3 well-lg">
-                            @{ var x = 0;}
-                            <h2 style="color:blue; text-align:center">Items</h2>
-                            <div style="overflow:scroll; height:500px;">
-                                <table class="table table-bordered table-responsive table-striped">
-
+                            <div class="col-md-5">
+                                <template v-for="(size, sizeIndex) in marker.Sizes">
+                                    <div class="size-container col-md-2">
+                                        <div class="size-element">
+                                            <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-danger btn-block size-remove-btn">X</button>
+                                        </div>
+                                        <div class="size-element">
+                                            <input type="text" class="" style="width:100%" name="Size" v-model="size.Name" />
+                                        </div>
+                                        <div class="size-element" v-if="marker.Sizes.length > 1">
+                                            <input type="text" class="" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
+                                        <button :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success remove-btn add-size-btn">+</button>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="row" v-if="marker.ColorMaterials.length > 0">
+                                <table class="table table-bordered table-striped table-responsive">
                                     <tr>
-                                        <th>Id</th>
-                                        <th>SKU</th>
-                                        <th>Quantiy</th>
+                                        <th>Color</th>
+                                        <th>Material</th>
+                                        <th>Layers</th>
+                                        <th>Pakaging</th>
                                     </tr>
-
-                                    @foreach (var item in Model.Items)
-                                    {
+                                    <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
                                         <tr>
-                                            <td><input type="text" readonly class="form-control" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
-                                            <td><label hidden style="color:red" >Item is not found</label><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
-                                            <td><input type="text" class="form-control" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
+                                            <td><input type="text" v-model="colMat.Color" /></td>
+                                            <td><input type="text" v-model="colMat.Material" /></td>
+                                            <td><input type="text" v-model="colMat.Layers" /> </td>
+                                            <td><input type="text" /></td>
+                                            <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-danger remove-btn">X</button></td>
+                                            <button v-if="marker.ColorMaterials.length-1==cmIndex" :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-success remove-btn">+</button>
                                         </tr>
-
-
-                                        { x++; }
-                                    }
-
+                                    </template>
                                 </table>
                             </div>
-                        </div>
+                            <div class="row" v-else>
+                                <div class="col-md-4 col-md-offset-4">
+                                    <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn-block btn btn-success">Add The Color and Material</button>
+                                </div>
                             </div>
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-3">
-                                <button class="btn btn-success btn-block submit-btn">Submit</button>
+
+                        </div>
+                    </div>
+            </template>
+            <div class="col-md-4 col-md-offset-4">
+                <button v-on:click="addMarker" class="btn btn-success btn-block">Add Marker</button>
+            </div>
+        </div>
+        <div>
+
+
+            @*@if (Model != null && Model.Errors != null && Model.Items != null)
+                {
+                    <form class="col-md-12" action="/production/submitCT" method="post">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="form-row">
+                                <label class="col-md-2 col-form-label" for="date">Date</label>
+                                <input type="date" class=" col-md-4" name="Date" id="date" value="@Model.Date.ToString("yyyy-MM-dd")" />
+                                <label class="col-md-2 col-form-label" for="lot">Lot#</label>
+                                <input type="text" class=" col-md-4" name="Lot_" id="lot" placeholder="optional" />
                             </div>
                         </div>
+                        @if (Model.Errors.Count > 0)
+                        {
+                            <div class="col-md-6 col-md-offset-3 well-lg">
+                                <h2 style="color:red;text-align:center;">Errors</h2>
+                                <div style="background-color:lightcyan">
+                                    @foreach (var error in Model.Errors)
+                                    {
+                                        <p> @error</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Items.Count > 0)
+                        {
+                            <div class="row">
+                            <div class="col-md-6 col-md-offset-3 well-lg">
+                                @{ var x = 0;}
+                                <h2 style="color:blue; text-align:center">Items</h2>
+                                <div style="overflow:scroll; height:500px;">
+                                    <table class="table table-bordered table-responsive table-striped">
 
-                    }
-                </form>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>SKU</th>
+                                            <th>Quantiy</th>
+                                        </tr>
 
-            }*@
+                                        @foreach (var item in Model.Items)
+                                        {
+                                            <tr>
+                                                <td><input type="text" readonly class="form-control" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
+                                                <td><label hidden style="color:red" >Item is not found</label><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
+                                                <td><input type="text" class="form-control" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
+                                            </tr>
+
+
+                                            { x++; }
+                                        }
+
+                                    </table>
+                                </div>
+                            </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <button class="btn btn-success btn-block submit-btn">Submit</button>
+                                </div>
+                            </div>
+
+                        }
+                    </form>
+
+                }*@
+        </div>
     </div>
-</div>
-@section scripts{
-    <script src="~/Scripts/vue.js"></script>
-    <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
-    <script src="~/Scripts/SiteScripts/new-production.js"></script>
-}
+    @section scripts{
+        <script src="~/Scripts/vue.js"></script>
+        <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
+        <script src="~/Scripts/SiteScripts/new-production.js"></script>
+    }
 
 

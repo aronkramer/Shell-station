@@ -24,12 +24,13 @@ namespace ProductionTracker.Web.Controllers
             Session["file"] = cuttingTicket;
             var dT = ExcelActions.ConvertXSLXtoDataTable(cuttingTicket);
             var production = ExcelActions.ConvertCtToProduction(dT);
+            production = AddLotNumbers(production);
+            var errors = ExcelActions.GetErrors();
             Session["Production"] = production;
             var items = ExcelActions.ConvertProductoinToItems(production);
             Session["ItemsWithErrors"] = items;
-            return Json(production,JsonRequestBehavior.AllowGet);
+            return Json(new { production, errors },JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
         public ActionResult NewProductionConfimation(ErrorsAndItems items)
         {
             return View(items);
@@ -56,6 +57,14 @@ namespace ProductionTracker.Web.Controllers
         {
             var hi = (ProductionForCT)Session["Production"];
             return Json((ProductionForCT)Session["Production"] ?? null, JsonRequestBehavior.AllowGet);
+        }
+        private ProductionForCT AddLotNumbers (ProductionForCT production)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            production.LastLotNumber = repo.LastLotNumber();
+            production.Markers = production.Markers.Select((m, i) => {m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
+            return production;
+            
         }
     }
 }

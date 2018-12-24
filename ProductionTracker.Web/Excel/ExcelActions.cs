@@ -156,10 +156,20 @@ namespace ProductionTracker.Web.Excel
             {
                 Name = cuttingInstructions.Columns[0].ColumnName,
             };
+            var tempDate = production.Name.Split()[1];
+            DateTime date;
+            var isdate = DateTime.TryParseExact(tempDate, DateTimeFormats(), CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out date);
+            if (!isdate)
+            {
+                date = DateTime.Now;
+                AddErrorMsg($"Sorry the date {tempDate} is in the wrong format we are going to use the current date instead");
+            }
+            production.Date = date;
             for (int x = 0; x < cuttingInstructions.Rows.Count; x++)
             {
                 if (String.IsNullOrEmpty((string)cuttingInstructions.Rows[x][0]))
                 {
+                    var allSizes = false;
                     var temp = (string)cuttingInstructions.Rows[x][1];
                     temp = String.Concat(temp.Where(c => !char.IsWhiteSpace(c))).ToUpper();
                     if (!String.IsNullOrEmpty(temp))
@@ -171,11 +181,11 @@ namespace ProductionTracker.Web.Excel
                         if (split.Count() == 2)
                         {
                             var tempSize = split[1];
-                            var sizeId = repo.GetSizeId(tempSize);
-                            if (NotNull(sizeId))
+                            var sizeIs = repo.GetSize(tempSize);
+                            if (NotNull(sizeIs))
                             {
                                 name = split[0];
-                                sizes.Add(new SizeWithLayer { SizeId = (int)sizeId, AmountPerLayer = 6 });
+                                sizes.Add(new SizeWithLayer { SizeId = sizeIs.Id,Name = sizeIs.Name, AmountPerLayer = 6 });
                             }
                             else
                             {
@@ -206,6 +216,7 @@ namespace ProductionTracker.Web.Excel
                                 {
                                     return new SizeWithLayer { SizeId = md.SizeId, AmountPerLayer = md.AmountPerLayer };
                                 }).ToList();
+                                allSizes = true;
                             }
                             else
                             {
@@ -213,14 +224,15 @@ namespace ProductionTracker.Web.Excel
                             }
                             sizes = sizeFromMarker;
                         }
-                        if (sizes.Count > 0)
+                        if (true)
                         {
 
                             var marker = new MarkerWithColorMaterials
                             {
                                 Name = name,
                                 Size = size,
-                                Sizes = sizes
+                                Sizes = sizes,
+                                AllSizes = allSizes
                             };
                             production.Markers.Add(marker);
                             for (int y = x + 1; y < cuttingInstructions.Rows.Count; y++)
@@ -259,6 +271,11 @@ namespace ProductionTracker.Web.Excel
             return production;
         }
 
+        public static List<string> GetErrors()
+        {
+            return _erros;
+        }
+
         private static List<SizeWithLayer> NewMarkerSizeConcact(string[] split)
         {
 
@@ -271,7 +288,7 @@ namespace ProductionTracker.Web.Excel
                 {
                     sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
                     {
-                        return new SizeWithLayer { SizeId = md.SizeId };
+                        return new SizeWithLayer { SizeId = md.SizeId,Name = md.Size.Name };
                     }).ToList();
                 }
             }
@@ -302,11 +319,11 @@ namespace ProductionTracker.Web.Excel
                     {
                         var tempSize = tempSplit[0];
                         var tempAmount = tempSplit[1];
-                        var sizeId = repo.GetSizeId(tempSize);
-                        if (NotNull(sizeId) && int.TryParse(tempAmount, out int amountI))
+                        var SizeIs = repo.GetSize(tempSize);
+                        if (NotNull(SizeIs) && int.TryParse(tempAmount, out int amountI))
                         {
 
-                            sizeFromMarker.Add(new SizeWithLayer { SizeId = (int)sizeId, AmountPerLayer = amountI });
+                            sizeFromMarker.Add(new SizeWithLayer { SizeId = SizeIs.Id, Name = SizeIs.Name, AmountPerLayer = amountI });
                         }
                         else
                         {
@@ -321,7 +338,7 @@ namespace ProductionTracker.Web.Excel
 
                 }
             }
-            return sizeFromMarker;
+            return sizeFromMarker.Where(s => s.AmountPerLayer != 0).ToList();
         }
 
         private static List<string> SplitStringOnSpace(string text)

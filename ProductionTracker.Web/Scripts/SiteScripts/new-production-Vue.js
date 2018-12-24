@@ -5,18 +5,19 @@
     //},
     mounted: function () {
         
-        this.getProductionInProgress(result =>{
-            this.production = result;
-            if (this.production !== {}) {
-                this.isProduction = true;
-            }
-        });
+        //this.getProductionInProgress(result =>{
+        //    this.production = result;
+        //    if (this.production !== {}) {
+        //        this.isProduction = true;
+        //    }
+        //});
     },
     data: {
         hi: 'sdjfl;jas;lkj',
         production: null,
         isProduction: false,
-        file: null
+        file: null,
+        errors: null
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -62,8 +63,10 @@
                 cache: false,
                 data: form_data,
                 success:  result => {
-                    this.production = result;
-                    console.log(result);
+                    this.production = result.production;
+                    this.errors = result.errors;
+                    this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
+                    console.log(this.production.Date);
                 }
             
                 
@@ -80,8 +83,16 @@
             //for (var i = 0; i < 10; i++)
             this.production.Markers[marIndex].Sizes.push({});
         },
-        
+        getDateInputFormat: function (date) {
+            date = new Date(parseInt(date));
+            day = fixDigit(date.getDate());
+            month = fixDigit(date.getMonth() + 1);
+            year = date.getFullYear();
+            return [year, month, day].join('-');
+        },
+        vaidateMarker: function (markerIndex) {
 
+        }
     },
     computed: {
         productoinHide: function () {
@@ -90,3 +101,6 @@
     }
 
 })
+function fixDigit(val) {
+    return val.toString().length === 1 ? "0" + val : val;
+}
