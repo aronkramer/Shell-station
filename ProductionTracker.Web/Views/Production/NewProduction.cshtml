@@ -35,6 +35,12 @@
         height: 15px;
         margin: 5px auto;
     }
+    .markerNumber {
+        font-size: 35px;
+        text-align: center;
+        margin-top: 150%;
+        margin-bottom: 150%;
+    }
     
 </style>
 <div id="prodApp">
@@ -75,12 +81,13 @@
                 <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
                     <div class="col-md-1" style="height:100%">
                         <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
+                        <h2 class="markerNumber">{{MarkerIndex + 1}}</h2>
                     </div>
                     <div class="col-md-10 col-md-offset-1">
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                            <input type="text" class="col-md-1" name="MarkerName" v-model="marker.Name" />
-
+                            <input type="text" class="col-md-1" v-on:blur="vaidateMarker(MarkerIndex)" name="MarkerName" v-model="marker.Name" />
+                            @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
                             <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
                             <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
                             <div class="size-container col-md-1">

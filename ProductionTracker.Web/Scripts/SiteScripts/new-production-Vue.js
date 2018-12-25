@@ -78,10 +78,20 @@
         },
         removeSize: function (event,marIndex,Index) {
             this.production.Markers[marIndex].Sizes.splice(Index, 1);
+            if (this.production.Markers[marIndex].Sizes.length === 1) {
+                this.production.Markers[marIndex].Sizes[0].AmountPerLayer = 6;
+            }
         },
         addSize: function (event, marIndex) {
             //for (var i = 0; i < 10; i++)
-            this.production.Markers[marIndex].Sizes.push({});
+            if (this.production.Markers[marIndex].Sizes.length === 0)
+                this.production.Markers[marIndex].Sizes.push({ AmountPerLayer: 6 });
+            //else if (this.production.Markers[marIndex].Sizes.length === 1) {
+            //    //this.production.Markers[marIndex].Sizes[0].AmountPerLayer = 1;
+            //    this.production.Markers[marIndex].Sizes.push({});
+            //}
+            else
+                this.production.Markers[marIndex].Sizes.push({});
         },
         getDateInputFormat: function (date) {
             date = new Date(parseInt(date));
@@ -91,16 +101,53 @@
             return [year, month, day].join('-');
         },
         vaidateMarker: function (markerIndex) {
+            //this.production.Markers[markerIndex].errors = [];
+            var marker = this.production.Markers[markerIndex];
+            marker.errors = [];
+            markerExist(marker.Name, result => {
+                var markerNameId = result.marker;
+                console.log(markerNameId);
+                if (!markerNameId) {
+                    marker.errors['marker'] = 'marker name is not found';
+                    console.log(marker.errors['marker']);
+                    
 
+                }
+                else {
+                    delete marker.errors['marker'];
+                    console.log(marker.errors['marker']);
+                }
+                this.production.Markers[markerIndex] = marker;
+                console.log(this.markerHasError(markerIndex));
+                
+            });
+        },
+        markerHasError: function (markerIndex) {
+            if (this.production.Markers[markerIndex].errors) {
+                if (this.production.Markers[markerIndex].errors['marker'])
+                    return true;
+                else
+                    return false;
+            }
+
+            else
+                return false;
         }
+        
     },
     computed: {
         productoinHide: function () {
             return this.production === null;
-        }
-    }
+        },
+    }    
 
 })
 function fixDigit(val) {
     return val.toString().length === 1 ? "0" + val : val;
+}
+function markerExist(markerName, func) {
+    return $.get('/production/GetMarker', { markerName }, function (result) {
+        
+        func(result);
+    });
 }
