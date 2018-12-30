@@ -28,7 +28,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructions.OrderByDescending(c => c.LotNumber).First().LotNumber;
+                return context.CuttingInstructions.Count() > 1 ? context.CuttingInstructions.OrderByDescending(c => c.LotNumber).First().LotNumber : 2222;
             }
         }
 
@@ -182,12 +182,30 @@ namespace ProductionTracker.Data
                 return null;
             }
         }
+
+        public void AddProduction (Production production)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.Productions.InsertOnSubmit(production);
+                context.SubmitChanges();
+            }
+        }
         
         public void AddCuttingTicket(CuttingInstruction instruction)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 context.CuttingInstructions.InsertOnSubmit(instruction);
+                context.SubmitChanges();
+            }
+        }
+
+        public void AddCTSizes(IEnumerable<CuttingInstructionSize> sizes)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.CuttingInstructionSizes.InsertAllOnSubmit(sizes);
                 context.SubmitChanges();
             }
         }
@@ -259,6 +277,24 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
                 loadOptions.LoadWith<ReceivingItemsTransaction>(r => r.Item);
                 loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                context.LoadOptions = loadOptions;
+                return context.Productions.FirstOrDefault(p => p.Id == id);
+            }
+        }
+
+        public Production GetProductionForExcel(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.MarkerCategory);
+                loadOptions.LoadWith<MarkerCategory>(p => p.MarkerDetails);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionSizes);
+                loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
+                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                loadOptions.LoadWith<Item>(pd => pd.Color);
+                loadOptions.LoadWith<Item>(pd => pd.Material);
                 context.LoadOptions = loadOptions;
                 return context.Productions.FirstOrDefault(p => p.Id == id);
             }

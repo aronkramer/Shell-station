@@ -14,4 +14,9 @@
 /*.site-body{
     padding-top:50px;
 }*/
+.lot-cell {
+    max-width: 100px;
+    overflow: auto;
+   
+}
 

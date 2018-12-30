@@ -22,7 +22,8 @@
     .add-size-btn {
         height: 25px;
         width: 15px;
-        text-align:left;
+        text-align:initial;
+        margin-left:20px;
     }
     .size-element button {
         height:4px;
@@ -41,9 +42,12 @@
         margin-top: 150%;
         margin-bottom: 150%;
     }
+    th{
+        text-align:center;
+    }
     
 </style>
-<div id="prodApp">
+<div id="prodApp" class="container">
     <div class="col-md-6 col-md-offset-3" v-if="production == null">
         <h2 class="page-header">Browse to add a new cutting ticket</h2>
         <form method="post" enctype="multipart/form-data">
@@ -57,7 +61,7 @@
 
 
     <button v-on:click="loadProd">Load</button>
-    <div class="row" v-if="errors && errors.length > 0" >
+    <div class="row" v-if="errors && errors.length > 0">
         <div class="col-md-6 col-md-offset-3" style="margin-top:25px;margin-bottom:25px; padding-top:50px">
             <h2 class="text-center">Erros</h2>
             <div class="well">
@@ -65,35 +69,36 @@
                     <p style="color:red">{{e}}</p>
                 </template>
             </div>
+        </div>
+    </div>
+    <div class="row" v-if="production && !finalProduction" style="">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="form-row">
+                <label class="col-md-2 col-form-label" for="date">Date</label>
+                <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
+                <label class="col-md-3 col-form-label" for="lot">Last Lot#</label>
+                <input type="text" class=" col-md-3" name="Lot_" v-model="production.LastLotNumber" />
             </div>
         </div>
-        <div class="row" v-if="production" style="margin-bottom:50px;">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="form-row">
-                    <label class="col-md-2 col-form-label" for="date">Date</label>
-                    <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
-                    <label class="col-md-2 col-form-label" for="lot">Lot#</label>
-                    <input type="text" class=" col-md-4" name="Lot_" v-model="production.LastLotNumber" />
-                </div>
-            </div>
 
-            <template v-for="(marker, MarkerIndex) in production.Markers">
-                <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
-                    <div class="col-md-1" style="height:100%">
-                        <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
-                        <h2 class="markerNumber">{{MarkerIndex + 1}}</h2>
-                    </div>
-                    <div class="col-md-10 col-md-offset-1">
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                            <input type="text" class="col-md-1" v-on:blur="vaidateMarker(MarkerIndex)" name="MarkerName" v-model="marker.Name" />
-                            @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
-                            <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
-                            <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
+        <template v-for="(marker, MarkerIndex) in production.Markers">
+            <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
+                <div class="col-md-1" style="height:100%">
+                    <button :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-danger btn-block remove-btn">Remove</button>
+                    <h2 class="markerNumber">{{MarkerIndex + 1}}</h2>
+                </div>
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
+                        <input type="text" class="col-md-1" v-on:blur="vaidateMarker(MarkerIndex)" name="MarkerName" v-model="marker.Name" />
+                        @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
+                        <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
+                        <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
+                        <div v-if="!marker.AllSizes">
                             <div class="size-container col-md-1">
                                 <button v-if="marker.Sizes.length < 1" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success">Add a Size</button>
-                                <div class="size-element" v-else>
-
+                                <div class="" v-else>
+                                    <button :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success remove-btn add-size-btn">+</button>
                                 </div>
                                 <div class="size-element">
                                     <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
@@ -115,113 +120,97 @@
                                             <input type="text" class="" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
                                         </div>
                                     </div>
-                                    <div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
-                                        <button :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-success remove-btn add-size-btn">+</button>
-                                    </div>
+                                    @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
+                                        </div>*@
                                 </template>
                             </div>
-                            <div class="row" v-if="marker.ColorMaterials.length > 0">
-                                <table class="table table-bordered table-striped table-responsive">
+                        </div>
+                        <div v-else>
+                            <div class="col-md-1">
+                                <label>All sizes</label>
+                            </div>
+                            <div class="col-md-1">
+                                <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+                            </div>
+                        </div>
+                        <div class="row" v-if="marker.ColorMaterials.length > 0">
+                            <table class="table table-bordered table-striped table-responsive">
+                                <tr>
+                                    <th style="text-align:left;"><button :markerIndex="MarkerIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-success remove-btn">+</button><label style="margin-left:35px">Color</label></th>
+                                    <th>Material</th>
+                                    <th>Layers</th>
+                                    <th>Pakaging</th>
+                                </tr>
+                                <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
                                     <tr>
-                                        <th>Color</th>
-                                        <th>Material</th>
-                                        <th>Layers</th>
-                                        <th>Pakaging</th>
+                                        <td><input type="text" v-model="colMat.Color" /></td>
+                                        <td><input type="text" v-model="colMat.Material" /></td>
+                                        <td><input type="text" v-model="colMat.Layers" /> </td>
+                                        <td><input type="text" /></td>
+                                        <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-danger remove-btn">X</button></td>
                                     </tr>
-                                    <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
-                                        <tr>
-                                            <td><input type="text" v-model="colMat.Color" /></td>
-                                            <td><input type="text" v-model="colMat.Material" /></td>
-                                            <td><input type="text" v-model="colMat.Layers" /> </td>
-                                            <td><input type="text" /></td>
-                                            <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-danger remove-btn">X</button></td>
-                                            <button v-if="marker.ColorMaterials.length-1==cmIndex" :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-success remove-btn">+</button>
-                                        </tr>
-                                    </template>
-                                </table>
-                            </div>
-                            <div class="row" v-else>
-                                <div class="col-md-4 col-md-offset-4">
-                                    <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn-block btn btn-success">Add The Color and Material</button>
-                                </div>
-                            </div>
-
+                                </template>
+                            </table>
                         </div>
+                        <div class="row" v-else>
+                            <div class="col-md-4 col-md-offset-4">
+                                <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn-block btn btn-success">Add The Color and Material</button>
+                            </div>
+                        </div>
+
                     </div>
-            </template>
-            <div class="col-md-4 col-md-offset-4">
-                <button v-on:click="addMarker" class="btn btn-success btn-block">Add Marker</button>
-            </div>
+                </div>
         </div>
-        <div>
+              </template>
+        <div class="col-md-2">
+            <button v-on:click="addMarker" class="btn btn-success btn-block">Add Marker</button>
+        </div>
 
-
-            @*@if (Model != null && Model.Errors != null && Model.Items != null)
-                {
-                    <form class="col-md-12" action="/production/submitCT" method="post">
-                        <div class="col-md-6 col-md-offset-3">
-                            <div class="form-row">
-                                <label class="col-md-2 col-form-label" for="date">Date</label>
-                                <input type="date" class=" col-md-4" name="Date" id="date" value="@Model.Date.ToString("yyyy-MM-dd")" />
-                                <label class="col-md-2 col-form-label" for="lot">Lot#</label>
-                                <input type="text" class=" col-md-4" name="Lot_" id="lot" placeholder="optional" />
-                            </div>
+    </div>
+    <div class="row" v-if="finalProduction">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="form-row">
+                <label class="col-md-2 col-form-label" for="date">Date</label>
+                <input type="date" readonly class=" col-md-4" name="Date" id="date" v-model="finalProduction.Date" />
+            </div>
+            <template v-for="cts in finalProduction.CuttingInstructions">
+                <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
+                    <h3><label>Marker:</label>{{cts.Marker.MarkerSizeText}}</h3>
+                    <p><label>Lot #:</label>{{cts.LotNumber}}</p>
+                    <div class="row" v-if="cts.Items.length > 0">
+                        <div class="col-md-8 col-md-offset-2">
+                            <table class=" table table-bordered table-striped table-responsive">
+                                <tr>
+                                    <th>Item #</th>
+                                    <th>SKU</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                <template v-for="item in cts.Items">
+                                    <tr>
+                                        <td><input readonly type="text" v-model="item.ItemId" /></td>
+                                        <td><input readonly type="text" v-model="item.Item.SKU" /></td>
+                                        <td><input readonly type="text" v-model="item.Quantity" /></td>
+                                    </tr>
+                                </template>
+                            </table>
                         </div>
-                        @if (Model.Errors.Count > 0)
-                        {
-                            <div class="col-md-6 col-md-offset-3 well-lg">
-                                <h2 style="color:red;text-align:center;">Errors</h2>
-                                <div style="background-color:lightcyan">
-                                    @foreach (var error in Model.Errors)
-                                    {
-                                        <p> @error</p>
-                                    }
-                                </div>
-                            </div>
-                        }
-                        @if (Model.Items.Count > 0)
-                        {
-                            <div class="row">
-                            <div class="col-md-6 col-md-offset-3 well-lg">
-                                @{ var x = 0;}
-                                <h2 style="color:blue; text-align:center">Items</h2>
-                                <div style="overflow:scroll; height:500px;">
-                                    <table class="table table-bordered table-responsive table-striped">
-
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>SKU</th>
-                                            <th>Quantiy</th>
-                                        </tr>
-
-                                        @foreach (var item in Model.Items)
-                                        {
-                                            <tr>
-                                                <td><input type="text" readonly class="form-control" name="items[@x].ItemId" value="@item.ItemId" placeholder="itemId"></td>
-                                                <td><label hidden style="color:red" >Item is not found</label><input type="text" class="form-control sku" value="@item.Item.SKU" placeholder="SKU"></td>
-                                                <td><input type="text" class="form-control" name="items[@x].Quantity" value="@item.Quantity" placeholder="Quantity"></td>
-                                            </tr>
-
-
-                                            { x++; }
-                                        }
-
-                                    </table>
-                                </div>
-                            </div>
-                                </div>
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <button class="btn btn-success btn-block submit-btn">Submit</button>
-                                </div>
-                            </div>
-
-                        }
-                    </form>
-
-                }*@
+                        
+                    </div>
+                </div>
+            </template>
+        </div>
+       
+    </div>
+    <div class="row" style="margin-bottom:50px;" v-if="production">
+        <div class="col-md-4 col-md-offset-4" v-if="finalProduction">
+            <button v-on:click="submitProduction" class="btn btn-primary btn-block">Submit</button>
+        </div>
+        <div class="col-md-4 col-md-offset-4" v-else >
+            <button v-on:click="saveProdToItems" class="btn btn-info btn-block">Save</button>
         </div>
     </div>
+
+</div>
     @section scripts{
         <script src="~/Scripts/vue.js"></script>
         <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>

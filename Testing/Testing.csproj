@@ -66,6 +66,10 @@
       <Project>{e2c0726d-51c9-4770-9d27-08a4a6a40558}</Project>
       <Name>ProductionTracker.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProductionTracker.Web\ProductionTracker.Web.csproj">
+      <Project>{77af44e1-e391-4208-ab25-4d9c42ab6568}</Project>
+      <Name>ProductionTracker.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

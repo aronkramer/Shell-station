@@ -20,7 +20,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -211,7 +212,6 @@
     </Content>
     <Content Include="Content\bootstrap-select.css.map" />
     <Content Include="libman.json" />
-    <Content Include=".eslintrc.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -311,6 +311,7 @@
     <Content Include="Scripts\SiteScripts\new-marker.js" />
     <Content Include="Scripts\SiteScripts\new-production-Vue.js" />
     <Content Include="Scripts\SiteScripts\new-production.js" />
+    <Content Include="Scripts\SiteScripts\prod-confrimation-vue.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />

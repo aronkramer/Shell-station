@@ -1,4 +1,6 @@
-﻿new Vue({
+﻿
+
+new Vue({
     el: '#prodApp',
     //components: {
     //    Marker
@@ -17,7 +19,8 @@
         production: null,
         isProduction: false,
         file: null,
-        errors: null
+        errors: null,
+        finalProduction: null
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -110,28 +113,51 @@
                 if (!markerNameId) {
                     marker.errors['marker'] = 'marker name is not found';
                     console.log(marker.errors['marker']);
-                    
-
+                    this.production.Markers[markerIndex].Name = this.production.Markers[markerIndex].Name;
                 }
                 else {
                     delete marker.errors['marker'];
                     console.log(marker.errors['marker']);
+                    this.production.Markers[markerIndex].Name = markerNameId.Name;
                 }
                 this.production.Markers[markerIndex] = marker;
                 console.log(this.markerHasError(markerIndex));
+                markerHasError(markerIndex);
                 
             });
         },
-        markerHasError: function (markerIndex) {
-            if (this.production.Markers[markerIndex].errors) {
-                if (this.production.Markers[markerIndex].errors['marker'])
-                    return true;
-                else
-                    return false;
-            }
+        
+        editAllSizes: function (event, markerIndex) {
 
-            else
-                return false;
+            this.production.Markers[markerIndex].AllSizes = false;
+        },
+        saveProdToItems: function () {
+            //var date = new Date(parseInt(this.production.Date));
+            //this.production.Date = date.toJSON();
+            $.post('/production/ConvertCTToItems', { production: this.production }, result => {
+                this.finalProduction = result.prodItems;
+                this.finalProduction.Date = this.getDateInputFormat(result.prodItems.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
+                this.errors = result.errors;
+            });
+        },
+        submitProduction: function () {
+            var finalprod = {
+                Date: this.finalProduction.Date,
+                CuttingInstructions : this.finalProduction.CuttingInstructions.map(function (ct) {
+                    return {
+                        Marker: ct.Marker,
+                        LotNumber: ct.LotNumber,
+                        Items: ct.Items.map(i => {
+                            return {
+                                Id: i.Id,
+                                ItemId: i.ItemId,
+                                Quantity: i.Quantity
+                            }
+                        })
+                    }
+                })
+            };
+            $.post('/production/SubmitProduction', { production: finalprod });
         }
         
     },
@@ -139,7 +165,21 @@
         productoinHide: function () {
             return this.production === null;
         },
-    }    
+    },
+    watch: {
+        markerHasError: function (markerIndex) {
+            if (this.production.Markers[markerIndex].errors) {
+                if (this.production.Markers[markerIndex].errors['marker']) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+
+            else
+                return false;
+        }
+    }
 
 })
 function fixDigit(val) {

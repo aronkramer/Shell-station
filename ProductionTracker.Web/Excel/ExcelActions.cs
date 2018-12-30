@@ -151,6 +151,7 @@ namespace ProductionTracker.Web.Excel
 
         public static ProductionForCT ConvertCtToProduction(DataTable cuttingInstructions)
         {
+            _erros = new List<string>();
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var production = new ProductionForCT
             {
@@ -214,7 +215,7 @@ namespace ProductionTracker.Web.Excel
                             {
                                 sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
                                 {
-                                    return new SizeWithLayer { SizeId = md.SizeId, AmountPerLayer = md.AmountPerLayer };
+                                    return new SizeWithLayer { SizeId = md.SizeId, AmountPerLayer = md.AmountPerLayer, Name = md.Size.Name };
                                 }).ToList();
                                 allSizes = true;
                             }
@@ -274,6 +275,145 @@ namespace ProductionTracker.Web.Excel
         public static List<string> GetErrors()
         {
             return _erros;
+        }
+
+        public static FinalProduction ConvertProductoinToCTs(ProductionForCT production)
+        {
+            _erros = new List<string>();
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var finalProduction = new FinalProduction();
+            finalProduction.Date = production.Date;
+            foreach (var marker in production.Markers)
+            {
+                var items = new List<CuttingInstructionDetail>();
+                var markerCat = repo.GetMarkerCategory(marker.Name);
+                if (NotNull(markerCat))
+                {
+
+                    var sizes = marker.Sizes;
+                    foreach (var s in sizes)
+                    {
+
+                        foreach (var colmat in marker.ColorMaterials)
+                        {
+                            var colorId = repo.GetColorId(colmat.Color);
+                            if (!NotNull(colorId))
+                            {
+                                colorId = repo.GetColorDetailsId(colmat.Color);
+                            }
+                            if (NotNull(colorId))
+                            {
+                                var mat = repo.GetMaterialId(colmat.Material);
+                                if (NotNull(mat))
+                                {
+                                    var item = new Item
+                                    {
+                                        DepartmentId = markerCat.DepartmentId,
+                                        BodyStyleId = markerCat.BodyStyleId,
+                                        SleeveId = markerCat.SleeveId,
+                                        ColorId = (int)colorId,
+                                        MaterialId = (int)mat,
+                                        SizeId = s.SizeId
+
+                                    };
+                                    var dbItem = repo.GetItem(item);
+                                    if (NotNull(dbItem))
+                                    {
+                                        var itemQuantity = colmat.Layers * s.AmountPerLayer;
+                                        if (itemQuantity > 0)
+                                        {
+                                            items.Add(new CuttingInstructionDetail
+                                            {
+                                                ItemId = dbItem.Id,
+                                                Item = dbItem,
+                                                Quantity = itemQuantity
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AddErrorMsg("item", $"with size:{item.SizeId}, Material:{item.MaterialId},Color:{item.ColorId},Department:{item.DepartmentId},BodyStyle:{item.BodyStyleId}, Sleeve:{item.SleeveId}");
+                                    }
+                                }
+                                else
+                                {
+                                    AddErrorMsg("materieal", colmat.Material);
+                                }
+                            }
+                            else
+                            {
+                                AddErrorMsg("Color", colmat.Color);
+                            }
+                        }
+                    }
+                    finalProduction.CuttingInstructions.Add(new CuttingInstructionWithMarker
+                    {
+                        LotNumber = marker.LotNumber,
+                        Items = items,
+                        Marker = new Finalmarker
+                        {
+                            Id = markerCat.Id,
+                            Name = markerCat.Name,
+                            AllSizes = marker.AllSizes,
+                            Sizes = marker.Sizes
+                        }
+                    }
+                );
+                }
+                else
+                {
+                    AddErrorMsg("marker", marker.Name);
+                }
+                
+            }
+            
+            return finalProduction;
+        }
+
+        public static ProductionForCT CuttingInstructions(Production production)
+        {
+            var finalProd = new ProductionForCT();
+            var cprer = new ItemMatColComparer();
+            finalProd.Date = production.Date;
+            finalProd.Name = $"Murex {production.Date.ToShortDateString()}";
+            finalProd.Markers = production.CuttingInstructions.Select(ci =>
+            {
+                return new MarkerWithColorMaterials
+                {
+                    Name = ci.MarkerText,
+                    LotNumber = ci.LotNumber,
+                    ColorMaterials = ci.CuttingInstructionDetails.Distinct(cprer).Select(c =>
+                    {
+
+                        var amountPerLayer = ci.CuttingInstructionSizes.Count() > 0 ? ci.CuttingInstructionSizes.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer : ci.MarkerCategory.MarkerDetails.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer;
+                        return new ColorMaterial
+                        {
+                            Color = c.Item.Color.Name,
+                            Material = c.Item.Material.Name,
+                            Layers = c.Quantity / amountPerLayer
+                        };
+
+                    }).ToList()
+
+                };
+            }).ToList();
+            //var test = production.CuttingInstructions[0].CuttingInstructionDetails.GroupBy(x => x, cprer); 
+            //foreach(var grop in test)
+            //{
+            //    var test1 = grop.Select(c => 
+            //    {
+            //        return new ColorMaterial
+            //        {
+            //            Color = c.Item.Color.Name,
+            //            Material = c.Item.Material.Name,
+            //            Layers = c.Quantity
+            //        };
+
+            //    }
+            //    );
+            //}
+            //return new XLWorkbook();
+            return finalProd;
         }
 
         private static List<SizeWithLayer> NewMarkerSizeConcact(string[] split)

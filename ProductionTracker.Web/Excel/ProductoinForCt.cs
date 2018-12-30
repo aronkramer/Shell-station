@@ -51,4 +51,40 @@ namespace ProductionTracker.Web.Excel
         public List<string> Errors { get; set; }
 
     }
+    public class FinalProduction
+    {
+        public FinalProduction()
+        {
+            CuttingInstructions = new List<CuttingInstructionWithMarker>();
+        }
+        public DateTime Date { get; set; }
+        public List<CuttingInstructionWithMarker> CuttingInstructions { get; set; }
+
+    }
+    public class CuttingInstructionWithMarker
+    {
+        public int LotNumber { get; set; }
+        public List<CuttingInstructionDetail> Items { get; set; }
+        public Finalmarker Marker {get;set;}
+    }
+    public class Finalmarker
+    {
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public bool AllSizes { get; set; }
+        public IEnumerable<SizeWithLayer> Sizes { get; set; }
+        public string MarkerSizeText { get; set; }
+    }
+    public class ItemMatColComparer : IEqualityComparer<CuttingInstructionDetail>
+    {
+        public bool Equals(CuttingInstructionDetail x, CuttingInstructionDetail y)
+        {
+            return x.Item.ColorId == y.Item.ColorId && x.Item.MaterialId == y.Item.MaterialId;
+        }
+
+        public int GetHashCode(CuttingInstructionDetail obj)
+        {
+            return 5;
+        }
+    }
 }

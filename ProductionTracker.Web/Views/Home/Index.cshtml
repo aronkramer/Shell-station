@@ -40,7 +40,7 @@
 
                             <tr>
                                 <th>Id </th>
-                                <th>Lot #s</th>
+                                <th class="lot-cell">Lot #s</th>
                                 <th>Date</th>
                                 <th>Total Items</th>
                                 <th>Items Not Recived</th>
@@ -50,7 +50,7 @@
                             <template v-for="item in productions">
                                 <tr>
                                     <td>{{item.Id}}</td>
-                                    <td>{{item.Lot}}</td>
+                                    <td class="lot-cell">{{item.Lot}}</td>
                                     <td>{{item.Date}}</td>
                                     <td>{{item.TotalItems}}</td>
                                     <td>{{item.ItemsNotReceived}}</td>

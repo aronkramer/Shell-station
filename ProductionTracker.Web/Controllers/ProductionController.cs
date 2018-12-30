@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.Mvc;
 using ProductionTracker.Web.Excel;
 using ProductionTracker.Data;
+using System.Text;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -27,13 +30,83 @@ namespace ProductionTracker.Web.Controllers
             production = AddLotNumbers(production);
             var errors = ExcelActions.GetErrors();
             Session["Production"] = production;
-            var items = ExcelActions.ConvertProductoinToItems(production);
-            Session["ItemsWithErrors"] = items;
             return Json(new { production, errors },JsonRequestBehavior.AllowGet);
         }
-        public ActionResult NewProductionConfimation(ErrorsAndItems items)
+        [HttpPost]
+        public ActionResult ConvertCTToItems(ProductionForCT production)
         {
-            return View(items);
+            var prodItems = ExcelActions.ConvertProductoinToCTs(production);
+            Session["prodItems"] = prodItems;
+            prodItems.CuttingInstructions.ForEach(ct => GetMarkerText(ct.Marker));
+            var errors = ExcelActions.GetErrors();
+            return Json(new { prodItems = new {prodItems.Date, CuttingInstructions = prodItems.CuttingInstructions.Select(ct =>
+            {
+                return new
+                {
+                    ct.Marker,                   
+                    ct.LotNumber,
+                    Items = ct.Items.Select(i =>
+                    {
+                        return new
+                        {
+                            i.Id,
+                            i.ItemId,
+                            i.Quantity,
+                            Item = new
+                            {
+                                i.Item.SKU
+                            }
+                        };
+                    })
+                };
+            })
+            }, errors }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void SubmitProduction(FinalProduction production)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var prod = new Production { Date = production.Date };
+            repo.AddProduction(prod);
+            foreach (var cI in production.CuttingInstructions)
+            {
+                var cutInst = new CuttingInstruction
+                {
+                    ProductionId = prod.Id,
+                    LotNumber = cI.LotNumber,
+                    MarkerText = cI.Marker.MarkerSizeText,
+                    MarkerCatId = cI.Marker.Id
+                };
+                repo.AddCuttingTicket(cutInst);
+                if (!cI.Marker.AllSizes)
+                {
+                    var sizes = cI.Marker.Sizes.Select(s =>
+                    {
+                        return new CuttingInstructionSize
+                        {
+                            SizeId = s.SizeId,
+                            AmountPerLayer = s.AmountPerLayer,
+                            CuttingInstructId = cutInst.Id
+                        };
+                    });
+                    repo.AddCTSizes(sizes);
+                }
+                
+                var ctd = cI.Items.Select(cd => 
+                {
+                    return new CuttingInstructionDetail
+                    {
+                        CuttingInstructionId = cutInst.Id,
+                        ItemId = cd.ItemId,
+                        Quantity = cd.Quantity
+                    };
+                });
+                repo.AddCTDetails(ctd);
+            }
+        }
+        public ActionResult NewProductionConfimation()
+        {
+            return View();
         }
         [HttpPost]
         public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionDetail> items)
@@ -72,6 +145,60 @@ namespace ProductionTracker.Web.Controllers
             production.Markers = production.Markers.Select((m, i) => {m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
             return production;
             
+        }
+        private void GetMarkerText(Finalmarker marker)
+        {
+            var markerSize = new StringBuilder();
+            markerSize.Append(marker.Name);
+            if (!marker.AllSizes)
+            {
+                if (marker.Sizes.Count() == 1)
+                {
+                    markerSize.Append($"-{marker.Sizes.ToList()[0].Name}");
+                }
+                else if (marker.Sizes.Count() > 1)
+                {
+                    markerSize.Append("-NEWMARKER");
+                    foreach (var size in marker.Sizes)
+                    {
+                        markerSize.Append($"-{size.Name}_{size.AmountPerLayer}");
+                    }
+                }
+            }
+            marker.MarkerSizeText = markerSize.ToString();
+            //return markerSize.ToString();
+            
+        }
+        public void FileDownload(XLWorkbook workbook)
+        {
+            //// Create the workbook
+            //XLWorkbook workbook = new XLWorkbook();
+            //var ws = workbook.Worksheets.Add("Inserting Data");
+            //// From a list of arrays
+            //var listOfArr = new List<Int32[]>();
+            //listOfArr.Add(new Int32[] { 1, 2, 3 });
+            //listOfArr.Add(new Int32[] { 1 });
+            //listOfArr.Add(new Int32[] { 1, 2, 3, 4, 5, 6 });
+            //ws.Cell(1, 3).Value = "From Arrays";
+            //ws.Range(1, 3, 1, 8).Merge().AddToNamed("Titles");
+            //var rangeWithArrays = ws.Cell(2, 3).InsertData(listOfArr);
+
+            // Prepare the response
+            HttpResponseBase httpResponse = Response;
+            
+            httpResponse.Clear();
+            httpResponse.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            httpResponse.AddHeader("content-disposition", "attachment;filename=\"CuttingTicket.xlsx\"");
+
+            // Flush the workbook to the Response.OutputStream
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                workbook.SaveAs(memoryStream);
+                memoryStream.WriteTo(httpResponse.OutputStream);
+                memoryStream.Close();
+            }
+
+            httpResponse.End();
         }
     }
 }
