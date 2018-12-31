@@ -334,6 +334,7 @@
     <Content Include="Views\Home\NewProduction.cshtml" />
     <Content Include="Views\Production\NewProduction.cshtml" />
     <Content Include="Views\Production\NewProductionConfimation.cshtml" />
+    <Content Include="Scripts\SiteScripts\prod-conf.vue" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

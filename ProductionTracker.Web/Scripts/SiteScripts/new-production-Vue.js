@@ -6,7 +6,7 @@ new Vue({
     //    Marker
     //},
     mounted: function () {
-        
+
         //this.getProductionInProgress(result =>{
         //    this.production = result;
         //    if (this.production !== {}) {
@@ -50,7 +50,7 @@ new Vue({
         },
         addColorMatLine: function (event, marIndex) {
             //for (var i = 0; i < 10; i++)
-                this.production.Markers[marIndex].ColorMaterials.push({});
+            this.production.Markers[marIndex].ColorMaterials.push({});
         },
         fileUpload: function () {
             //this.file = file[0];
@@ -65,21 +65,21 @@ new Vue({
                 async: true,
                 cache: false,
                 data: form_data,
-                success:  result => {
+                success: result => {
                     this.production = result.production;
                     this.errors = result.errors;
                     this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                     console.log(this.production.Date);
                 }
-            
-                
+
+
             });
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-             this.production.Markers.push({ Sizes: [], "ColorMaterials": []});
+            this.production.Markers.push({ Sizes: [], "ColorMaterials": [] });
         },
-        removeSize: function (event,marIndex,Index) {
+        removeSize: function (event, marIndex, Index) {
             this.production.Markers[marIndex].Sizes.splice(Index, 1);
             if (this.production.Markers[marIndex].Sizes.length === 1) {
                 this.production.Markers[marIndex].Sizes[0].AmountPerLayer = 6;
@@ -123,10 +123,10 @@ new Vue({
                 this.production.Markers[markerIndex] = marker;
                 console.log(this.markerHasError(markerIndex));
                 markerHasError(markerIndex);
-                
+
             });
         },
-        
+
         editAllSizes: function (event, markerIndex) {
 
             this.production.Markers[markerIndex].AllSizes = false;
@@ -143,7 +143,7 @@ new Vue({
         submitProduction: function () {
             var finalprod = {
                 Date: this.finalProduction.Date,
-                CuttingInstructions : this.finalProduction.CuttingInstructions.map(function (ct) {
+                CuttingInstructions: this.finalProduction.CuttingInstructions.map(function (ct) {
                     return {
                         Marker: ct.Marker,
                         LotNumber: ct.LotNumber,
@@ -159,7 +159,7 @@ new Vue({
             };
             $.post('/production/SubmitProduction', { production: finalprod });
         }
-        
+
     },
     computed: {
         productoinHide: function () {
@@ -181,7 +181,7 @@ new Vue({
         }
     }
 
-})
+});
 function fixDigit(val) {
     return val.toString().length === 1 ? "0" + val : val;
 }

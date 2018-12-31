@@ -370,7 +370,7 @@ namespace ProductionTracker.Web.Excel
             return finalProduction;
         }
 
-        public static ProductionForCT CuttingInstructions(Production production)
+        public static ProductionForCT ProductionToFormatForExcel(Production production)
         {
             var finalProd = new ProductionForCT();
             var cprer = new ItemMatColComparer();
@@ -397,23 +397,43 @@ namespace ProductionTracker.Web.Excel
 
                 };
             }).ToList();
-            //var test = production.CuttingInstructions[0].CuttingInstructionDetails.GroupBy(x => x, cprer); 
-            //foreach(var grop in test)
-            //{
-            //    var test1 = grop.Select(c => 
-            //    {
-            //        return new ColorMaterial
-            //        {
-            //            Color = c.Item.Color.Name,
-            //            Material = c.Item.Material.Name,
-            //            Layers = c.Quantity
-            //        };
-
-            //    }
-            //    );
-            //}
-            //return new XLWorkbook();
             return finalProd;
+        }
+
+        public static XLWorkbook CuttingInstruction (ProductionForCT productoinInRightFormat)
+        {
+            if(productoinInRightFormat != null)
+            {
+                var wb = new XLWorkbook();
+                var ws = wb.Worksheets.Add("Instruction");
+                ws.Cell(1, 1).Value = productoinInRightFormat.Name;
+                ws.Cell(1, 1).AddToNamed("Titles");
+                var rowCount = 4;
+                foreach (var marker in productoinInRightFormat.Markers)
+                {
+                    ws.Cell(rowCount,2).Value = marker.Name;
+                    ws.Cell(rowCount,2).AddToNamed("Titles");
+                    ws.Cell(rowCount,5).Value = $"Lot:{marker.LotNumber}";
+                    ws.Cell(rowCount,5).AddToNamed("Titles");
+                    foreach (var colMat in marker.ColorMaterials)
+                    {
+                        rowCount++;
+                        ws.Cell(rowCount,1).Value = $"{colMat.Color} {colMat.Material}";
+                        ws.Cell(rowCount,2).Value = colMat.Layers;
+                        ws.Cell(rowCount,4).Value = "BOX";
+                    }
+                    rowCount++;
+                    rowCount++;
+
+                }
+                var titlesStyle = wb.Style;
+                titlesStyle.Font.Bold = true;
+                titlesStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                wb.NamedRanges.NamedRange("Titles").Ranges.Style = titlesStyle;
+                ws.Column(1).AdjustToContents();
+                return wb;
+            }
+            return null;
         }
 
         private static List<SizeWithLayer> NewMarkerSizeConcact(string[] split)

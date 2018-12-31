@@ -169,7 +169,17 @@ namespace ProductionTracker.Web.Controllers
             //return markerSize.ToString();
             
         }
-        public void FileDownload(XLWorkbook workbook)
+        public void DownloadCuttingInstuctions(int productionId)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var prod = repo.GetProductionForExcel(productionId);
+            var prodexcel = ExcelActions.ProductionToFormatForExcel(prod);
+            var sheet = ExcelActions.CuttingInstruction(prodexcel);
+            var fileName = prod.Date.ToString("MM.dd");
+            FileDownload(sheet, fileName);
+        }
+
+        public void FileDownload(XLWorkbook workbook, string fileName)
         {
             //// Create the workbook
             //XLWorkbook workbook = new XLWorkbook();
@@ -188,7 +198,7 @@ namespace ProductionTracker.Web.Controllers
             
             httpResponse.Clear();
             httpResponse.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            httpResponse.AddHeader("content-disposition", "attachment;filename=\"CuttingTicket.xlsx\"");
+            httpResponse.AddHeader("content-disposition", $"attachment;filename=\"{fileName}.xlsx\"");
 
             // Flush the workbook to the Response.OutputStream
             using (MemoryStream memoryStream = new MemoryStream())

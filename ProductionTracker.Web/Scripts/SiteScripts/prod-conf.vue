@@ -1,5 +1,4 @@
-﻿import Vue from 'vue';
-import Marker from './Marker';
+﻿import Marker from './Marker.vue';
 
 new Vue({
     el: '#prodApp',

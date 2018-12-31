@@ -158,6 +158,11 @@
                 });
                 this.fillBtnText = 'Fill All';
             }
+        },
+        download: function (event) {
+            var productionId = event.target.id;
+            window.location = `/Production/DownloadCuttingInstuctions?productionId=${productionId}`;
+            //$.get("/Production/DownloadCuttingInstuctions", { productionId });
         }
         //checkVal: function () {
         //    var temp = this.recivedItems;
