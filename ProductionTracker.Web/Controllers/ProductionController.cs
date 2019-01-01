@@ -137,6 +137,24 @@ namespace ProductionTracker.Web.Controllers
             var marker = repo.GetMarkerCategory(markerName.ToUpper());
             return Json(new { marker = marker == null ? null : new { marker.Id, marker.Name } } , JsonRequestBehavior.AllowGet);
         }
+        public ActionResult GetValidatoinLists()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var mats = repo.GetMaterials();
+            var sizes = repo.GetSizes();
+            var markers = repo.GetMarkerCatergorys();
+            var colors = repo.GetColors().ToList();
+            colors.AddRange(repo.GetColorDetails().Select(c => { return new Color { Id = c.ColorId, Name = c.Name }; }));
+            return Json(new
+            {
+                material = mats.Select(r => r.Name),
+                colors = colors.Select(r => r.Name),
+                sizes = sizes.Select(r => r.Name ),
+                markers = markers.Select(r => r.Name),
+
+            }, JsonRequestBehavior.AllowGet);
+        }
+
 
         private ProductionForCT AddLotNumbers (ProductionForCT production)
         {
@@ -181,18 +199,6 @@ namespace ProductionTracker.Web.Controllers
 
         public void FileDownload(XLWorkbook workbook, string fileName)
         {
-            //// Create the workbook
-            //XLWorkbook workbook = new XLWorkbook();
-            //var ws = workbook.Worksheets.Add("Inserting Data");
-            //// From a list of arrays
-            //var listOfArr = new List<Int32[]>();
-            //listOfArr.Add(new Int32[] { 1, 2, 3 });
-            //listOfArr.Add(new Int32[] { 1 });
-            //listOfArr.Add(new Int32[] { 1, 2, 3, 4, 5, 6 });
-            //ws.Cell(1, 3).Value = "From Arrays";
-            //ws.Range(1, 3, 1, 8).Merge().AddToNamed("Titles");
-            //var rangeWithArrays = ws.Cell(2, 3).InsertData(listOfArr);
-
             // Prepare the response
             HttpResponseBase httpResponse = Response;
             

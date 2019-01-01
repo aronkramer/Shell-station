@@ -16,14 +16,6 @@ namespace ProductionTracker.Data
             _connectionString = connectionString;
         }
 
-        public Color GetColor (int id)
-        {
-            using (var context = new ManufacturingDataContext(_connectionString))
-            {
-                return context.Colors.FirstOrDefault(c => c.Id == id);
-            }
-        }
-        
         public int LastLotNumber()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -32,11 +24,27 @@ namespace ProductionTracker.Data
             }
         }
 
+        public Color GetColor (int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Colors.FirstOrDefault(c => c.Id == id);
+            }
+        }
+        
         public Color GetColor(string name)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 return context.Colors.FirstOrDefault(c => c.Name == name.ToUpper());
+            }
+        }
+
+        public IEnumerable<Color> GetColors()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Colors.ToList();
             }
         }
 
@@ -53,6 +61,30 @@ namespace ProductionTracker.Data
                     }
                 }
                 return null;
+            }
+        }
+
+        public int? GetColorDetailsId(string name)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                if (name != null)
+                {
+                    var temp = context.ColorDetails.FirstOrDefault(c => c.Name == name.ToUpper());
+                    if (temp != null)
+                    {
+                        return temp.ColorId;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public IEnumerable<ColorDetail> GetColorDetails()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.ColorDetails.ToList();
             }
         }
 
@@ -88,6 +120,15 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<Size> GetSizes()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Sizes.ToList();
+            }
+        }
+
+
         public MarkerCategory GetMarkerCategory(string name)
         {
             name = name.ToString();
@@ -97,6 +138,15 @@ namespace ProductionTracker.Data
                 return marker;
             }
         }
+
+        public IEnumerable<MarkerCategory> GetMarkerCatergorys()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.MarkerCategories.ToList();
+            }
+        }
+
 
         public Material GetMaterial(int id)
         {
@@ -130,6 +180,15 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<Material> GetMaterials()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Materials.ToList();
+            }
+        }
+
+
         public Item GetItem(Item itemWithAttributes)
         {
             Item theItem;
@@ -148,13 +207,6 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<MarkerCategory> GetMarkerCatergorys()
-        {
-            using (var context = new ManufacturingDataContext(_connectionString))
-            {
-                return context.MarkerCategories.ToList();
-            }
-        }
 
         public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
         {
@@ -167,21 +219,6 @@ namespace ProductionTracker.Data
             }
         }
 
-        public int? GetColorDetailsId(string name)
-        {
-            using (var context = new ManufacturingDataContext(_connectionString))
-            {
-                if (name != null)
-                {
-                    var temp = context.ColorDetails.FirstOrDefault(c => c.Name == name.ToUpper());
-                    if (temp != null)
-                    {
-                        return temp.ColorId;
-                    }
-                }
-                return null;
-            }
-        }
 
         public void AddProduction (Production production)
         {

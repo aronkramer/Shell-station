@@ -1,6 +1,4 @@
-﻿
-
-new Vue({
+﻿const app = new Vue({
     el: '#prodApp',
     //components: {
     //    Marker
@@ -20,7 +18,11 @@ new Vue({
         isProduction: false,
         file: null,
         errors: null,
-        finalProduction: null
+        finalProduction: null,
+        colors: [],
+        materials: [],
+        sizes: [],
+        markers: []
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -70,7 +72,10 @@ new Vue({
                     this.errors = result.errors;
                     this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                     console.log(this.production.Date);
-                }
+                    this.getTheDataTables(() => { 
+                    });
+                },
+
 
 
             });
@@ -121,7 +126,7 @@ new Vue({
                     this.production.Markers[markerIndex].Name = markerNameId.Name;
                 }
                 this.production.Markers[markerIndex] = marker;
-                console.log(this.markerHasError(markerIndex));
+                //console.log(this.markerHasError(markerIndex));
                 markerHasError(markerIndex);
 
             });
@@ -158,6 +163,20 @@ new Vue({
                 })
             };
             $.post('/production/SubmitProduction', { production: finalprod });
+        },
+        getTheDataTables: function (func) {
+            $.get('/production/GetValidatoinLists', result => {
+                this.materials = result.material;
+                this.colors = result.colors;
+                this.sizes = result.sizes;
+                this.markers = result.markers;
+                console.log(result);
+                func();
+                //Vue.nextTick(function () {
+                //    console.log(app.$el.textContent);
+                //}
+                //);
+            });
         }
 
     },
