@@ -22,7 +22,8 @@
         colors: [],
         materials: [],
         sizes: [],
-        markers: []
+        markers: [],
+        formVaild: false
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -69,6 +70,10 @@
                 data: form_data,
                 success: result => {
                     this.production = result.production;
+                    this.production.Markers.forEach(function (element) {
+                        element.errors = [];
+                    });
+
                     this.errors = result.errors;
                     this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                     console.log(this.production.Date);
@@ -109,27 +114,43 @@
             return [year, month, day].join('-');
         },
         vaidateMarker: function (markerIndex) {
-            //this.production.Markers[markerIndex].errors = [];
+            console.log("im here");
             var marker = this.production.Markers[markerIndex];
             marker.errors = [];
-            markerExist(marker.Name, result => {
-                var markerNameId = result.marker;
-                console.log(markerNameId);
-                if (!markerNameId) {
-                    marker.errors['marker'] = 'marker name is not found';
-                    console.log(marker.errors['marker']);
-                    this.production.Markers[markerIndex].Name = this.production.Markers[markerIndex].Name;
-                }
-                else {
-                    delete marker.errors['marker'];
-                    console.log(marker.errors['marker']);
-                    this.production.Markers[markerIndex].Name = markerNameId.Name;
-                }
-                this.production.Markers[markerIndex] = marker;
-                //console.log(this.markerHasError(markerIndex));
-                markerHasError(markerIndex);
+            if (!this.markers.includes(marker.Name)) {
+                console.log("im here");
 
+                marker.errors.push(`Marker:${marker.Name} was not found`);
+            }
+            marker.Sizes.forEach(element => {
+                console.log("im here");
+
+                if (!this.sizes.includes(element.Name)) {
+                    marker.errors.push(`Size:${element.Name} was not found`);
+                }
+                if (!element.AmountPerLayer) {
+                    marker.errors.push(`Size:${element.Name} has no layers! Either add a number or remove`);
+                }
             });
+            marker.ColorMaterials.forEach(element => {
+                console.log("im here");
+
+                if (!this.colors.includes(element.Color)) {
+                    marker.errors.push(`Color:${element.Color} was not found`);
+                }
+                if (!this.materials.includes(element.Material)) {
+                    marker.errors.push(`Material:${element.Material} was not found`);
+                }
+                if (!element.Layers) {
+                    marker.errors.push(`Color ${element.Color} & Material ${element.Material} has no layers! Either add a number or remove`);
+                }
+            });
+            this.production.Markers[markerIndex] = marker;
+            var hasErros = this.production.Markers.some(function (i) {
+                return i.errors.length > 0;
+            });
+            this.formVaild = !hasErros;
+            
         },
 
         editAllSizes: function (event, markerIndex) {
@@ -157,9 +178,9 @@
                                 Id: i.Id,
                                 ItemId: i.ItemId,
                                 Quantity: i.Quantity
-                            }
+                            };
                         })
-                    }
+                    };
                 })
             };
             $.post('/production/SubmitProduction', { production: finalprod });
@@ -184,6 +205,13 @@
         productoinHide: function () {
             return this.production === null;
         },
+        //formValid: function() {
+        //    //var temp = this.production.Markers;
+        //    var hasErros = this.production.Markers.some(function (i) {
+        //        return i.errors.length > 0;
+        //    });
+        //    return !hasErros;
+        //}
     },
     watch: {
         markerHasError: function (markerIndex) {
