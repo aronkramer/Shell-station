@@ -114,16 +114,14 @@
             return [year, month, day].join('-');
         },
         vaidateMarker: function (markerIndex) {
-            console.log("im here");
+            console.log("vaildate func");
             var marker = this.production.Markers[markerIndex];
             marker.errors = [];
             if (!this.markers.includes(marker.Name)) {
-                console.log("im here");
 
                 marker.errors.push(`Marker:${marker.Name} was not found`);
             }
             marker.Sizes.forEach(element => {
-                console.log("im here");
 
                 if (!this.sizes.includes(element.Name)) {
                     marker.errors.push(`Size:${element.Name} was not found`);
@@ -133,7 +131,6 @@
                 }
             });
             marker.ColorMaterials.forEach(element => {
-                console.log("im here");
 
                 if (!this.colors.includes(element.Color)) {
                     marker.errors.push(`Color:${element.Color} was not found`);
@@ -198,7 +195,10 @@
                 //}
                 //);
             });
-        }
+        },
+        getSumOfLayersPerMarker: function (marker) {
+            return marker.ColorMaterials.map(function (c) { return c.Layers; }).reduce((a, b) => parseInt(a) + parseInt(b), 0);
+        },
 
     },
     computed: {
