@@ -154,12 +154,20 @@ namespace ProductionTracker.Web.Controllers
 
             }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult GetLastLotNUmber()
+        {
+            return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
+        }
 
+        private int LastLotNumber()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return repo.LastLotNumber();
+        }
 
         private ProductionForCT AddLotNumbers (ProductionForCT production)
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            production.LastLotNumber = repo.LastLotNumber();
+            production.LastLotNumber = LastLotNumber();
             production.Markers = production.Markers.Select((m, i) => {m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
             return production;
             

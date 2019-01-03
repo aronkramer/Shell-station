@@ -42,6 +42,10 @@
         },
         removeMarker: function (index) {
             this.production.Markers.splice(index, 1);
+            this.updateLotNumbers();
+            if (this.production.Markers.length > 0) {
+                this.vaidateMarker(0);
+            }
         },
         removeColorMat: function (event, marIndex, Index) {
             console.log(Index);
@@ -54,6 +58,7 @@
         addColorMatLine: function (event, marIndex) {
             //for (var i = 0; i < 10; i++)
             this.production.Markers[marIndex].ColorMaterials.push({});
+            this.vaidateMarker(marIndex);
         },
         fileUpload: function () {
             //this.file = file[0];
@@ -78,7 +83,11 @@
                     this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                     console.log(this.production.Date);
                     this.getTheDataTables(() => { 
+                        if (this.production.Markers.length > 0) {
+                            this.vaidateMarker(0);
+                        }
                     });
+
                 },
 
 
@@ -87,7 +96,16 @@
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-            this.production.Markers.push({ Sizes: [], "ColorMaterials": [] });
+            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [] });
+            this.updateLotNumbers();
+            //var lastMarkerIndex = production.Markers.length - 1;
+            this.vaidateMarker(index - 1);
+        },
+        newProd: function () {
+            $.get('/production/GetLastLotNUmber', result => {
+                this.production = { Date: this.getDateInputFormat(new Date()), LastLotNumber: result, Markers: [], Name: "" };
+                this.addMarker();
+            });
         },
         removeSize: function (event, marIndex, Index) {
             this.production.Markers[marIndex].Sizes.splice(Index, 1);
@@ -105,6 +123,8 @@
             //}
             else
                 this.production.Markers[marIndex].Sizes.push({});
+            this.vaidateMarker(marIndex);
+
         },
         getDateInputFormat: function (date) {
             date = new Date(parseInt(date));
@@ -117,12 +137,17 @@
             console.log("vaildate func");
             var marker = this.production.Markers[markerIndex];
             marker.errors = [];
+            if (marker.Name) {
+                marker.Name = marker.Name.toUpperCase();
+            }
             if (!this.markers.includes(marker.Name)) {
 
                 marker.errors.push(`Marker:${marker.Name} was not found`);
             }
             marker.Sizes.forEach(element => {
-
+                if (element.Name) {
+                    element.Name.toUpperCase();
+                }
                 if (!this.sizes.includes(element.Name)) {
                     marker.errors.push(`Size:${element.Name} was not found`);
                 }
@@ -131,7 +156,12 @@
                 }
             });
             marker.ColorMaterials.forEach(element => {
-
+                if (element.Color) {
+                    element.Color.toUpperCase();
+                }
+                if (element.Material) {
+                    element.Material.toUpperCase();
+                }
                 if (!this.colors.includes(element.Color)) {
                     marker.errors.push(`Color:${element.Color} was not found`);
                 }
@@ -147,7 +177,7 @@
                 return i.errors.length > 0;
             });
             this.formVaild = !hasErros;
-            
+
         },
 
         editAllSizes: function (event, markerIndex) {
@@ -157,6 +187,7 @@
         saveProdToItems: function () {
             //var date = new Date(parseInt(this.production.Date));
             //this.production.Date = date.toJSON();
+            this.updateLotNumbers();
             $.post('/production/ConvertCTToItems', { production: this.production }, result => {
                 this.finalProduction = result.prodItems;
                 this.finalProduction.Date = this.getDateInputFormat(result.prodItems.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
@@ -199,6 +230,11 @@
         getSumOfLayersPerMarker: function (marker) {
             return marker.ColorMaterials.map(function (c) { return c.Layers; }).reduce((a, b) => parseInt(a) + parseInt(b), 0);
         },
+        updateLotNumbers: function () {
+            this.production.Markers.forEach((element, index) => {
+                element.LotNumber = this.production.LastLotNumber + index + 1;
+            });
+        }
 
     },
     computed: {
