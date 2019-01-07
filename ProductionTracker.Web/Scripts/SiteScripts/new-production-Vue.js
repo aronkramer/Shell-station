@@ -74,6 +74,7 @@
                 cache: false,
                 data: form_data,
                 success: result => {
+                    this.getTheDataTables(() => {
                     this.production = result.production;
                     this.production.Markers.forEach(function (element) {
                         element.errors = [];
@@ -82,10 +83,10 @@
                     this.errors = result.errors;
                     this.production.Date = this.getDateInputFormat(result.production.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                     console.log(this.production.Date);
-                    this.getTheDataTables(() => { 
-                        if (this.production.Markers.length > 0) {
-                            this.vaidateMarker(0);
-                        }
+                    
+                    if (this.production.Markers.length > 0) {
+                        this.vaidateMarker(0);
+                    }
                     });
 
                 },
@@ -103,7 +104,12 @@
         },
         newProd: function () {
             $.get('/production/GetLastLotNUmber', result => {
-                this.production = { Date: this.getDateInputFormat(new Date()), LastLotNumber: result, Markers: [], Name: "" };
+                this.getTheDataTables();
+                this.production = { Date: "", LastLotNumber: result, Markers: [], Name: "" };
+                var date = new Date();
+                date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                var datestr = date.toISOString().substring(0, 10);
+                this.production.Date = datestr;
                 this.addMarker();
             });
         },
@@ -146,10 +152,17 @@
             }
             marker.Sizes.forEach(element => {
                 if (element.Name) {
-                    element.Name.toUpperCase();
+                    element.Name = element.Name.toUpperCase();
                 }
-                if (!this.sizes.includes(element.Name)) {
+                if (!this.sizes.some(i => i.Name === element.Name)) {
                     marker.errors.push(`Size:${element.Name} was not found`);
+                }
+                else {
+                    var allSizes = JSON.parse(JSON.stringify(this.sizes));
+                    element.SizeId = allSizes.filter(function (item) {
+                        return item.Name === element.Name;
+                    })[0].Id;
+                    //this.sizes = allSizes;
                 }
                 if (!element.AmountPerLayer) {
                     marker.errors.push(`Size:${element.Name} has no layers! Either add a number or remove`);
@@ -195,6 +208,7 @@
             });
         },
         submitProduction: function () {
+            
             var finalprod = {
                 Date: this.finalProduction.Date,
                 CuttingInstructions: this.finalProduction.CuttingInstructions.map(function (ct) {
@@ -211,7 +225,7 @@
                     };
                 })
             };
-            $.post('/production/SubmitProduction', { production: finalprod });
+            $.post('/production/SubmitProduction', { production: finalprod }, () => window.location = '/');
         },
         getTheDataTables: function (func) {
             $.get('/production/GetValidatoinLists', result => {
@@ -220,7 +234,7 @@
                 this.sizes = result.sizes;
                 this.markers = result.markers;
                 console.log(result);
-                func();
+                if(func)func();
                 //Vue.nextTick(function () {
                 //    console.log(app.$el.textContent);
                 //}

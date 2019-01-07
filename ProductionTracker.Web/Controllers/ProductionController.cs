@@ -35,6 +35,10 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public ActionResult ConvertCTToItems(ProductionForCT production)
         {
+            if(production.LastLotNumber < LastLotNumber())
+            {
+                AddLotNumbers(production);
+            }
             var prodItems = ExcelActions.ConvertProductoinToCTs(production);
             Session["prodItems"] = prodItems;
             prodItems.CuttingInstructions.ForEach(ct => GetMarkerText(ct.Marker));
@@ -70,7 +74,13 @@ namespace ProductionTracker.Web.Controllers
             repo.AddProduction(prod);
             foreach (var cI in production.CuttingInstructions)
             {
-                var cutInst = new CuttingInstruction
+                var lastLot = LastLotNumber();
+                if (lastLot >= production.CuttingInstructions[0].LotNumber)
+                {
+                    production.CuttingInstructions = production.CuttingInstructions.Select((m, i) => { m.LotNumber = lastLot + 1 + i; return m; }).ToList();
+                }
+
+                    var cutInst = new CuttingInstruction
                 {
                     ProductionId = prod.Id,
                     LotNumber = cI.LotNumber,
@@ -103,6 +113,8 @@ namespace ProductionTracker.Web.Controllers
                 });
                 repo.AddCTDetails(ctd);
             }
+            TempData["Message"] = $"You susseffully added a new production with {production.CuttingInstructions.Count()} cuttting instuctoins from lot number{production.CuttingInstructions[0].LotNumber} - {production.CuttingInstructions[production.CuttingInstructions.Count() - 1].LotNumber}." +
+                $"<br/> {production.CuttingInstructions.Select(c => c.Items.Count()).Sum()} Items. Total pieces: {production.CuttingInstructions.Select(c => c.Items.Sum(i => i.Quantity)).Sum()} ";
         }
         public ActionResult NewProductionConfimation()
         {
@@ -149,7 +161,7 @@ namespace ProductionTracker.Web.Controllers
             {
                 material = mats.Select(r => r.Name),
                 colors = colors.Select(r => r.Name),
-                sizes = sizes.Select(r => r.Name ),
+                sizes = sizes.Select(r =>  { return new { r.Id, r.Name }; } ),
                 markers = markers.Select(r => r.Name),
 
             }, JsonRequestBehavior.AllowGet);

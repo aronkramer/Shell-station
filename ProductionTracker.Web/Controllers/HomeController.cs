@@ -14,6 +14,7 @@ namespace ProductionTracker.Web.Controllers
     {
         public ActionResult Index()
         {
+            ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
             return View();
         }
         

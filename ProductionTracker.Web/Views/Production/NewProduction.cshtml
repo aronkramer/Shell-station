@@ -30,7 +30,10 @@
         width: 15px;
         position: center;
     }
-
+    .page-header {
+        text-align: center;
+        height: 60px;
+    }
     .size-element {
         width: 50px;
         height: 15px;
@@ -111,7 +114,7 @@
                 <div class="col-md-10 col-md-offset-1">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                        <input type="text"   v-bind:class="[markers.includes(marker.Name) ? '': 'hasError' ]" @("@")change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
+                        <input type="text"   v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" @("@")change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
                         <datalist id="markers">
                             <option v-for="marker in markers">{{marker}}</option>
                         </datalist>
@@ -139,9 +142,9 @@
                                             <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-danger btn-block size-remove-btn">X</button>
                                         </div>
                                         <div class="size-element">
-                                            <input type="text" @("@")change="vaidateMarker(MarkerIndex)"  v-bind:class="[sizes.includes(size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                            <input type="text" @("@")change="vaidateMarker(MarkerIndex)"  v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
                                             <datalist id="sizes">
-                                                <option v-for="x in sizes">{{x}}</option>
+                                                <option v-for="x in sizes" >{{x.Name}}</option>
                                             </datalist>
                                         </div>
                                         <div class="size-element" v-if="marker.Sizes.length > 1">
