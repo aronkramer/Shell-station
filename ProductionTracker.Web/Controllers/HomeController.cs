@@ -158,6 +158,7 @@ namespace ProductionTracker.Web.Controllers
                      PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity),
                      Lot = pd.CuttingInstruction.LotNumber,
                      CuttingInstructionId = pd.CuttingInstructionId
+                     
                  });
 
             }));

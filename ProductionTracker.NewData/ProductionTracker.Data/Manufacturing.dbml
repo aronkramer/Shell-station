@@ -121,16 +121,6 @@
       <Association Name="CuttingInstruction_ReceivingItemsTransaction" Member="CuttingInstruction" ThisKey="CuttingInstuctionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.CuttingInstructionDetails" Member="CuttingInstructionDetails">
-    <Type Name="CuttingInstructionDetail">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="CuttingInstructionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Item_CuttingInstructionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
-      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstruction" ThisKey="CuttingInstructionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.CuttingInstructions" Member="CuttingInstructions">
     <Type Name="CuttingInstruction">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -139,8 +129,8 @@
       <Column Name="MarkerText" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="MarkerCatId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="CuttingInstruction_ReceivingItemsTransaction" Member="ReceivingItemsTransactions" ThisKey="Id" OtherKey="CuttingInstuctionId" Type="ReceivingItemsTransaction" />
-      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="CuttingInstructionId" Type="CuttingInstructionDetail" />
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstructionSizes" ThisKey="Id" OtherKey="CuttingInstructId" Type="CuttingInstructionSize" />
+      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="CuttingInstructionId" Type="CuttingInstructionDetail" />
       <Association Name="MarkerCategory_CuttingInstruction" Member="MarkerCategory" ThisKey="MarkerCatId" OtherKey="Id" Type="MarkerCategory" IsForeignKey="true" />
       <Association Name="Production_CuttingInstruction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
     </Type>
@@ -152,6 +142,17 @@
       <Column Name="CuttingInstructId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstruction" ThisKey="CuttingInstructId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
       <Association Name="Size_CuttingInstructionSize" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CuttingInstructionDetails" Member="CuttingInstructionDetails">
+    <Type Name="CuttingInstructionDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CuttingInstructionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Packaging" Type="Packaging" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstruction" ThisKey="CuttingInstructionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
+      <Association Name="Item_CuttingInstructionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -254,13 +254,23 @@ namespace ProductionTracker.Web.Excel
                                     break;
                                 }
                                 var layers = (string)cuttingInstructions.Rows[x][1];
+                                var packagingText = (string)cuttingInstructions.Rows[x][3];
+                                var packaging = Packaging.BOX;
+                                if(packagingText != null)
+                                {
+                                    if(packagingText.ToUpper() == "HANG")
+                                    {
+                                        packaging = Packaging.HANG;
+                                    }
+                                }
                                 if (!String.IsNullOrEmpty(layers) && int.TryParse(layers, out int layersInt))
                                 {
                                     marker.ColorMaterials.Add(new ColorMaterial
                                     {
                                         Color = color,
                                         Material = matireal,
-                                        Layers = layersInt
+                                        Layers = layersInt,
+                                        Packaging = packaging
                                     });
                                 }
                                 else { break; }
@@ -326,7 +336,8 @@ namespace ProductionTracker.Web.Excel
                                             {
                                                 ItemId = dbItem.Id,
                                                 Item = dbItem,
-                                                Quantity = itemQuantity
+                                                Quantity = itemQuantity,
+                                                Packaging = colmat.Packaging
                                             });
                                         }
                                     }
@@ -390,7 +401,8 @@ namespace ProductionTracker.Web.Excel
                         {
                             Color = c.Item.Color.Name,
                             Material = c.Item.Material.Name,
-                            Layers = c.Quantity / amountPerLayer
+                            Layers = c.Quantity / amountPerLayer,
+                            Packaging = c.Packaging
                         };
 
                     }).ToList()
@@ -420,7 +432,7 @@ namespace ProductionTracker.Web.Excel
                         rowCount++;
                         ws.Cell(rowCount,1).Value = $"{colMat.Color} {colMat.Material}";
                         ws.Cell(rowCount,2).Value = colMat.Layers;
-                        ws.Cell(rowCount,4).Value = "BOX";
+                        ws.Cell(rowCount,4).Value = colMat.Packaging.ToString();
                     }
                     rowCount++;
                     rowCount++;

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packaging.cs" />
     <Compile Include="ItemQuantity.cs" />
     <Compile Include="ItemRepository.cs" />
     <Compile Include="ProductionRespository.cs" />

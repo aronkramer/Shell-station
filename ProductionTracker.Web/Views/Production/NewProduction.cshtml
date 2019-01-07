@@ -64,6 +64,9 @@
         font-size: 12px;
         padding: 2px;
     }
+    option{
+        text-align-last:center;
+    }
 </style>
 <div id="prodApp" class="container">
     <div class="col-md-8 col-md-offset-2" v-if="production == null">
@@ -187,7 +190,14 @@
                                             </datalist>
                                         </td>
                                         <td><input type="text" @("@")change="vaidateMarker(MarkerIndex)" v-model="colMat.Layers" v-bind:class="[ colMat.Layers > 0 ? '': 'hasError' ]"/> </td>
-                                        <td><input type="text" /></td>
+                                        <td>
+                                            <select @("@")change="vaidateMarker(MarkerIndex)" v-bind:class="[ packagingOptions.some(i => i.value === colMat.Packaging) ? '': 'hasError' ]" v-model="colMat.Packaging">
+                                                <option disabled value="">Please select one</option>
+                                                <option v-for="option in packagingOptions" v-bind:value="option.value">
+                                                    {{ option.text }}
+                                                </option>
+                                            </select> 
+                                        </td>
                                         <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-danger remove-btn">X</button></td>
                                     </tr>
                                 </template>

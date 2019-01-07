@@ -9,6 +9,8 @@ using System.Text;
 using ClosedXML.Excel;
 using System.IO;
 
+
+
 namespace ProductionTracker.Web.Controllers
 {
     public class ProductionController : Controller
@@ -30,6 +32,7 @@ namespace ProductionTracker.Web.Controllers
             production = AddLotNumbers(production);
             var errors = ExcelActions.GetErrors();
             Session["Production"] = production;
+            var type = Packaging.BOX.GetType().EnumToJson();
             return Json(new { production, errors },JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -59,7 +62,8 @@ namespace ProductionTracker.Web.Controllers
                             Item = new
                             {
                                 i.Item.SKU
-                            }
+                            },
+                            i.Packaging
                         };
                     })
                 };
@@ -72,13 +76,17 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var prod = new Production { Date = production.Date };
             repo.AddProduction(prod);
-            foreach (var cI in production.CuttingInstructions)
+            if(production.CuttingInstructions.Count() > 0)
             {
                 var lastLot = LastLotNumber();
                 if (lastLot >= production.CuttingInstructions[0].LotNumber)
                 {
                     production.CuttingInstructions = production.CuttingInstructions.Select((m, i) => { m.LotNumber = lastLot + 1 + i; return m; }).ToList();
                 }
+            }
+            foreach (var cI in production.CuttingInstructions)
+            {
+                
 
                     var cutInst = new CuttingInstruction
                 {
@@ -108,7 +116,8 @@ namespace ProductionTracker.Web.Controllers
                     {
                         CuttingInstructionId = cutInst.Id,
                         ItemId = cd.ItemId,
-                        Quantity = cd.Quantity
+                        Quantity = cd.Quantity,
+                        Packaging = cd.Packaging
                     };
                 });
                 repo.AddCTDetails(ctd);
@@ -120,6 +129,7 @@ namespace ProductionTracker.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionDetail> items)
         {
@@ -131,6 +141,7 @@ namespace ProductionTracker.Web.Controllers
             Session["ItemsWithErrors"] = null;
             return RedirectToAction("NewProduction");
         }
+
         public ActionResult GetItemId(string sku)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
@@ -138,17 +149,20 @@ namespace ProductionTracker.Web.Controllers
 
             return item != null ? Json(new { item.Id, item.SKU }, JsonRequestBehavior.AllowGet): null;
         }
+
         public ActionResult GetProductionInProgress()
         {
             var hi = (ProductionForCT)Session["Production"];
             return Json((ProductionForCT)Session["Production"] ?? null, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetMarker(string markerName)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var marker = repo.GetMarkerCategory(markerName.ToUpper());
             return Json(new { marker = marker == null ? null : new { marker.Id, marker.Name } } , JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetValidatoinLists()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
@@ -166,6 +180,7 @@ namespace ProductionTracker.Web.Controllers
 
             }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetLastLotNUmber()
         {
             return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
@@ -235,6 +250,22 @@ namespace ProductionTracker.Web.Controllers
             }
 
             httpResponse.End();
+        }
+    }
+    public static class EnumExtensions
+    {
+        public static string EnumToJson(this Type type)
+        {
+            if (!type.IsEnum)
+                throw new InvalidOperationException("enum expected");
+
+            var results =
+                Enum.GetValues(type).Cast<object>()
+                    .ToDictionary(enumValue => enumValue.ToString(), enumValue => (int)enumValue);
+
+
+            return string.Format("{{ \"{0}\" : {1} }}", type.Name, Newtonsoft.Json.JsonConvert.SerializeObject(results));
+
         }
     }
 }

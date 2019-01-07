@@ -23,7 +23,11 @@
         materials: [],
         sizes: [],
         markers: [],
-        formVaild: false
+        formVaild: false,
+        packagingOptions: [
+            { text: 'BOX', value: 0 },
+            { text: 'HANG', value: 1 }
+        ]
     },
     methods: {
         getProductionInProgress: function (func) {
@@ -165,7 +169,7 @@
                     //this.sizes = allSizes;
                 }
                 if (!element.AmountPerLayer) {
-                    marker.errors.push(`Size:${element.Name} has no layers! Either add a number or remove`);
+                    marker.errors.push(`Size:${element.Name} has no layers count! Either add a number or remove`);
                 }
             });
             marker.ColorMaterials.forEach(element => {
@@ -184,7 +188,11 @@
                 if (!element.Layers) {
                     marker.errors.push(`Color ${element.Color} & Material ${element.Material} has no layers! Either add a number or remove`);
                 }
+                if (!this.packagingOptions.some(i => i.value === element.Packaging)) {
+                    marker.errors.push(`Color ${element.Color} & Material ${element.Material} has no packaging! Either choose one or remove`);
+                }
             });
+            
             this.production.Markers[markerIndex] = marker;
             var hasErros = this.production.Markers.some(function (i) {
                 return i.errors.length > 0;
@@ -219,7 +227,8 @@
                             return {
                                 Id: i.Id,
                                 ItemId: i.ItemId,
-                                Quantity: i.Quantity
+                                Quantity: i.Quantity,
+                                Packaging: i.Packaging
                             };
                         })
                     };

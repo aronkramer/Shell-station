@@ -36,6 +36,7 @@ namespace ProductionTracker.Web.Excel
         public string Color { get; set; }
         public string Material { get; set; }
         public int Layers { get; set; }
+        public Packaging Packaging { get; set; }
     }
     public class SizeWithLayer
     {
@@ -87,4 +88,5 @@ namespace ProductionTracker.Web.Excel
             return 5;
         }
     }
+    
 }
