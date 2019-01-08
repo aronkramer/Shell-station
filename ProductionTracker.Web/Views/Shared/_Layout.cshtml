@@ -35,7 +35,7 @@
         {
             <div class="alert alert-success">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                @ViewBag.Message
+               @Html.Raw(ViewBag.Message)
             </div>
         }
         else if (ViewBag.ErrorMessage != null)
