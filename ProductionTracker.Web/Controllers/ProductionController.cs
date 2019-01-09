@@ -122,7 +122,7 @@ namespace ProductionTracker.Web.Controllers
                 });
                 repo.AddCTDetails(ctd);
             }
-            TempData["Message"] = $"You susseffully added a new production with {production.CuttingInstructions.Count()} cuttting instuctoins from lot number{production.CuttingInstructions[0].LotNumber} - {production.CuttingInstructions[production.CuttingInstructions.Count() - 1].LotNumber}." +
+            TempData["Message"] = $"You susseffully added a new production with {production.CuttingInstructions.Count()} cuttting instuctoins from lot number {production.CuttingInstructions[0].LotNumber} - {production.CuttingInstructions[production.CuttingInstructions.Count() - 1].LotNumber}." +
                 $"<br/> {production.CuttingInstructions.Select(c => c.Items.Count()).Sum()} Items. Total pieces: {production.CuttingInstructions.Select(c => c.Items.Sum(i => i.Quantity)).Sum()} ";
         }
         public ActionResult NewProductionConfimation()
