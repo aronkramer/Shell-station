@@ -50,6 +50,9 @@
             if (this.production.Markers.length > 0) {
                 this.vaidateMarker(0);
             }
+            else {
+                this.formVaild = false;
+            }
         },
         removeColorMat: function (event, marIndex, Index) {
             console.log(Index);
@@ -174,10 +177,10 @@
             });
             marker.ColorMaterials.forEach(element => {
                 if (element.Color) {
-                    element.Color.toUpperCase();
+                    element.Color = element.Color.toUpperCase();
                 }
                 if (element.Material) {
-                    element.Material.toUpperCase();
+                    element.Material = element.Material.toUpperCase();
                 }
                 if (!this.colors.includes(element.Color)) {
                     marker.errors.push(`Color:${element.Color} was not found`);
@@ -192,6 +195,12 @@
                     marker.errors.push(`Color ${element.Color} & Material ${element.Material} has no packaging! Either choose one or remove`);
                 }
             });
+            if (!marker.ColorMaterials.length) {
+                marker.errors.push('you have no fabic chossen');
+            }
+            if (!marker.Sizes.length) {
+                marker.errors.push('you have no sizes chossen');
+            }
             
             this.production.Markers[markerIndex] = marker;
             var hasErros = this.production.Markers.some(function (i) {
@@ -251,7 +260,8 @@
             });
         },
         getSumOfLayersPerMarker: function (marker) {
-            return marker.ColorMaterials.map(function (c) { return c.Layers; }).reduce((a, b) => parseInt(a) + parseInt(b), 0);
+            return marker.Sizes.map(function (c) { return c.AmountPerLayer; }).reduce((a, b) => parseInt(a) + parseInt(b), 0)
+                * marker.ColorMaterials.map(function (c) { return c.Layers; }).reduce((a, b) => parseInt(a) + parseInt(b), 0);
         },
         updateLotNumbers: function () {
             this.production.Markers.forEach((element, index) => {
