@@ -232,18 +232,24 @@
                     return {
                         Marker: ct.Marker,
                         LotNumber: ct.LotNumber,
-                        Items: ct.Items.map(i => {
+                        Details: ct.Details.map(d => {
                             return {
-                                Id: i.Id,
-                                ItemId: i.ItemId,
-                                Quantity: i.Quantity,
-                                Packaging: i.Packaging
+                                ColorMaterial: d.ColorMaterial,
+                                Items: d.Items.map(i => {
+                                    return {
+                                        Id: i.Id,
+                                        ItemId: i.ItemId,
+                                        Quantity: i.Quantity,
+                                        Packaging: i.Packaging
+                                    };
+                                })
                             };
                         })
+                        
                     };
                 })
             };
-            $.post('/production/SubmitProduction', { production: finalprod }, () => window.location = '/');
+            $.post('/production/SubmitProduction', { production: finalprod }, () => window.location = '/production/newproduction');
         },
         getTheDataTables: function (func) {
             $.get('/production/GetValidatoinLists', result => {

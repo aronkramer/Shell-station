@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manufacturing.cs">
+      <DependentUpon>Manufacturing.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Packaging.cs" />
     <Compile Include="ItemQuantity.cs" />
     <Compile Include="ItemRepository.cs" />

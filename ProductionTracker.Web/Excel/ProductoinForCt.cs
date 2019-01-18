@@ -34,7 +34,9 @@ namespace ProductionTracker.Web.Excel
     public class ColorMaterial
     {
         public string Color { get; set; }
+        public int ColorId { get; set; }
         public string Material { get; set; }
+        public int MaterialId { get; set; }
         public int Layers { get; set; }
         public Packaging Packaging { get; set; }
     }
@@ -48,10 +50,11 @@ namespace ProductionTracker.Web.Excel
     public class ErrorsAndItems
     {
         public DateTime Date { get; set; }
-        public List<CuttingInstructionDetail> Items { get; set; }
+        public List<CuttingInstructionItem> Items { get; set; }
         public List<string> Errors { get; set; }
 
     }
+    
     public class FinalProduction
     {
         public FinalProduction()
@@ -62,28 +65,34 @@ namespace ProductionTracker.Web.Excel
         public List<CuttingInstructionWithMarker> CuttingInstructions { get; set; }
 
     }
+    public class CuttingItsructionDetailsWithItems
+    {
+        public ColorMaterial ColorMaterial { get; set; }
+        public List<CuttingInstructionItem> Items { get; set; }
+    }
     public class CuttingInstructionWithMarker
     {
         public int LotNumber { get; set; }
-        public List<CuttingInstructionDetail> Items { get; set; }
+        
+        public List<CuttingItsructionDetailsWithItems> Details { get; set; }
         public Finalmarker Marker {get;set;}
     }
     public class Finalmarker
     {
         public string Name { get; set; }
-        public int Id { get; set; }
+        public int MarkerCatId { get; set; }
         public bool AllSizes { get; set; }
         public IEnumerable<SizeWithLayer> Sizes { get; set; }
         public string MarkerSizeText { get; set; }
     }
-    public class ItemMatColComparer : IEqualityComparer<CuttingInstructionDetail>
+    public class ItemMatColComparer : IEqualityComparer<CuttingInstructionItem>
     {
-        public bool Equals(CuttingInstructionDetail x, CuttingInstructionDetail y)
+        public bool Equals(CuttingInstructionItem x, CuttingInstructionItem y)
         {
             return x.Item.ColorId == y.Item.ColorId && x.Item.MaterialId == y.Item.MaterialId;
         }
 
-        public int GetHashCode(CuttingInstructionDetail obj)
+        public int GetHashCode(CuttingInstructionItem obj)
         {
             return 5;
         }

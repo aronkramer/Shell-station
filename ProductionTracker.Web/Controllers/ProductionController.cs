@@ -32,7 +32,6 @@ namespace ProductionTracker.Web.Controllers
             production = AddLotNumbers(production);
             var errors = ExcelActions.GetErrors();
             Session["Production"] = production;
-            var type = Packaging.BOX.GetType().EnumToJson();
             return Json(new { production, errors },JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -52,20 +51,28 @@ namespace ProductionTracker.Web.Controllers
                 {
                     ct.Marker,                   
                     ct.LotNumber,
-                    Items = ct.Items.Select(i =>
+                    Details = ct.Details.Select(d=>
                     {
                         return new
                         {
-                            i.Id,
-                            i.ItemId,
-                            i.Quantity,
-                            Item = new
+                            d.ColorMaterial,
+                            Items = d.Items.Select(i =>
                             {
-                                i.Item.SKU
-                            },
-                            i.Packaging
+                                return new
+                                {
+                                    i.Id,
+                                    i.ItemId,
+                                    i.Quantity,
+                                    Item = new
+                                    {
+                                        i.Item.SKU
+                                    },
+                                    i.Packaging
+                                };
+                            })
                         };
-                    })
+                    }),
+                    
                 };
             })
             }, errors }, JsonRequestBehavior.AllowGet);
@@ -87,60 +94,86 @@ namespace ProductionTracker.Web.Controllers
             foreach (var cI in production.CuttingInstructions)
             {
                 
-
+                
                     var cutInst = new CuttingInstruction
                 {
                     ProductionId = prod.Id,
                     LotNumber = cI.LotNumber,
                     MarkerText = cI.Marker.MarkerSizeText,
-                    MarkerCatId = cI.Marker.Id
+                    MarkerId = MarkerId(cI.Marker)
                 };
                 repo.AddCuttingTicket(cutInst);
-                if (!cI.Marker.AllSizes)
+                //if (!cI.Marker.AllSizes)
+                //{
+                //    var sizes = cI.Marker.Sizes.Select(s =>
+                //    {
+                //        return new CuttingInstructionSize
+                //        {
+                //            SizeId = s.SizeId,
+                //            AmountPerLayer = s.AmountPerLayer,
+                //            CuttingInstructId = cutInst.Id
+                //        };
+                //    });
+                //    repo.AddCTSizes(sizes);
+                //}
+                foreach (var ctd in cI.Details)
                 {
-                    var sizes = cI.Marker.Sizes.Select(s =>
+                    var newCtd = new CuttingInstructionDetail
                     {
-                        return new CuttingInstructionSize
+                        FabricId = GetFabricId(ctd.ColorMaterial.MaterialId, ctd.ColorMaterial.ColorId),
+                        Layers = ctd.ColorMaterial.Layers,
+                        CuttingInstructionId = cutInst.Id
+                    };
+                    repo.AddCTDetail(newCtd);
+                    var ctdI = ctd.Items.Select(cd =>
+                    {
+                        return new CuttingInstructionItem
                         {
-                            SizeId = s.SizeId,
-                            AmountPerLayer = s.AmountPerLayer,
-                            CuttingInstructId = cutInst.Id
+                            CuttingInstructionDetailsId = newCtd.Id,
+                            ItemId = cd.ItemId,
+                            Quantity = cd.Quantity,
+                            Packaging = cd.Packaging
                         };
                     });
-                    repo.AddCTSizes(sizes);
+                    repo.AddCTItems(ctdI);
                 }
-                
-                var ctd = cI.Items.Select(cd => 
-                {
-                    return new CuttingInstructionDetail
-                    {
-                        CuttingInstructionId = cutInst.Id,
-                        ItemId = cd.ItemId,
-                        Quantity = cd.Quantity,
-                        Packaging = cd.Packaging
-                    };
-                });
-                repo.AddCTDetails(ctd);
+
+                //var ctd = cI.Items.Select(cd => 
+                //{
+                //    return new CuttingInstructionItem
+                //    {
+                //        CuttingInstructionDetailsId = cutInst.Id,
+                //        ItemId = cd.ItemId,
+                //        Quantity = cd.Quantity,
+                //        Packaging = cd.Packaging
+                //    };
+                //});
+                //repo.AddCTDetails(ctd);
             }
             TempData["Message"] = $"You susseffully added a new production with {production.CuttingInstructions.Count()} cuttting instuctoins from lot number {production.CuttingInstructions[0].LotNumber} - {production.CuttingInstructions[production.CuttingInstructions.Count() - 1].LotNumber}." +
-                $"<br/> {production.CuttingInstructions.Select(c => c.Items.Count()).Sum()} Items. Total pieces: {production.CuttingInstructions.Select(c => c.Items.Sum(i => i.Quantity)).Sum()} ";
+                $"<br/> {production.CuttingInstructions.Select(c => c.Details.Sum(co => co.Items.Count())).Sum()} Items. Total pieces: {production.CuttingInstructions.Select(c => c.Details.Sum(co => co.Items.Sum(i => i.Quantity))).Sum()} ";
         }
         public ActionResult NewProductionConfimation()
         {
             return View();
         }
 
-        [HttpPost]
-        public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionDetail> items)
+        public ActionResult Season()
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            repo.AddCuttingTicket(instruction);
-            items = items.Select(i => { i.CuttingInstructionId = instruction.Id; return i; });
-            repo.AddCTDetails(items);
-            //TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
-            Session["ItemsWithErrors"] = null;
-            return RedirectToAction("NewProduction");
+            return View();
         }
+
+        //[HttpPost]
+        //public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionItem> items)
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    repo.AddCuttingTicket(instruction);
+        //    items = items.Select(i => { i.CuttingInstructionDetailsId = instruction.Id; return i; });
+        //    repo.AddCTDetails(items);
+        //    //TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
+        //    Session["ItemsWithErrors"] = null;
+        //    return RedirectToAction("NewProduction");
+        //}
 
         public ActionResult GetItemId(string sku)
         {
@@ -217,10 +250,52 @@ namespace ProductionTracker.Web.Controllers
                         markerSize.Append($"-{size.Name}_{size.AmountPerLayer}");
                     }
                 }
+
             }
             marker.MarkerSizeText = markerSize.ToString();
             //return markerSize.ToString();
             
+        }
+        private int GetFabricId(int matId, int colId)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var fabric = new Fabric { MaterialId = matId, ColorId = colId };
+            var existingFabric = repo.GetFabric(fabric);
+            if(existingFabric != null)
+            {
+                return existingFabric.Id;
+            }
+            else
+            {
+                repo.AddFabric(fabric);
+                return fabric.Id;
+            }
+        }
+
+        private int MarkerId (Finalmarker marker)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var sizes = marker.Sizes.Select(s =>
+            {
+                return new MarkerDetail
+                {
+                    SizeId = s.SizeId,
+                    AmountPerLayer = s.AmountPerLayer
+                };
+            });
+            var existingMarker = repo.GetMarker(marker.MarkerCatId,sizes.ToList());
+            if(existingMarker != null)
+            {
+                return existingMarker.Id;
+            }
+            else
+            {
+                var newMarker = new Marker { MarkerCatId = marker.MarkerCatId };
+                repo.AddMarker(newMarker);
+                sizes = sizes.Select(s => { s.MarkerId = newMarker.Id; return s; });
+                repo.AddMarkerDetails(sizes);
+                return newMarker.Id;
+            }
         }
         public void DownloadCuttingInstuctions(int productionId)
         {

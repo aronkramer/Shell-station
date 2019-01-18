@@ -128,6 +128,21 @@ namespace ProductionTracker.Data
             }
         }
 
+        public Fabric GetFabric(Fabric fabric)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Fabrics.FirstOrDefault(f => f.MaterialId == fabric.MaterialId && f.ColorId == fabric.ColorId);
+            }
+        }
+        public void AddFabric(Fabric fabric)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.Fabrics.InsertOnSubmit(fabric);
+                context.SubmitChanges();
+            }
+        }
 
         public MarkerCategory GetMarkerCategory(string name)
         {
@@ -147,6 +162,34 @@ namespace ProductionTracker.Data
             }
         }
 
+        public Marker GetMarker(int catId, List<MarkerDetail> Sizes)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var markers = context.Markers.Where(m => m.MarkerCatId == catId).Where(m => m.MarkerDetails.Count() == Sizes.Count()).ToList();
+                var marker =  markers.FirstOrDefault(m => m.MarkerDetails.All(x => Sizes.Any(y => x.SizeId == y.SizeId && x.AmountPerLayer == y.AmountPerLayer)));
+                return marker;
+
+            }
+        } 
+
+        public void AddMarker(Marker marker)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.Markers.InsertOnSubmit(marker);
+                context.SubmitChanges();
+            }
+        }
+
+        public void AddMarkerDetails(IEnumerable<MarkerDetail> markerDetails)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.MarkerDetails.InsertAllOnSubmit(markerDetails);
+                context.SubmitChanges();
+            }
+        }
 
         public Material GetMaterial(int id)
         {
@@ -207,7 +250,6 @@ namespace ProductionTracker.Data
             }
         }
 
-
         public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -215,10 +257,9 @@ namespace ProductionTracker.Data
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<MarkerDetail>(mc => mc.Size);
                 context.LoadOptions = loadOptions;
-                return context.MarkerDetails.Where(md => md.MarkerCatId == markerId).ToList();
+                return context.MarkerDetails.Where(md => md.MarkerId == markerId).ToList();
             }
         }
-
 
         public void AddProduction (Production production)
         {
@@ -247,11 +288,20 @@ namespace ProductionTracker.Data
             }
         }
 
-        public void AddCTDetails(IEnumerable<CuttingInstructionDetail> instructionDetails)
+        public void AddCTItems(IEnumerable<CuttingInstructionItem> instructionDetails)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                context.CuttingInstructionDetails.InsertAllOnSubmit(instructionDetails);
+                context.CuttingInstructionItems.InsertAllOnSubmit(instructionDetails);
+                context.SubmitChanges();
+            }
+        }
+
+        public void AddCTDetail(CuttingInstructionDetail instructionDetail)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.CuttingInstructionDetails.InsertOnSubmit(instructionDetail);
                 context.SubmitChanges();
             }
         }
@@ -265,15 +315,18 @@ namespace ProductionTracker.Data
             }
         }
 
+        
+
         public CuttingInstruction GetInstruction(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 loadOptions.LoadWith<ReceivingItemsTransaction>(r => r.Item);
-                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                loadOptions.LoadWith<CuttingInstructionItem>(pd => pd.Item);
                 context.LoadOptions = loadOptions;
                 return context.CuttingInstructions.FirstOrDefault(ct => ct.Id == id);
             }
@@ -285,6 +338,7 @@ namespace ProductionTracker.Data
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 context.LoadOptions = loadOptions;
                 return context.CuttingInstructions.ToList();
@@ -297,6 +351,7 @@ namespace ProductionTracker.Data
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
                 context.LoadOptions = loadOptions;
@@ -310,10 +365,11 @@ namespace ProductionTracker.Data
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
                 loadOptions.LoadWith<ReceivingItemsTransaction>(r => r.Item);
-                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
+                loadOptions.LoadWith<CuttingInstructionItem>(pd => pd.Item);
                 context.LoadOptions = loadOptions;
                 return context.Productions.FirstOrDefault(p => p.Id == id);
             }
@@ -325,13 +381,10 @@ namespace ProductionTracker.Data
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
-                loadOptions.LoadWith<CuttingInstruction>(p => p.MarkerCategory);
-                loadOptions.LoadWith<MarkerCategory>(p => p.MarkerDetails);
-                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionSizes);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.Fabric);
+                loadOptions.LoadWith<Fabric>(p => p.Color);
+                loadOptions.LoadWith<Fabric>(p => p.Material);
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
-                loadOptions.LoadWith<CuttingInstructionDetail>(pd => pd.Item);
-                loadOptions.LoadWith<Item>(pd => pd.Color);
-                loadOptions.LoadWith<Item>(pd => pd.Material);
                 context.LoadOptions = loadOptions;
                 return context.Productions.FirstOrDefault(p => p.Id == id);
             }
@@ -343,12 +396,14 @@ namespace ProductionTracker.Data
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 context.LoadOptions = loadOptions;
                 return context.CuttingInstructions.Where(i =>
-                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(d => d.Quantity): 0)
+                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
                 != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).ToList();
+                
                 
             }
         }
@@ -357,7 +412,7 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                //loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionItems);
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
                 context.LoadOptions = loadOptions;
@@ -366,12 +421,12 @@ namespace ProductionTracker.Data
                 {
                     if(productin.CuttingInstructions.Count() > 0)
                     {
-                        var cuttingInstructionDetailsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionDetails.Count() > 0).Sum(c => c.CuttingInstructionDetails.Sum(cd => cd.Quantity));
-                        var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
-                        if(cuttingInstructionDetailsSum != recivedItemSum)
-                        {
-                            prods.Add(productin);
-                        }
+                        //var CuttingInstructionItemsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionItems.Count() > 0).Sum(c => c.CuttingInstructionItems.Sum(cd => cd.Quantity));
+                        //var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
+                        //if(CuttingInstructionItemsSum != recivedItemSum)
+                        //{
+                        //    prods.Add(productin);
+                        //}
                     }
                 }
                 return prods.ToList();
@@ -382,21 +437,22 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
-                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
-                context.LoadOptions = loadOptions;
-                return context.CuttingInstructions.Where(i =>
-                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(d => d.Quantity) : 0)
-                != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
+                //var loadOptions = new DataLoadOptions();
+                //loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionItems);
+                //loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                //context.LoadOptions = loadOptions;
+                //return context.CuttingInstructions.Where(i =>
+                //(i.CuttingInstructionItems.Count() > 0 ? i.CuttingInstructionItems.Sum(d => d.Quantity) : 0)
+                //!= (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
+                return null;
             }
         }
 
-        public CuttingInstructionDetail GetInstructionDetail(int id)
+        public CuttingInstructionItem GetInstructionDetail(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.CuttingInstructionDetails.FirstOrDefault(d => d.Id == id);
+                return context.CuttingInstructionItems.FirstOrDefault(d => d.Id == id);
             }
         }
 
@@ -404,7 +460,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                context.ExecuteCommand("UPDATE CuttingInstructionDetails SET Quantity = {0} WHERE Id = {1}", quantity, Id);
+                context.ExecuteCommand("UPDATE CuttingInstructionItems SET Quantity = {0} WHERE Id = {1}", quantity, Id);
             }
         } 
     }

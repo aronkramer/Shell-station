@@ -17,11 +17,11 @@ namespace ProductionTracker.Web.Controllers
             ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
             return View();
         }
-        
+
         public ActionResult GetAllItemsWithDetails(bool isInCuttingTicket)
         {
             var ProdRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var openedCTIDs = ProdRepo.GetOpenedInstructionsIds();
+            //var openedCTIDs = ProdRepo.GetOpenedInstructionsIds();
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             if (isInCuttingTicket)
             {
@@ -31,12 +31,12 @@ namespace ProductionTracker.Web.Controllers
                     {
                         Item = i,
                         Quantitys = repo.GetQuantitysPerItem(i),
-                        LastCuttingInstruction =  repo.LastCuttingInstruction(i)
+                        LastCuttingInstruction = repo.LastCuttingInstruction(i)
                     };
                 });
                 return Json(itemsWithextras.Select(it =>
                 {
-                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item, openedCTIDs.ToList());
+                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item);
                     return new
                     {
                         it.Item.Id,
@@ -50,150 +50,151 @@ namespace ProductionTracker.Web.Controllers
             }
             else
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i =>
-                {
-                    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i.Id);
-                    return new ItemWithQuantityVM
-                    {
-                        Item = i,
-                        Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
-                        LastCuttingInstruction = isInCuttingInstruction ? repo.LastCuttingInstruction(i) : null
-                    };
-                });
-                return Json(itemsWithextras.Select(it =>
-                {
-                    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item.Id);
-                    return new
-                    {
-                        it.Item.Id,
-                        it.Item.SKU,
-                        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstruction.Production.Date.ToShortDateString() : "--------",
-                        ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
-                        PercentageRecived = isInCuttingInstruction ? string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
-                    //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
-                };
-                }), JsonRequestBehavior.AllowGet);
+                //var itemsWithextras = repo.GetItemsInCuttingInstruction().Select(i =>
+                //{
+                //    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(i.Id);
+                //    return new ItemWithQuantityVM
+                //    {
+                //        Item = i,
+                //        Quantitys = isInCuttingInstruction ? repo.GetQuantitysPerItem(i) : null,
+                //        LastCuttingInstruction = isInCuttingInstruction ? repo.LastCuttingInstruction(i) : null
+                //    };
+                //});
+                //return Json(itemsWithextras.Select(it =>
+                //{
+                //    var isInCuttingInstruction = repo.ItemExsitsInCuttingInstruction(it.Item.Id);
+                //    return new
+                //    {
+                //        it.Item.Id,
+                //        it.Item.SKU,
+                //        LastCuttingInstructionDate = isInCuttingInstruction ? it.LastCuttingInstruction.Production.Date.ToShortDateString() : "--------",
+                //        ItemsNotReceived = isInCuttingInstruction ? (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString() : "--------",
+                //        PercentageRecived = isInCuttingInstruction ? string.Format("{0:P}", double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered) : "--------"
+                //        PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
+                //    };
+                //}), JsonRequestBehavior.AllowGet);
+                return null;
             }
         }
 
-        public ActionResult GetAllActivityOfAItem (int id)
-        {
-            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var item = repo.GetItemWithActivity(id);
-            var activity = new List<ItemActivity>();
-            foreach (var recived in item.ReceivingItemsTransactions)
-            {
-                activity.Add(new ItemActivity
-                {
-                    Id = recived.Id,
-                    Type = ActivityType.Received,
-                    Date = recived.Date.ToShortDateString(),
-                    Quantity = recived.Quantity,
-                    CuttingInstructionId = recived.CuttingInstuctionId
-                });
-            }
-            foreach (var CuttingInstruction in item.CuttingInstructionDetails)
-            {
-                activity.Add(new ItemActivity
-                {
-                    Id = CuttingInstruction.Id,
-                    Type = ActivityType.Ordered,
-                    Date = CuttingInstruction.CuttingInstruction.Production.Date.ToShortDateString(),
-                    Quantity = CuttingInstruction.Quantity,
-                    CuttingInstructionId = CuttingInstruction.CuttingInstructionId,
+        //public ActionResult GetAllActivityOfAItem(int id)
+        //{
+        //    var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+        //    var item = repo.GetItemWithActivity(id);
+        //    var activity = new List<ItemActivity>();
+        //    foreach (var recived in item.ReceivingItemsTransactions)
+        //    {
+        //        activity.Add(new ItemActivity
+        //        {
+        //            Id = recived.Id,
+        //            Type = ActivityType.Received,
+        //            Date = recived.Date.ToShortDateString(),
+        //            Quantity = recived.Quantity,
+        //            CuttingInstructionId = recived.CuttingInstuctionId
+        //        });
+        //    }
+        //    foreach (var CuttingInstruction in item.CuttingInstructionDetails)
+        //    {
+        //        activity.Add(new ItemActivity
+        //        {
+        //            Id = CuttingInstruction.Id,
+        //            Type = ActivityType.Ordered,
+        //            Date = CuttingInstruction.CuttingInstruction.Production.Date.ToShortDateString(),
+        //            Quantity = CuttingInstruction.Quantity,
+        //            CuttingInstructionId = CuttingInstruction.CuttingInstructionId,
 
-                });
-            }
-            return Json(new
-            {
-                item = new
-                {
-                    Id = item.Id,
-                    SKU = item.SKU,
-                    Name = item.SKU
-                },
-                activity = activity
-                .OrderByDescending(a => a.Date)
-            }, JsonRequestBehavior.AllowGet);
-        }
+        //        });
+        //    }
+        //    return Json(new
+        //    {
+        //        item = new
+        //        {
+        //            Id = item.Id,
+        //            SKU = item.SKU,
+        //            Name = item.SKU
+        //        },
+        //        activity = activity
+        //        .OrderByDescending(a => a.Date)
+        //    }, JsonRequestBehavior.AllowGet);
+        //}
 
-        public ActionResult GetCuttingInstructionsWithInfo()
-        {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var CuttingInstructions = repo.GetOpenedProductions();
-            
-            return Json(CuttingInstructions.Select(p =>
-            {
-                var sumor = p.CuttingInstructions.Sum(c=>  c.CuttingInstructionDetails.Sum(pd => pd.Quantity));
-                var sumre = p.CuttingInstructions.Sum(c => c.ReceivingItemsTransactions.Sum(re => re.Quantity));
-                return new
-                {
-                    Date = p.Date.ToShortDateString(),
-                    Lot = string.Join(",",p.CuttingInstructions.Select(c=> c.LotNumber)),
-                    Id = p.Id,
-                    TotalItems = sumor,
-                    ItemsNotReceived = sumor - sumre,
-                    PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
+        //public ActionResult GetCuttingInstructionsWithInfo()
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    var CuttingInstructions = repo.GetOpenedProductions();
 
-                };
-            }).OrderByDescending(p => p.Date), JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(CuttingInstructions.Select(p =>
+        //    {
+        //        var sumor = p.CuttingInstructions.Sum(c => c.CuttingInstructionDetails.Sum(pd => pd.Quantity));
+        //        var sumre = p.CuttingInstructions.Sum(c => c.ReceivingItemsTransactions.Sum(re => re.Quantity));
+        //        return new
+        //        {
+        //            Date = p.Date.ToShortDateString(),
+        //            Lot = string.Join(",", p.CuttingInstructions.Select(c => c.LotNumber)),
+        //            Id = p.Id,
+        //            TotalItems = sumor,
+        //            ItemsNotReceived = sumor - sumre,
+        //            PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
 
-        public ActionResult GetDeatilsOfACuttingInstruction(int id)
-        {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var result = repo.GetProduction(id);
-            var details = new List<CutingIntructionDetailsVM>();
-                result.CuttingInstructions.ToList().ForEach(c => c.CuttingInstructionDetails.ToList().ForEach(pd =>
-            {
-                var received = result.CuttingInstructions.Select(rt => rt.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == c.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity)).Sum();
+        //        };
+        //    }).OrderByDescending(p => p.Date), JsonRequestBehavior.AllowGet);
+        //}
 
-                details.Add (new CutingIntructionDetailsVM
-                 {
-                     Id = pd.ItemId,
-                     SKU = pd.Item.SKU,
-                     OrderedId = pd.Id,
-                     Ordered = pd.Quantity,
-                     Received = received,
-                     PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity),
-                     Lot = pd.CuttingInstruction.LotNumber,
-                     CuttingInstructionId = pd.CuttingInstructionId
-                     
-                 });
+        //public ActionResult GetDeatilsOfACuttingInstruction(int id)
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    var result = repo.GetProduction(id);
+        //    var details = new List<CutingIntructionDetailsVM>();
+        //    result.CuttingInstructions.ToList().ForEach(c => c.CuttingInstructionDetails.ToList().ForEach(pd =>
+        //{
+        //    var received = result.CuttingInstructions.Select(rt => rt.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == c.Id && ri.ItemId == pd.ItemId).Sum(ri => ri.Quantity)).Sum();
 
-            }));
-            return Json(new
-            {
-                Production = new
-                {
-                   Name = $"Production from {result.Date.ToShortDateString()}",
-                   Id = result.Id,
-                   Date = result.Date.ToShortDateString(),
-                   CuttingIntrustionIds = result.CuttingInstructions.Select(c => c.Id)
-                    
-                },
-                details
-            },JsonRequestBehavior.AllowGet);
-        }
+        //    details.Add(new CutingIntructionDetailsVM
+        //    {
+        //        Id = pd.ItemId,
+        //        SKU = pd.Item.SKU,
+        //        OrderedId = pd.Id,
+        //        Ordered = pd.Quantity,
+        //        Received = received,
+        //        PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pd.Quantity),
+        //        Lot = pd.CuttingInstruction.LotNumber,
+        //        CuttingInstructionId = pd.CuttingInstructionId
 
-        [HttpPost]
-        public void AddRecivedItems(IEnumerable<RecivingItemWithOrdered> items)
-        {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            UpdateCuttinginstructions(items);
-            var itemsRecived = items.Where(i => i.Quantity != 0).Select(i => 
-            {
-                return new ReceivingItemsTransaction
-                {
-                    Adjusment = false,
-                    ItemId = i.ItemId,
-                    CuttingInstuctionId = i.CuttingInstuctionId,
-                    Date = i.Date,
-                    Quantity =i.Quantity
-                };
-            });
-            repo.AddItemsRecived(itemsRecived);
-        }
+        //    });
+
+        //}));
+        //    return Json(new
+        //    {
+        //        Production = new
+        //        {
+        //            Name = $"Production from {result.Date.ToShortDateString()}",
+        //            Id = result.Id,
+        //            Date = result.Date.ToShortDateString(),
+        //            CuttingIntrustionIds = result.CuttingInstructions.Select(c => c.Id)
+
+        //        },
+        //        details
+        //    }, JsonRequestBehavior.AllowGet);
+        //}
+
+        //[HttpPost]
+        //public void AddRecivedItems(IEnumerable<RecivingItemWithOrdered> items)
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    UpdateCuttinginstructions(items);
+        //    var itemsRecived = items.Where(i => i.Quantity != 0).Select(i =>
+        //    {
+        //        return new ReceivingItemsTransaction
+        //        {
+        //            Adjusment = false,
+        //            ItemId = i.ItemId,
+        //            CuttingInstuctionId = i.CuttingInstuctionId,
+        //            Date = i.Date,
+        //            Quantity = i.Quantity
+        //        };
+        //    });
+        //    repo.AddItemsRecived(itemsRecived);
+        //}
 
         //public ActionResult NewMarker()
         //{
@@ -222,25 +223,25 @@ namespace ProductionTracker.Web.Controllers
         //    }), JsonRequestBehavior.AllowGet);
         //}
 
-        public ActionResult NewCuttingInstruction()
-        {
-            return View();
-        }
+        //public ActionResult NewCuttingInstruction()
+        //{
+        //    return View();
+        //}
 
-        private void UpdateCuttinginstructions (IEnumerable< RecivingItemWithOrdered> recivingItemWithOrdereds)
-        {
-            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            foreach (var item in recivingItemWithOrdereds)
-            {
-                var Quantys = repo.GetQuantitysPerItemFromCT(item.ItemId, item.CuttingInstuctionId);
-                if(Quantys.AmountOrdered < Quantys.AmountReceived + item.Quantity)
-                {
-                    prodRepo.UpdateCID(item.OrderedId, Quantys.AmountReceived + item.Quantity);
-                }
+        //private void UpdateCuttinginstructions(IEnumerable<RecivingItemWithOrdered> recivingItemWithOrdereds)
+        //{
+        //    var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+        //    var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    foreach (var item in recivingItemWithOrdereds)
+        //    {
+        //        var Quantys = repo.GetQuantitysPerItemFromCT(item.ItemId, item.CuttingInstuctionId);
+        //        if (Quantys.AmountOrdered < Quantys.AmountReceived + item.Quantity)
+        //        {
+        //            prodRepo.UpdateCID(item.OrderedId, Quantys.AmountReceived + item.Quantity);
+        //        }
 
-            }
-        }
+        //    }
+        //}
     }
-    
+
 }

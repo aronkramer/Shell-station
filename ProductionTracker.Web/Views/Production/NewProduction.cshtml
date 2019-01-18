@@ -160,7 +160,7 @@
                 <div class="col-md-10 col-md-offset-1">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                        <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" @("@") change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
+                        <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
                         <datalist id="markers">
                             <option v-for="marker in markers">{{marker}}</option>
                         </datalist>
@@ -188,13 +188,13 @@
                                             <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                                         </div>
                                         <div class="size-element">
-                                            <input type="text" @("@") change="vaidateMarker(MarkerIndex)" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
                                             <datalist id="sizes">
                                                 <option v-for="x in sizes">{{x.Name}}</option>
                                             </datalist>
                                         </div>
                                         <div class="size-element" v-if="marker.Sizes.length > 1">
-                                            <input type="text" @("@") change="vaidateMarker(MarkerIndex)" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
                                         </div>
                                     </div>
                                     @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
@@ -221,20 +221,20 @@
                                 <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
                                     <tr>
                                         <td>
-                                            <input type="text" list="colors" @("@") change="vaidateMarker(MarkerIndex)" v-bind:class="[colors.includes(colMat.Color) ? '': 'hasError' ]" v-model="colMat.Color" />
+                                            <input type="text" list="colors" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[colors.includes(colMat.Color) ? '': 'hasError' ]" v-model="colMat.Color" />
                                             <datalist id="colors">
                                                 <option v-for="x in colors">{{x}}</option>
                                             </datalist>
                                         </td>
                                         <td>
-                                            <input type="text" @("@") change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials" v-model="colMat.Material" />
+                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials" v-model="colMat.Material" />
                                             <datalist id="materials">
                                                 <option v-for="x in materials">{{x}}</option>
                                             </datalist>
                                         </td>
-                                        <td><input type="text" @("@") change="vaidateMarker(MarkerIndex)" v-model="colMat.Layers" v-bind:class="[ colMat.Layers > 0 ? '': 'hasError' ]" /> </td>
+                                        <td><input type="text" v-on:hange="vaidateMarker(MarkerIndex)" v-model="colMat.Layers" v-bind:class="[ colMat.Layers > 0 ? '': 'hasError' ]" /> </td>
                                         <td>
-                                            <select @("@") change="vaidateMarker(MarkerIndex)" v-bind:class="[ packagingOptions.some(i => i.value === colMat.Packaging) ? '': 'hasError' ]" v-model="colMat.Packaging">
+                                            <select v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ packagingOptions.some(i => i.value === colMat.Packaging) ? '': 'hasError' ]" v-model="colMat.Packaging">
                                                 <option disabled value="">Please select one</option>
                                                 <option v-for="option in packagingOptions" v-bind:value="option.value">
                                                     {{ option.text }}
@@ -271,7 +271,7 @@
                 <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
                     <h3><label>Marker:</label>{{cts.Marker.MarkerSizeText}}</h3>
                     <p><label>Lot #:</label>{{cts.LotNumber}}</p>
-                    <div class="row" v-if="cts.Items.length > 0">
+                    <div class="row" v-if="cts.Details.length > 0">
                         <div class="col-md-8 col-md-offset-2">
                             <table class=" table table-bordered table-striped table-responsive">
                                 <tr>
@@ -279,8 +279,8 @@
                                     <th>SKU</th>
                                     <th>Quantity</th>
                                 </tr>
-                                <template v-for="item in cts.Items">
-                                    <tr>
+                                <template v-for="detail in cts.Details">
+                                    <tr v-for="item in detail.Items">
                                         <td><input readonly type="text" v-model="item.ItemId" /></td>
                                         <td><input readonly type="text" v-model="item.Item.SKU" /></td>
                                         <td><input readonly type="text" v-model="item.Quantity" /></td>

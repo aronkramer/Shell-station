@@ -6617,6 +6617,7 @@
     <Content Include="Views\Production\NewProductionConfimation.cshtml" />
     <Content Include="Scripts\SiteScripts\prod-conf.vue" />
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
+    <Content Include="Views\Production\Season.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

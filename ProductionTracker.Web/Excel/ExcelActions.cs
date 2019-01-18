@@ -70,7 +70,7 @@ namespace ProductionTracker.Web.Excel
                 AddErrorMsg($"Sorry the date {tempDate} is in the wrong format we are going to use the current date instead");
             }
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var items = new List<CuttingInstructionDetail>();
+            var items = new List<CuttingInstructionItem>();
             foreach (var marker in production.Markers)
             {
                 var markerCat = repo.GetMarkerCategory(marker.Name);
@@ -109,7 +109,7 @@ namespace ProductionTracker.Web.Excel
                                         var itemQuantity = colmat.Layers * s.AmountPerLayer;
                                         if (itemQuantity > 0)
                                         {
-                                            items.Add(new CuttingInstructionDetail
+                                            items.Add(new CuttingInstructionItem
                                             {
                                                 ItemId = dbItem.Id,
                                                 Item = dbItem,
@@ -295,26 +295,36 @@ namespace ProductionTracker.Web.Excel
             finalProduction.Date = production.Date;
             foreach (var marker in production.Markers)
             {
-                var items = new List<CuttingInstructionDetail>();
+
+                var details = new List<CuttingItsructionDetailsWithItems>();
                 var markerCat = repo.GetMarkerCategory(marker.Name);
                 if (NotNull(markerCat))
                 {
 
-                    var sizes = marker.Sizes;
-                    foreach (var s in sizes)
-                    {
 
-                        foreach (var colmat in marker.ColorMaterials)
+
+                    foreach (var colmat in marker.ColorMaterials)
+                    {
+                        var colorId = repo.GetColorId(colmat.Color);
+                        if (!NotNull(colorId))
                         {
-                            var colorId = repo.GetColorId(colmat.Color);
-                            if (!NotNull(colorId))
+                            colorId = repo.GetColorDetailsId(colmat.Color);
+                        }
+                        if (NotNull(colorId))
+                        {
+                            colmat.ColorId = (int)colorId;
+                            var mat = repo.GetMaterialId(colmat.Material);
+                            if (NotNull(mat))
                             {
-                                colorId = repo.GetColorDetailsId(colmat.Color);
-                            }
-                            if (NotNull(colorId))
-                            {
-                                var mat = repo.GetMaterialId(colmat.Material);
-                                if (NotNull(mat))
+                                colmat.MaterialId = (int)mat;
+                                var detail = new CuttingItsructionDetailsWithItems
+                                {
+                                    ColorMaterial = colmat,
+                                    Items = new List<CuttingInstructionItem>()
+                                };
+
+                                var sizes = marker.Sizes;
+                                foreach (var s in sizes)
                                 {
                                     var item = new Item
                                     {
@@ -332,13 +342,14 @@ namespace ProductionTracker.Web.Excel
                                         var itemQuantity = colmat.Layers * s.AmountPerLayer;
                                         if (itemQuantity > 0)
                                         {
-                                            items.Add(new CuttingInstructionDetail
+                                            detail.Items.Add(new CuttingInstructionItem
                                             {
                                                 ItemId = dbItem.Id,
                                                 Item = dbItem,
                                                 Quantity = itemQuantity,
                                                 Packaging = colmat.Packaging
                                             });
+
                                         }
                                     }
                                     else
@@ -346,24 +357,26 @@ namespace ProductionTracker.Web.Excel
                                         AddErrorMsg("item", $"with size:{item.SizeId}, Material:{item.MaterialId},Color:{item.ColorId},Department:{item.DepartmentId},BodyStyle:{item.BodyStyleId}, Sleeve:{item.SleeveId}");
                                     }
                                 }
-                                else
-                                {
-                                    AddErrorMsg("materieal", colmat.Material);
-                                }
+                                details.Add(detail);
                             }
                             else
                             {
-                                AddErrorMsg("Color", colmat.Color);
+                                AddErrorMsg("materieal", colmat.Material);
                             }
                         }
+                        else
+                        {
+                            AddErrorMsg("Color", colmat.Color);
+                        }
+
                     }
                     finalProduction.CuttingInstructions.Add(new CuttingInstructionWithMarker
                     {
                         LotNumber = marker.LotNumber,
-                        Items = items,
+                        Details = details,
                         Marker = new Finalmarker
                         {
-                            Id = markerCat.Id,
+                            MarkerCatId = markerCat.Id,
                             Name = markerCat.Name,
                             AllSizes = marker.AllSizes,
                             Sizes = marker.Sizes
@@ -375,9 +388,9 @@ namespace ProductionTracker.Web.Excel
                 {
                     AddErrorMsg("marker", marker.Name);
                 }
-                
+
             }
-            
+
             return finalProduction;
         }
 
@@ -393,15 +406,15 @@ namespace ProductionTracker.Web.Excel
                 {
                     Name = ci.MarkerText,
                     LotNumber = ci.LotNumber,
-                    ColorMaterials = ci.CuttingInstructionDetails.Distinct(cprer).Select(c =>
+                    ColorMaterials = ci.CuttingInstructionDetails.Select(c =>
                     {
 
-                        var amountPerLayer = ci.CuttingInstructionSizes.Count() > 0 ? ci.CuttingInstructionSizes.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer : ci.MarkerCategory.MarkerDetails.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer;
+                        //var amountPerLayer = ci.CuttingInstructionSizes.Count() > 0 ? ci.CuttingInstructionSizes.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer : ci.MarkerCategory.MarkerDetails.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer;
                         return new ColorMaterial
                         {
-                            Color = c.Item.Color.Name,
-                            Material = c.Item.Material.Name,
-                            Layers = c.Quantity / amountPerLayer,
+                            Color = c.Fabric.Color.Name,
+                            Material = c.Fabric.Material.Name,
+                            Layers = c.Layers,
                             Packaging = c.Packaging
                         };
 
