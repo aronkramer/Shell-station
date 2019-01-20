@@ -82,19 +82,22 @@ namespace ProductionTracker.Data
             }
         }
 
-        //public ItemQuantity GetQuantitysPerItemFromCT(int Id, int cuttingTicketId)
-        //{
+        public ItemQuantity GetQuantitysPerItemFromCT(int Id, int cuttingTicketId)
+        {
 
-        //    using (var context = new ManufacturingDataContext(_connectionString))
-        //    {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
 
-        //        return new ItemQuantity
-        //        {
-        //            AmountOrdered = context.CuttingInstructionDetails.Where(i => i.ItemId == Id && i.CuttingInstructionId == cuttingTicketId).Count() > 0 ? context.CuttingInstructionDetails.Where(i => i.ItemId == Id && i.CuttingInstructionId == cuttingTicketId).Sum(p => p.Quantity) : 0,
-        //            AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Sum(p => p.Quantity) : 0
-        //        };
-        //    }
-        //}
+                return new ItemQuantity
+                {
+                    AmountOrdered = context.CuttingInstructionItems
+                    .Where(i => i.ItemId == Id && i.CuttingInstructionDetail.CuttingInstructionId == cuttingTicketId).Count() > 0 ? context.CuttingInstructionItems
+                    .Where(i => i.ItemId == Id && i.CuttingInstructionDetail.CuttingInstructionId == cuttingTicketId)
+                    .Sum(p => p.Quantity) : 0,
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == Id && i.CuttingInstuctionId == cuttingTicketId).Sum(p => p.Quantity) : 0
+                };
+            }
+        }
 
         public CuttingInstruction LastCuttingInstruction(Item item)
         {
@@ -123,20 +126,21 @@ namespace ProductionTracker.Data
         //    }
         //}
 
-        //public Item GetItemWithActivity(int id)
-        //{
-        //    using (var context = new ManufacturingDataContext(_connectionString))
-        //    {
-        //        var loadOptions = new DataLoadOptions();
-        //        loadOptions.LoadWith<Item>(i => i.CuttingInstructionItems);
-        //        loadOptions.LoadWith<Item>(i => i.ReceivingItemsTransactions);
-        //        loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstruction);
-        //        loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
-        //        context.LoadOptions = loadOptions;
-        //        return context.Items.FirstOrDefault(i => i.Id == id);
+        public Item GetItemWithActivity(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<Item>(i => i.CuttingInstructionItems);
+                loadOptions.LoadWith<Item>(i => i.ReceivingItemsTransactions);
+                loadOptions.LoadWith<CuttingInstructionItem>(p => p.CuttingInstructionDetail);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstruction);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
+                context.LoadOptions = loadOptions;
+                return context.Items.FirstOrDefault(i => i.Id == id);
 
-        //    }
-        //}
+            }
+        }
 
         //public IEnumerable<Item> GetUniqueItemsAndUnquieSKU(List<Item> items)
         //{

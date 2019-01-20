@@ -119,7 +119,13 @@ namespace ProductionTracker.Web.Excel
                                     }
                                     else
                                     {
-                                        AddErrorMsg("item", $"with size:{item.SizeId}, Material:{item.MaterialId},Color:{item.ColorId},Department:{item.DepartmentId},BodyStyle:{item.BodyStyleId}, Sleeve:{item.SleeveId}");
+                                        var size = repo.GetSize(item.SizeId).Name;
+                                        var material = repo.GetMaterial(item.MaterialId).Name;
+                                        var color = repo.GetColor(item.ColorId).Name;
+                                        var department = repo.GetDepartment(item.DepartmentId).Name;
+                                        var bodyStyle = repo.GetBodyStyle(item.BodyStyleId).Name;
+                                        var sleeve = repo.GetSleeve(item.SleeveId).Name;
+                                        AddErrorMsg("item", $"with size:{size}, Material:{material},Color:{color},Department:{department},BodyStyle:{bodyStyle}, Sleeve:{sleeve}");
                                     }
                                 }
                                 else
@@ -336,6 +342,10 @@ namespace ProductionTracker.Web.Excel
                                         SizeId = s.SizeId
 
                                     };
+                                    if(item.MaterialId == 3 && item.ColorId == 34)
+                                    {
+                                        item.ColorId = 36;
+                                    }
                                     var dbItem = repo.GetItem(item);
                                     if (NotNull(dbItem))
                                     {
@@ -354,7 +364,13 @@ namespace ProductionTracker.Web.Excel
                                     }
                                     else
                                     {
-                                        AddErrorMsg("item", $"with size:{item.SizeId}, Material:{item.MaterialId},Color:{item.ColorId},Department:{item.DepartmentId},BodyStyle:{item.BodyStyleId}, Sleeve:{item.SleeveId}");
+                                        var size = repo.GetSize(item.SizeId).Name;
+                                        var material = repo.GetMaterial(item.MaterialId).Name;
+                                        var color = repo.GetColor(item.ColorId).Name;
+                                        var department = repo.GetDepartment(item.DepartmentId).Name;
+                                        var bodyStyle = repo.GetBodyStyle(item.BodyStyleId).Name;
+                                        var sleeve = repo.GetSleeve(item.SleeveId).Name;
+                                        AddErrorMsg("item", $"with size:{size}, Material:{material},Color:{color},Department:{department},BodyStyle:{bodyStyle}, Sleeve:{sleeve}");
                                     }
                                 }
                                 details.Add(detail);

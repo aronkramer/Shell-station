@@ -24,14 +24,38 @@ namespace ProductionTracker.Data
             }
         }
 
-        public Color GetColor (int id)
+        public Department GetDepartment(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Departments.FirstOrDefault(c => c.Id == id);
+            }
+        }
+
+        public BodyStyle GetBodyStyle(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.BodyStyles.FirstOrDefault(c => c.Id == id);
+            }
+        }
+
+        public Sleeve GetSleeve (int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Sleeves.FirstOrDefault(c => c.Id == id);
+            }
+        }
+
+        public Color GetColor(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 return context.Colors.FirstOrDefault(c => c.Id == id);
             }
         }
-        
+
         public Color GetColor(string name)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -250,13 +274,14 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
+        public IEnumerable<MarkerDetail> GetMarkerDetails(int markerCatId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<MarkerDetail>(mc => mc.Size);
                 context.LoadOptions = loadOptions;
+                var markerId = context.MarkerCategories.FirstOrDefault(mc => mc.Id == markerCatId).DefaltMarkerId;
                 return context.MarkerDetails.Where(md => md.MarkerId == markerId).ToList();
             }
         }
@@ -421,12 +446,12 @@ namespace ProductionTracker.Data
                 {
                     if(productin.CuttingInstructions.Count() > 0)
                     {
-                        //var CuttingInstructionItemsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionItems.Count() > 0).Sum(c => c.CuttingInstructionItems.Sum(cd => cd.Quantity));
-                        //var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
-                        //if(CuttingInstructionItemsSum != recivedItemSum)
-                        //{
-                        //    prods.Add(productin);
-                        //}
+                        var CuttingInstructionItemsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionDetails.Count() > 0).Sum(c => c.CuttingInstructionDetails.Sum(cd => cd.CuttingInstructionItems.Sum(d => d.Quantity)));
+                        var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
+                        if (CuttingInstructionItemsSum != recivedItemSum)
+                        {
+                            prods.Add(productin);
+                        }
                     }
                 }
                 return prods.ToList();

@@ -217,12 +217,15 @@
         saveProdToItems: function () {
             //var date = new Date(parseInt(this.production.Date));
             //this.production.Date = date.toJSON();
+            if (confirm('do you want to continue')) {
+
             this.updateLotNumbers();
             $.post('/production/ConvertCTToItems', { production: this.production }, result => {
                 this.finalProduction = result.prodItems;
                 this.finalProduction.Date = this.getDateInputFormat(result.prodItems.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
                 this.errors = result.errors;
             });
+            }
         },
         submitProduction: function () {
             
