@@ -54,6 +54,7 @@
       <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="Item_ReceivingItemsTransaction" Member="ReceivingItemsTransactions" ThisKey="Id" OtherKey="ItemId" Type="ReceivingItemsTransaction" />
       <Association Name="Item_CuttingInstructionItem" Member="CuttingInstructionItems" ThisKey="Id" OtherKey="ItemId" Type="CuttingInstructionItem" />
+      <Association Name="Item_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="ItemId" Type="PlannedProductionDetail" />
       <Association Name="BodyStyle_Item" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
       <Association Name="Color_Item" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
       <Association Name="Department_Item" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
@@ -205,6 +206,7 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="ProductionCatergory_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="ProductionCatergoryId" Type="CuttingInstruction" />
+      <Association Name="ProductionCatergory_PlannedProduction" Member="PlannedProductions" ThisKey="Id" OtherKey="ProductionCatergoryId" Type="PlannedProduction" />
     </Type>
   </Table>
   <Table Name="dbo.MarkerCategories" Member="MarkerCategories">
@@ -220,6 +222,25 @@
       <Association Name="BodyStyle_MarkerCategory" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
       <Association Name="Department_MarkerCategory" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
       <Association Name="Sleeve_MarkerCategory" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlannedProductions" Member="PlannedProductions">
+    <Type Name="PlannedProduction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductionCatergoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProductionCatYear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="PlannedProductionId" Type="PlannedProductionDetail" />
+      <Association Name="ProductionCatergory_PlannedProduction" Member="ProductionCatergory" ThisKey="ProductionCatergoryId" OtherKey="Id" Type="ProductionCatergory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlannedProductionDetails" Member="PlannedProductionDetails">
+    <Type Name="PlannedProductionDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PlannedProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Item_PlannedProductionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
+      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

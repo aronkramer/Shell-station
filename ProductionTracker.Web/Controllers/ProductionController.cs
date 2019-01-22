@@ -158,7 +158,7 @@ namespace ProductionTracker.Web.Controllers
             return View();
         }
 
-        public ActionResult Season()
+        public ActionResult PlannedProduction()
         {
             return View();
         }
@@ -194,6 +194,35 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var marker = repo.GetMarkerCategory(markerName.ToUpper());
             return Json(new { marker = marker == null ? null : new { marker.Id, marker.Name } } , JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetSKUsList()
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var skus = repo.GetItems().Select(i =>
+            {
+                return new
+                {
+                    i.Id,
+                    i.SKU
+                };
+            });
+            return Json(skus, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetProductionCats()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var prodCats = repo.GetProductionCatergories()
+                .Select(pc =>
+                {
+                    return new
+                    {
+                        pc.Id,
+                        pc.Name
+                    };
+                });
+            return Json(prodCats, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetValidatoinLists()

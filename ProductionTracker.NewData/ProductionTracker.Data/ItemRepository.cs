@@ -71,12 +71,21 @@ namespace ProductionTracker.Data
 
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                var openedCTIDs = context.CuttingInstructions.Where(i =>
-                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
-                != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id);
+                var openedCTIDs = context.CuttingInstructions
+                    .Where(i => (i.CuttingInstructionDetails
+                .Count() > 0 ? i.CuttingInstructionDetails
+                .Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
+                != (i.ReceivingItemsTransactions
+                .Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id);
                 return new ItemQuantity
                 {
-                    AmountOrdered = context.CuttingInstructionItems.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstructionDetail.CuttingInstructionId)).Count() > 0 ? context.CuttingInstructionItems.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstructionDetail.CuttingInstructionId)).Sum(p => p.Quantity) : 0,
+                    AmountOrdered = context.CuttingInstructionItems
+                    .Where(i => i.ItemId == item.Id && openedCTIDs
+                    .Contains(i.CuttingInstructionDetail.CuttingInstructionId)).Count() > 0 ? 
+                    context.CuttingInstructionItems
+                    .Where(i => i.ItemId == item.Id && openedCTIDs
+                    .Contains(i.CuttingInstructionDetail.CuttingInstructionId))
+                    .Sum(p => p.Quantity) : 0,
                     AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Sum(p => p.Quantity) : 0
                 };
             }
@@ -186,6 +195,14 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 return context.Items.FirstOrDefault(i => i.SKU == sku.ToUpper());
+            }
+        }
+
+        public IEnumerable<Item> GetItems()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Items.ToList();
             }
         }
     }

@@ -340,7 +340,13 @@ namespace ProductionTracker.Data
             }
         }
 
-        
+        public IEnumerable<ProductionCatergory> GetProductionCatergories()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.ProductionCatergories.ToList();
+            }
+        }
 
         public CuttingInstruction GetInstruction(int id)
         {

@@ -6592,6 +6592,7 @@
     <Content Include="Scripts\SiteScripts\new-marker.js" />
     <Content Include="Scripts\SiteScripts\new-production-Vue.js" />
     <Content Include="Scripts\SiteScripts\new-production.js" />
+    <Content Include="Scripts\SiteScripts\planned-production.js" />
     <Content Include="Scripts\SiteScripts\prod-confrimation-vue.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
@@ -6617,7 +6618,7 @@
     <Content Include="Views\Production\NewProductionConfimation.cshtml" />
     <Content Include="Scripts\SiteScripts\prod-conf.vue" />
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
-    <Content Include="Views\Production\Season.cshtml" />
+    <Content Include="Views\Production\PlannedProduction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

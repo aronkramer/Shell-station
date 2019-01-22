@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "Planned Production";
+}
+<style>
+    .increment-number-input {
+        width: 40px;
+    }
+
+    .small-input {
+        width: 50px;
+        text-align: center;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+    .head-input {
+        margin-bottom: 50px;
+    }
+</style>
+
+<div id="pp-app">
+    <datalist id="skus">
+        <option v-for="x in validationLists.skus">{{x.SKU}}</option>
+    </datalist>
+    <datalist id="production-catergories">
+        <option v-for="x in validationLists.prodCats">{{x.Name}}</option>
+    </datalist>
+    <datalist id="materials">
+        <option v-for="x in validationLists.materials">{{x}}</option>
+    </datalist>
+    <datalist id="colors">
+        <option v-for="x in validationLists.colors">{{x}}</option>
+    </datalist>
+    <datalist id="sizes">
+        <option v-for="x in validationLists.sizes">{{x.Name}}</option>
+    </datalist>
+    <datalist id="markers">
+        <option v-for="x in validationLists.markers">{{x}}</option>
+    </datalist>
+    <div class="row">
+        <div class="row head-input">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="form-inline" style="text-align:center;">
+                    <div class="form-group">
+                        <input placeholder="Production Catergory" type="text" list="production-catergories" class="form-control" v-model="productionCat" />
+                    </div>
+                    <div class="form-group">
+                        <input placeholder="Production Catergory Year" type="number" class="form-control" v-model="productionCatYear" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-social-dribbble font-green"></i>
+                            <span class="caption-subject font-green bold uppercase">Items</span>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default" v-on:click="addSkuRows(rowIncremntNumber)" href="javascript:;">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </a>
+                            <input type="number" class="increment-number-input" v-model="rowIncremntNumber" />
+                            @*<a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-wrench"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-trash"></i>
+                                </a>*@
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> SKU </th>
+                                        <th> Quantity </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item,index) in items">
+                                        <td>{{item.Id}}</td>
+                                        <td>
+                                            <input type="text" v-on:change="getIdOfSku(index)" @*v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="skus" v-model="item.SKU" />
+
+                                        </td>
+                                        <td>
+                                            <input type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@ v-model="item.Quantity" />
+                                        </td>
+                                        <td>
+                                            <button v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</button>
+                                        </td>
+
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-7 col-md-offset-1">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="caption-subject font-green bold uppercase">Items</span>
+                        </div>
+                        <div class="form-row-stripped">
+                            <label class="col-md-2 col-form-label" for="marker">Marker Catergory</label>
+                            <input class="col-md-2" type="text" list="markers" name="marker" v-model="productionWizard.marker" placeholder="Marker Catergory" />
+                            <label class="col-md-2 col-form-label" for="material">Material</label>
+                            <input class="col-md-2" type="text" list="materials" name="material" v-model="productionWizard.material" placeholder="Material" />
+                        </div>
+
+                        <div class="actions">
+                            @*<a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-wrench"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-trash"></i>
+                                </a>*@
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Colors</th>
+                                        <template v-for="size in productionWizard.sizes">
+                                            <th>
+                                                <input class="small-input" type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="sizes" v-model="size.x" />
+                                            </th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(color,index) in productionWizard.colors">
+                                        <th>
+                                            <input type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="colors" v-model="color.x" />
+                                        </th>
+                                        <template v-for="qu in productionWizard.quatititys[index]">
+                                            <td>
+                                                <input class="small-input" type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@  v-model="qu.x" />
+                                            </td>
+                                        </template>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+
+
+
+
+</div>
+
+@section scripts{
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/SiteScripts/planned-production.js"></script>
+}
+
