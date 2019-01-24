@@ -3,11 +3,27 @@
     ViewBag.Title = "New Production";
 }
 <style>
+    .size-btn {
+        height: 26.979166px;
+    }
+    .allsize-btn {
+        height: 26.979166px;
+        width: 58.979166px;
+    }
+    .size-allsize-conainer {
+        width: 130px;
+        left: auto;
+        right: 55px;
+        bottom: 4px;
+    }
+    .size-allsize-conainer-all {
+        top: 25px !important;
+    }
     .title-cl {
-        font-weight: bold;
-        padding-top: 4px;
-        font-size: larger;
-        text-align: right;
+            font-weight: bold;
+            padding-top: 4px;
+            font-size: larger;
+            text-align: right;
     }
     [hidden] {
         display: none !important;
@@ -168,20 +184,30 @@
                         <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
                         <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
 
-                        <div v-if="!marker.AllSizes">
+                        <div>
                             <div class="size-container col-md-1">
-                                <button v-if="marker.Sizes.length < 1" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
-                                <div class="" v-else>
+                                <button  v-if="marker.Sizes.length < 1 && !marker.AllSizes " :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                <div class="" v-if="marker.Sizes.length >= 1 && !marker.AllSizes" >
                                     <button title="Add a size" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
                                 </div>
                                 <div class="size-element">
-                                    <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                                    <div class="clearfix">
+                                        <div v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
+                                            <label v-bind:class="[marker.AllSizes ? 'active': '']"  v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
+                                                <input type="radio" class="toggle"> All Sizes 
+                                            </label>
+                                            <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
+                                                <input type="radio" class="toggle"> Size/s:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @*<label class="col-md-1 col-form-label" for="Size">Size/s:</label>*@
                                 </div>
-                                <div class="size-element" v-if="marker.Sizes.length > 1">
+                                <div class="size-element" v-if="marker.Sizes.length > 1 && !marker.AllSizes">
                                     <label class="col-md-1 col-form-label" for="Size">Count:</label>
                                 </div>
                             </div>
-                            <div class="col-md-5">
+                            <div v-if="!marker.AllSizes" class="col-md-5">
                                 <template v-for="(size, sizeIndex) in marker.Sizes">
                                     <div class="size-container col-md-2">
                                         <div class="size-element" title="Remove this size">
@@ -202,14 +228,14 @@
                                 </template>
                             </div>
                         </div>
-                        <div v-else>
+                        @*<div v-else>
                             <div class="col-md-1">
                                 <label>All sizes</label>
                             </div>
                             <div class="col-md-1">
                                 <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
                             </div>
-                        </div>
+                        </div>*@
                         <div class="row" v-if="marker.ColorMaterials.length > 0">
                             <table class="table table-bordered table-striped table-responsive">
                                 <tr>

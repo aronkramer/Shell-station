@@ -206,6 +206,26 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<MarkerDetail> GetDefaltMarkerDetails(string name)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOption = new DataLoadOptions();
+                loadOption.LoadWith<MarkerDetail>(c => c.Size);
+                context.LoadOptions = loadOption;
+                var defaltId = context.MarkerCategories.FirstOrDefault(c => c.Name == name).DefaltMarkerId;
+                return context.MarkerDetails.Where(m => m.MarkerId == defaltId).ToList();
+            }
+        }
+
+        public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.MarkerDetails.Where(m => m.MarkerId == markerId).ToList();
+            }
+        }
+
         public void AddMarkerDetails(IEnumerable<MarkerDetail> markerDetails)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -274,7 +294,7 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<MarkerDetail> GetMarkerDetails(int markerCatId)
+        public IEnumerable<MarkerDetail> GetMarkerDetailsFromCat(int markerCatId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {

@@ -248,6 +248,23 @@ namespace ProductionTracker.Web.Controllers
             return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetDefaltSizesForAMarkerCat(string markerCatergoryName)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var sizes = repo.GetDefaltMarkerDetails(markerCatergoryName);
+            return Json(sizes.Select(c =>
+            {
+                return new
+                {
+                    c.SizeId,
+                    c.Size.Name,
+                    c.AmountPerLayer
+                };
+            }
+            ),JsonRequestBehavior.AllowGet);
+
+        }
+
         private int LastLotNumber()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);

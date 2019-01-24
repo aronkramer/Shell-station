@@ -276,8 +276,32 @@
             this.production.Markers.forEach((element, index) => {
                 element.LotNumber = this.production.LastLotNumber + index + 1;
             });
-        }
+        },
+        allSizeBtn: function (index) {
+            console.log('sdjkjsadhflk');
+            this.production.Markers[index].AllSizes = true;
+            var marker = this.production.Markers[index];
+            if (marker.Name && this.markers.includes(marker.Name)) {
+                $.get('/production/getDefaltSizesForAMarkerCat', { markerCatergoryName: marker.Name }, result => {
+                    marker.Sizes = result;
+                    this.production.Markers[index] = marker;
+                });
+            }
+            else {
+                console.log('in the else');
+                this.production.Markers[index].AllSizes = false;
+                setTimeout(removeTheClass, 5);
+                
+            }
+        },
+        sizeTogBtn: function (index) {
+            var marker = this.production.Markers[index];
+            console.log(1000);
+            marker.AllSizes = false;
+            this.production.Markers.splice(index,1, marker);
+            this.vaidateMarker(index);
 
+        }
     },
     computed: {
         productoinHide: function () {
@@ -315,4 +339,11 @@ function markerExist(markerName, func) {
         
         func(result);
     });
+}
+function removeTheClass() {
+                console.log('in the timout one');
+
+    $('.allsize-btn').removeClass('active focus');
+    $('.size-btn').addClass('active focus');
+
 }
