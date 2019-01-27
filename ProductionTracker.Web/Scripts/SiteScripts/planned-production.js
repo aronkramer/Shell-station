@@ -5,6 +5,7 @@
         this.getSkus();
         this.getProdCatsList();
         this.getTheDataTables();
+        this.makeTheItems();
     },
     data: {
         hello: 'hi',
@@ -17,14 +18,9 @@
         productionWizard: {
             marker: null,
             material: null,
-            colors: [{ x: 'black' }, { x: 'white' }, { x: 'red' }, { x: 'offwhite'.toUpperCase() }],
-            sizes: [{ x: 's' }, { x: 'm' }, { x: 'l' }, { x: 'xl'.toUpperCase() }],
-            quatititys: [
-                [{ x: 100 }, { x: 5000 }, { x: 3000 }, { x: 200 }],
-                [{ x: 50 }, { x: 65 }, { x: 200 }, { x: 500 }],
-                [{ x: null }, { x: null }, { x: null }, { x: null }],
-                [{ x: null }, { x: null }, { x: null }, { x: null }]
-            ]
+            colors: [{ Name: 'black' }, { Name: 'white' }, { Name: 'red' }, { Name: 'offwhite'.toUpperCase() }],
+            sizes: [{ Name: 's' }, { Name: 'm' }, { Name: 'l' }, { Name: 'xl' }],
+            items: [ ]
         },
         validationLists: {
             skus: null,
@@ -46,7 +42,7 @@
             });
         },
         getIdOfSku: function (index) {
-            var allskus = JSON.parse(JSON.stringify(this.skus));
+            var allskus = JSON.parse(JSON.stringify(this.validationLists.skus));
             var thisItem = this.items[index];
             thisItem.Id = allskus.filter(function (item) {
                 return item.SKU === thisItem.SKU;
@@ -72,6 +68,39 @@
                 
             });
         },
+        addColor: function(){
+            var color = { Name: '' };
+            var sizes = this.productionWizard.sizes;
+            
+            sizes.forEach(function (Size) {
+                var items = [];
+                items.push({ Size, color, Quantity: 0 });
+            });
+            this.productionWizard.items = items;
+            this.productionWizard.colors.push(color);
+        },
+        addSize: function () {
+            var color = { Name: '' };
+            var sizes = this.productionWizard.sizes;
+
+            sizes.forEach(function (Size) {
+                var items = [];
+                items.push({ Size, color, Quantity: 0 });
+            });
+            this.productionWizard.items = items;
+            this.productionWizard.colors.push(color);
+        },
+        makeTheItems: function () {
+            var colors = this.productionWizard.colors;
+            var sizes = this.productionWizard.sizes;
+            var items=[];
+            sizes.forEach(function (Size) {
+                colors.forEach(function (Color) {
+                    items.push({ Size, Color, Quantity: 0 });
+                });
+            });
+            this.productionWizard.items = items;
+        }
     }
 
 });

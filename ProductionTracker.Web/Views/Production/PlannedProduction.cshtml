@@ -6,12 +6,18 @@
     .increment-number-input {
         width: 40px;
     }
-
-    .small-input {
-        width: 50px;
-        text-align: center;
+    .smalll-table {
+        display: inline-flex;
+        width: unset;
     }
-
+    .small-input {
+        
+        text-align: center;
+        width:75px;
+    }
+    input::-webkit-calendar-picker-indicator {
+        display: none;
+    }
     input[type="number"] {
         -moz-appearance: textfield;
     }
@@ -81,7 +87,7 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
+                        <div class="table-scrollable smalll-table">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -95,11 +101,11 @@
                                     <tr v-for="(item,index) in items">
                                         <td>{{item.Id}}</td>
                                         <td>
-                                            <input type="text" v-on:change="getIdOfSku(index)" @*v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="skus" v-model="item.SKU" />
+                                            <input class="small-input" type="text" v-on:change="getIdOfSku(index)" @*v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="skus" v-model="item.SKU" />
 
                                         </td>
                                         <td>
-                                            <input type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@ v-model="item.Quantity" />
+                                            <input class="small-input" type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@ v-model="item.Quantity" />
                                         </td>
                                         <td>
                                             <button v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</button>
@@ -115,15 +121,13 @@
                 </div>
 
             </div>
-            <div class="col-md-7 col-md-offset-1">
+            <div class="col-md-8">
                 <div class="portlet light bordered">
                     <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject font-green bold uppercase">Items</span>
-                        </div>
+                        
                         <div class="form-row-stripped">
-                            <label class="col-md-2 col-form-label" for="marker">Marker Catergory</label>
-                            <input class="col-md-2" type="text" list="markers" name="marker" v-model="productionWizard.marker" placeholder="Marker Catergory" />
+                            <label class="col-md-3 col-form-label" for="marker">Marker Catergory</label>
+                            <input class="col-md-3" type="text" list="markers" name="marker" v-model="productionWizard.marker" placeholder="Marker Catergory" />
                             <label class="col-md-2 col-form-label" for="material">Material</label>
                             <input class="col-md-2" type="text" list="materials" name="material" v-model="productionWizard.material" placeholder="Material" />
                         </div>
@@ -138,28 +142,30 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
+                        <div class="table-scrollable smalll-table">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Colors</th>
+                                        <th >Colors</th>
                                         <template v-for="size in productionWizard.sizes">
-                                            <th>
-                                                <input class="small-input" type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="sizes" v-model="size.x" />
+                                            <th class="small-input">
+                                                <input class="small-input"  type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="sizes" v-model="size.Name" />
                                             </th>
                                         </template>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(color,index) in productionWizard.colors">
-                                        <th>
-                                            <input type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="colors" v-model="color.x" />
+                                        <th >
+                                            <input type="text" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]"*@ list="colors" v-model="color.Name" />
                                         </th>
-                                        <template v-for="qu in productionWizard.quatititys[index]">
-                                            <td>
-                                                <input class="small-input" type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@  v-model="qu.x" />
-                                            </td>
-                                        </template>
+                                        <template v-for="size in productionWizard.sizes">
+                                            @*<template v-for="size in productionWizard.colors">*@
+                                        <td class="small-input">
+                                                <input class="small-input"  type="number" @*v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials"*@ v-model="productionWizard.items.filter(c=> c.Size === size && c.Color === color)[0].Quantity" />
+                                        </td>
+                                            @*</template>*@
+                                   </template>
                                     </tr>
 
                                 </tbody>
@@ -172,14 +178,7 @@
         </div>
     </div>
 </div>
-    </div>
-
-
-
-
-
-</div>
-
+   
 @section scripts{
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/planned-production.js"></script>

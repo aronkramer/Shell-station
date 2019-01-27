@@ -6,42 +6,50 @@
     .size-btn {
         height: 26.979166px;
     }
+
     .allsize-btn {
         height: 26.979166px;
         width: 58.979166px;
     }
+
     .size-allsize-conainer {
         width: 130px;
         left: auto;
         right: 55px;
         bottom: 4px;
     }
+
     .size-allsize-conainer-all {
         top: 25px !important;
     }
+
     .title-cl {
-            font-weight: bold;
-            padding-top: 4px;
-            font-size: larger;
-            text-align: right;
+        font-weight: bold;
+        padding-top: 4px;
+        font-size: larger;
+        text-align: right;
     }
+
     [hidden] {
         display: none !important;
     }
+
     .remove-btn {
         font-weight: 800;
         font-size: 13px;
-        
     }
-    .size-remove-btn{
-        font-size:5px;
+
+    .size-remove-btn {
+        font-size: 5px;
     }
+
     .size-container {
         position: relative;
         width: 50px;
         height: 60px;
-        margin-bottom:15px;
+        margin-bottom: 15px;
     }
+
     .add-size-btn {
         padding-bottom: 0px;
         padding-top: 0px;
@@ -49,6 +57,7 @@
         height: 25px;
         width: 25px;
     }
+
     .size-element button {
         padding-top: 0px;
         padding-bottom: 0px;
@@ -57,44 +66,52 @@
         font-size: 10px;
         margin-left: 15px;
     }
+
     .page-header {
         text-align: center;
         height: 60px;
-        font-weight:bold;
-
+        font-weight: bold;
     }
+
     .size-element {
         width: 50px;
         height: 15px;
         margin: 5px auto;
     }
+
     .markerNumber {
         font-size: 35px;
         text-align: center;
         margin-top: 150%;
         margin-bottom: 150%;
     }
-    th{
-        text-align:center;
+
+    th {
+        text-align: center;
     }
+
     input[type="text"]::-webkit-calendar-picker-indicator {
         display: none;
     }
+
     .marker-input {
         padding: 1px 5px;
     }
+
     .hasError {
         color: red;
         border: 2px solid red;
     }
+
     .total-layers {
         border: 1px solid lightgrey;
         background-color: white;
         font-size: 12px;
         padding: 2px;
     }
-    option{
-        text-align-last:center;
+
+    option {
+        text-align-last: center;
     }
 </style>
 <div id="prodApp" class="container">
@@ -108,19 +125,19 @@
             </label>
         </div>
     </div>
-    
+   
     <div class="col-md-10" v-if="production == null">
         <h2 class="page-header">Create new production</h2>
 
 
-                <div class="form-group">
+        <div class="form-group">
 
             <label class="control-label col-md-2 title-cl">New production</label>
             <button class="btn  btn-success btn-circle control-label col-md-2" v-on:click="newProd">New</button>
             <form method="post" enctype="multipart/form-data">
                 @*<label class="btn btn-default">
-            Browse <input type="file" hidden >
-        </label>*@
+                        Browse <input type="file" hidden >
+                    </label>*@
                 @*<input style="background-color:aqua;" v-on:change="file = $event.target.files[0]" type="file" name="cuttingTicket" />*@
                 <label class="control-label col-md-3 title-cl">Existing production</label>
                 <button type="button" :disabled="file == null" v-on:click="fileUpload" class="btn btn-circle-left btn-danger control-label col-md-1">Submit</button>
@@ -159,9 +176,11 @@
     </div>
     <div class="row" v-if="production && !finalProduction" style="">
         <div class="col-md-6 col-md-offset-3">
+
             <div class="form-row">
+
                 <label class="col-md-2 col-form-label" for="date">Date</label>
-                <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
+                    <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
                 <label class="col-md-3 col-form-label" for="lot">Last Lot#</label>
                 <input type="text" class=" col-md-3" name="Lot_" v-model="production.LastLotNumber" />
             </div>
@@ -173,7 +192,7 @@
                     <button title="Remove this marker" :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-circle red-sunglo btn-sm">Remove</button>
                     <h2 class="markerNumber">{{MarkerIndex + 1}}</h2>
                 </div>
-                <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-11">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
                         <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
@@ -186,15 +205,15 @@
 
                         <div>
                             <div class="size-container col-md-1">
-                                <button  v-if="marker.Sizes.length < 1 && !marker.AllSizes " :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
-                                <div class="" v-if="marker.Sizes.length >= 1 && !marker.AllSizes" >
+                                <button v-if="marker.Sizes.length < 1 && !marker.AllSizes " :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                <div class="" v-if="marker.Sizes.length >= 1 && !marker.AllSizes">
                                     <button title="Add a size" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
                                 </div>
                                 <div class="size-element">
                                     <div class="clearfix">
                                         <div v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
-                                            <label v-bind:class="[marker.AllSizes ? 'active': '']"  v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
-                                                <input type="radio" class="toggle"> All Sizes 
+                                            <label v-bind:class="[marker.AllSizes ? 'active': '']" v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
+                                                <input type="radio" class="toggle"> All Sizes
                                             </label>
                                             <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
                                                 <input type="radio" class="toggle"> Size/s:
@@ -229,13 +248,13 @@
                             </div>
                         </div>
                         @*<div v-else>
-                            <div class="col-md-1">
-                                <label>All sizes</label>
-                            </div>
-                            <div class="col-md-1">
-                                <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
-                            </div>
-                        </div>*@
+                                <div class="col-md-1">
+                                    <label>All sizes</label>
+                                </div>
+                                <div class="col-md-1">
+                                    <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+                                </div>
+                            </div>*@
                         <div class="row" v-if="marker.ColorMaterials.length > 0">
                             <table class="table table-bordered table-striped table-responsive">
                                 <tr>
@@ -331,14 +350,16 @@
     </div>
 
 </div>
-    @section css{
-        <link href="~/Metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css"/>
-        }
-    @section scripts{
-        <script src="~/Metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
-        <script src="~/Scripts/vue.js"></script>
-        <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
-        <script src="~/Scripts/SiteScripts/new-production.js"></script>
-    }
-
+@section css{
+    <link href="~/Metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+    <link href="~/Metronic/theme/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" type="text/css" />
+}
+@section scripts{
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.js"></script>
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/SiteScripts/new-production-Vue.js"></script>
+    <script src="~/Scripts/SiteScripts/new-production.js"></script>
+}
 
