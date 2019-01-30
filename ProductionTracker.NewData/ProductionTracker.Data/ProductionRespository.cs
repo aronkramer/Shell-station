@@ -374,6 +374,14 @@ namespace ProductionTracker.Data
             }
         }
 
+        public ProductionCatergory GetProductionCatergory(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.ProductionCatergories.FirstOrDefault(pc => pc.Id == id);
+            }
+        }
+
         public CuttingInstruction GetInstruction(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))

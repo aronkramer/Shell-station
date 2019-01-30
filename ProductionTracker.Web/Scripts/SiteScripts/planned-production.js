@@ -18,8 +18,8 @@
         productionWizard: {
             marker: { Name: null },
             material: { Name: null },
-            colors: null,
-            sizes: null,
+            colors: [],
+            sizes: [],
             items: [],
             errors:[]
         },
@@ -93,6 +93,10 @@
                     })[0].Id;
                 }
             });
+            
+            if (!wizard.items.some(i => i.Quantity > 0)) {
+                errors.push('sorry you need a quantity to submit');
+            }
             wizard.errors = errors;
             this.formVaild = errors.length === 0;
             this.productionWizard = wizard;
@@ -132,10 +136,13 @@
                     })[0].Id;
                 }
             });
+            if (!items.some(i => i.Quantity > 0)) {
+                errors.push('sorry you need a quantity to submit');
+            }
             this.errors = errors;
             this.items = items;
             this.productionCat = prodCat;
-            this.vaildPlannedProduction = errors.length < 1;
+            this.vaildPlannedProduction = errors.length < 1 ;
         },
         prodCatIdSet: function () {
             const list = JSON.parse(JSON.stringify(this.validationLists.prodCats));
@@ -147,7 +154,8 @@
         },
         addSkuRows: function (number) {
             for (var i = 0; i < number; i++)
-                this.items.push({ Id: null , SKU: '', Quantity:null  });
+                this.items.push({ Id: null, SKU: '', Quantity: null });
+            //this.validatePlannedProd();
         },
         getSkus: function () {
             $.get("/production/GetSKUsList", result => {
@@ -274,7 +282,7 @@
                 };
             });
             if (plannedProduction.ProductionCatergoryId && items.length)
-            $.post('/production/SubmitPlannedProduction', { plannedProduction, items });
+                $.post('/production/SubmitPlannedProduction', { plannedProduction, items }, () => window.location = '/production/PlannedProduction');
 
         }
     }

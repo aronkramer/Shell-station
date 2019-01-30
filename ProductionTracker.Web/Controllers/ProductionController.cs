@@ -161,6 +161,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult PlannedProduction()
         {
+            ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
             return View();
         }
 
@@ -339,6 +340,9 @@ namespace ProductionTracker.Web.Controllers
                 return i;
             });
             repo.AddPlannedProductionDetails(items);
+            var pc = repo.GetProductionCatergory(plannedProduction.ProductionCatergoryId);
+            TempData["Message"] = $"You succsesfully added a new season planned production for {pc.Name} {plannedProduction.ProductionCatYear} <br/>" +
+                $"With {items.Count()} Items : Total Quantity {items.Sum(i => i.Quantity)}";
         }
         private int LastLotNumber()
         {

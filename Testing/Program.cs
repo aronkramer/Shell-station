@@ -12,12 +12,12 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
-            var prod = repo.GetProductionForExcel(42);
-            var prodexcel = ExcelActions.ProductionToFormatForExcel(prod);
-            ExcelActions.CuttingInstruction(prodexcel);
-            Console.WriteLine(prodexcel.Name);
-            prodexcel.Markers.ForEach(m => { Console.WriteLine($"name: {m.Name} lot: {m.LotNumber}"); m.ColorMaterials.ForEach(cm => Console.WriteLine($"color: {cm.Color} color: {cm.Material} layers: {cm.Layers}")); });
+            //var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
+            //var prod = repo.GetProductionForExcel(42);
+            //var prodexcel = ExcelActions.ProductionToFormatForExcel(prod);
+            //ExcelActions.CuttingInstruction(prodexcel);
+            //Console.WriteLine(prodexcel.Name);
+            //prodexcel.Markers.ForEach(m => { Console.WriteLine($"name: {m.Name} lot: {m.LotNumber}"); m.ColorMaterials.ForEach(cm => Console.WriteLine($"color: {cm.Color} color: {cm.Material} layers: {cm.Layers}")); });
             //    var repo = new ItemRepository(Properties.Settings.Default.ManuConst);
             //    repo.GetItemsInCuttingInstruction(true).ToList().ForEach(i => Console.WriteLine($"{i.Id} {i.SKU}"));
             #region Old stuff
@@ -185,6 +185,8 @@ namespace Testing
         //    }
         //    return null;
         //}
+
+
         
     }
 }

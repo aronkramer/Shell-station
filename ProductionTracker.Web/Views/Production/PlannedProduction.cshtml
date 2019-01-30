@@ -72,15 +72,21 @@
     <datalist id="markers">
         <option v-for="x in validationLists.markers">{{x.Name}}</option>
     </datalist>
+    <div v-if="errors.length > 0" class="alert alert-danger">
+        @*<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>*@
+        <p v-for="msg in errors">
+            {{msg}}
+        </p>
+    </div>
     <div class="row">
         <div class="row head-input">
             <div class="col-md-2">
-                <button v-on:click="submitPlanedProduction" :disabled="!vaildPlannedProduction"  class="btn btn-primary btn-block">Submit</button>
+                <button v-on:click="submitPlanedProduction" :disabled="!vaildPlannedProduction" class="btn btn-primary btn-block">Submit</button>
             </div>
             <div class="col-md-8">
                 <div class="form-inline" style="text-align:center;">
                     <div class="form-group">
-                        <input placeholder="Production Catergory" v-on:change="validatePlannedProd" v-bind:class="[validationLists.prodCats && validationLists.prodCats.some(i => i.Name === productionCat.Name) ? '': 'hasError' ]" type="text" list="production-catergories"  class="form-control" v-model="productionCat.Name" />
+                        <input placeholder="Production Catergory" v-on:change="validatePlannedProd" v-bind:class="[validationLists.prodCats && validationLists.prodCats.some(i => i.Name === productionCat.Name) ? '': 'hasError' ]" type="text" list="production-catergories" class="form-control" v-model="productionCat.Name" />
                     </div>
                     <div class="form-group">
                         <input placeholder="Production Catergory Year" v-on:change="validatePlannedProd" v-bind:class="[productionCatYear && productionCatYear.length === 4 ? '': 'hasError' ]" type="number" class="form-control" v-model="productionCatYear" />
@@ -128,7 +134,7 @@
 
                                         </td>
                                         <td>
-                                            <input class="small-input" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
+                                            <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
                                         </td>
                                         <td>
                                             <a v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</a>
@@ -147,12 +153,17 @@
             <div class="col-md-8">
                 <div class="portlet light bordered">
                     <div class="portlet-title">
-                        
+                        <div v-if="productionWizard.errors.length > 0" class="alert alert-danger">
+                            @*<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>*@
+                            <p v-for="msg in productionWizard.errors">
+                                {{msg}}
+                            </p>
+                        </div>
                         <div class="form-row-stripped">
                             <label class="col-md-3 col-form-label" for="marker">Marker Catergory</label>
-                            <input v-on:change="validateWizard" class="col-md-3" type="text" list="markers" name="marker" v-bind:class="[validationLists.markers && validationLists.markers.some(i => i.Name === productionWizard.marker.Name) ? '': 'hasError' ]"  v-model="productionWizard.marker.Name" placeholder="Marker Catergory" />
+                            <input v-on:change="validateWizard" class="col-md-3" type="text" list="markers" name="marker" v-bind:class="[validationLists.markers && validationLists.markers.some(i => i.Name === productionWizard.marker.Name) ? '': 'hasError' ]" v-model="productionWizard.marker.Name" placeholder="Marker Catergory" />
                             <label class="col-md-2 col-form-label" for="material">Material</label>
-                            <input  v-on:change="validateWizard" class="col-md-2" type="text" list="materials" name="material" v-bind:class="[validationLists.materials && validationLists.materials.some(i => i.Name === productionWizard.material.Name) ? '': 'hasError' ]" v-model="productionWizard.material.Name" placeholder="Material" />
+                            <input v-on:change="validateWizard" class="col-md-2" type="text" list="materials" name="material" v-bind:class="[validationLists.materials && validationLists.materials.some(i => i.Name === productionWizard.material.Name) ? '': 'hasError' ]" v-model="productionWizard.material.Name" placeholder="Material" />
                         </div>
 
                         <div class="actions">
@@ -171,7 +182,7 @@
                                     <tr>
                                         <th style="text-decoration:underline;">
                                             <a title="Add a color" v-on:click="addColor()" class="btn btn-circle btn-icon-only green add-size-btn">+</a>
-                                            Colors 
+                                            Colors
                                             <span style="margin-left:65px;">
                                                 <a title="Add a size" v-on:click="addSize()" class="btn btn-circle btn-icon-only green add-size-btn">+</a>
                                                 Size/s:
@@ -179,8 +190,8 @@
                                         </th>
                                         <template v-for="(size, index) in productionWizard.sizes">
                                             <th class="small-input">
-                                                <input  v-on:change="validateWizard" class="small-input"  type="text" v-bind:class="[validationLists.sizes && validationLists.sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" v-model="size.Name" />
-                                                <span><a  v-on:click="removeSize(index)" class="btn btn-circle btn-icon-only red-sunglo mini-button">X</a></span>
+                                                <input v-on:change="validateWizard" class="small-input" type="text" v-bind:class="[validationLists.sizes && validationLists.sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" v-model="size.Name" />
+                                                <span><a v-on:click="removeSize(index)" class="btn btn-circle btn-icon-only red-sunglo mini-button">X</a></span>
                                             </th>
 
                                         </template>
@@ -189,11 +200,11 @@
                                 <tbody>
                                     <tr v-for="(color,index) in productionWizard.colors">
                                         <th>
-                                            <input  v-on:change="validateWizard" class="medium-input" type="text" v-bind:class="[validationLists.colors && validationLists.colors.some(i => i.Name === color.Name) ? '': 'hasError' ]" list="colors" v-model="color.Name" />
+                                            <input v-on:change="validateWizard" class="medium-input" type="text" v-bind:class="[validationLists.colors && validationLists.colors.some(i => i.Name === color.Name) ? '': 'hasError' ]" list="colors" v-model="color.Name" />
                                         </th>
                                         <template v-for="size in productionWizard.sizes">
                                             <td class="small-input">
-                                                <input class="small-input" type="number"  v-model="productionWizard.items.filter(c=> c.size === size && c.color === color)[0].Quantity" />
+                                                <input class="small-input" v-on:change="validateWizard" type="number" v-model="productionWizard.items.filter(c=> c.size === size && c.color === color)[0].Quantity" />
                                             </td>
 
                                         </template>
@@ -207,7 +218,7 @@
                         </div>
                         <br />
                         <div class="col-md-4 col-md-offset-4">
-                        <a v-on:click="submitWizard" :disabled="!formVaild" class="btn btn-info btn-block">Save</a>
+                            <a v-on:click="submitWizard" :disabled="!formVaild" class="btn btn-info btn-block">Save</a>
                         </div>
                     </div>
                     <div v-else>
