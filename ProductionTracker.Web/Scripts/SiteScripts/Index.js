@@ -1,12 +1,25 @@
 ﻿new Vue({
     el: '#app',
     mounted: function () {
-        $(function () {
-            $('#myTab a:first').tab('show')
-        });
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParam = urlParams.get('tab');
+        console.log(myParam);
         this.pageHeader = 'Items In Production';
-        this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items Not Received', 'Percentage Filled','actions'];
-        this.loadSkus(true);
+        if (myParam && myParam.toLowerCase() === 'byproductions') {
+            $(function () {
+                $('#myTab a[href="#byProductions"]').tab('show');
+                this.productionTab();
+            }.bind(this));
+        }
+        else {
+            $(function () {
+                $('#myTab a:first').tab('show');
+                this.loadSkus(true);
+            }.bind(this));
+
+        } 
+        
+        
     },
     data: {
         detailHeaders: [],
@@ -27,6 +40,7 @@
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
+            this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items Not Received', 'Percentage Filled', 'actions'];
             $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
             });
@@ -45,13 +59,20 @@
             }.bind(this));
             
         },
+        itemTab: function () {
+            if (this.itemsInProduction.length < 1) {
+                this.loadSkus(true);
+            }
+        },
         getActivitysByItem: function (id,func) {
             $.get("/home/GetAllActivityOfAItem", { Id: id }, result => {
                 func(result);
             });
         },
         productionTab: function () {
+            if (this.productions.length < 1) {
             this.getProductions();
+            }
         },
         getProductions: function () {
             $.get("/home/GetCuttingInstructionsWithInfo", result => {

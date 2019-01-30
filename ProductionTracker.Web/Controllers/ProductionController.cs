@@ -8,6 +8,7 @@ using ProductionTracker.Data;
 using System.Text;
 using ClosedXML.Excel;
 using System.IO;
+using ProductionTracker.Web.Models;
 
 
 
@@ -243,6 +244,23 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetValidatoinListsWithIds()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var mats = repo.GetMaterials();
+            var sizes = repo.GetSizes();
+            var markers = repo.GetMarkerCatergorys();
+            var colors = repo.GetColors().ToList();
+            colors.AddRange(repo.GetColorDetails().Select(c => { return new Color { Id = c.ColorId, Name = c.Name }; }));
+            return Json(new
+            {
+                material = mats.Select(r => { return new { r.Id, r.Name }; }),
+                colors = colors.Select(r => { return new { r.Id, r.Name }; }),
+                sizes = sizes.Select(r => { return new { r.Id, r.Name }; }),
+                markers = markers.Select(r => { return new { r.Id, r.Name }; }),
+            }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult GetLastLotNUmber()
         {
             return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
@@ -264,7 +282,64 @@ namespace ProductionTracker.Web.Controllers
             ),JsonRequestBehavior.AllowGet);
 
         }
+        [HttpPost]
+        public ActionResult GetSkusFromWizard(PlanedProductionWizardItem [] items, int MarkerId)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var marker = repo.GetMarkerCategory(MarkerId);
+            if (marker != null)
+            {
+                var finalItems = items.Select(i =>
+                {
+                    return new FinalItem
+                    {
+                        Item = new Item
+                        {
+                            ColorId = i.ColorId,
+                            SizeId = i.SizeId,
+                            MaterialId = i.MaterialId,
+                            BodyStyleId = marker.BodyStyleId,
+                            SleeveId = marker.SleeveId,
+                            DepartmentId = marker.DepartmentId
+                        },
+                        Quantity = i.Quantity
+                    };
+                });
+                finalItems = finalItems.Select(i =>
+                {
+                    var item = repo.GetItem(i.Item);
+                    if(item != null)
+                    {
+                        i.Item = item;
+                        return i;
+                    }
+                    return null;
+                });
+                return Json(finalItems.Where(i=> i != null).Select(i =>
+                {
+                    return new
+                    {
+                        i.Item.Id,
+                        i.Item.SKU,
+                        i.Quantity
+                    };
+                }));
+            }
+            return null;
+        }
 
+        [HttpPost]
+        public void SubmitPlannedProduction(PlannedProduction plannedProduction, IEnumerable<PlannedProductionDetail> items)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddPlannedProduction(plannedProduction);
+            items = items.Select(i =>
+            {
+                i.PlannedProductionId = plannedProduction.Id;
+                return i;
+            });
+            repo.AddPlannedProductionDetails(items);
+        }
         private int LastLotNumber()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);

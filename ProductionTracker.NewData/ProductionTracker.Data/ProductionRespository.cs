@@ -168,6 +168,13 @@ namespace ProductionTracker.Data
             }
         }
 
+        public MarkerCategory GetMarkerCategory(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.MarkerCategories.FirstOrDefault(c => c.Id == id);
+            }
+        }
         public MarkerCategory GetMarkerCategory(string name)
         {
             name = name.ToString();
@@ -274,7 +281,6 @@ namespace ProductionTracker.Data
                 return context.Materials.ToList();
             }
         }
-
 
         public Item GetItem(Item itemWithAttributes)
         {
@@ -438,6 +444,24 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
                 context.LoadOptions = loadOptions;
                 return context.Productions.FirstOrDefault(p => p.Id == id);
+            }
+        }
+
+        public void AddPlannedProduction(PlannedProduction plannedProduction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.PlannedProductions.InsertOnSubmit(plannedProduction);
+                context.SubmitChanges();
+            }
+        }
+
+        public void AddPlannedProductionDetails(IEnumerable<PlannedProductionDetail> plannedProductionDetails)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.PlannedProductionDetails.InsertAllOnSubmit(plannedProductionDetails);
+                context.SubmitChanges();
             }
         }
 

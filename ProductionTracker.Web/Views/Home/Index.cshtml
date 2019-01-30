@@ -3,7 +3,7 @@
         <h1 class="page-header text-center">{{pageHeader}}</h1>
         <div class="col-md-12 col-md-offset-0">
             <ul class="nav nav-tabs" id="myTab">
-                <li class="active table-li"><a href="#byItems" data-toggle="tab">By Item</a></li>
+                <li class="active table-li"><a href="#byItems" v-on:click="itemTab" data-toggle="tab">By Item</a></li>
                 <li class="table-li"><a v-on:click="productionTab" href="#byProductions" data-toggle="tab">By Production</a></li>
             </ul>
 
