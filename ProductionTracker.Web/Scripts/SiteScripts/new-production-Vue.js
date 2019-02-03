@@ -23,6 +23,7 @@
         materials: [],
         sizes: [],
         markers: [],
+        plannedProductions:[],
         formVaild: false,
         packagingOptions: [
             { text: 'BOX', value: 0 },
@@ -104,7 +105,7 @@
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [] });
+            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: null  });
             this.updateLotNumbers();
             //var lastMarkerIndex = production.Markers.length - 1;
             this.vaidateMarker(index - 1);
@@ -112,7 +113,7 @@
         newProd: function () {
             $.get('/production/GetLastLotNUmber', result => {
                 this.getTheDataTables();
-                this.production = { Date: "", LastLotNumber: result, Markers: [], Name: "" };
+                this.production = { Date: "", LastLotNumber: result, Markers: [], Name: ""};
                 var date = new Date();
                 date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
                 var datestr = date.toISOString().substring(0, 10);
@@ -260,6 +261,7 @@
                 this.colors = result.colors;
                 this.sizes = result.sizes;
                 this.markers = result.markers;
+                this.plannedProductions = result.plannedProductions;
                 console.log(result);
                 if(func)func();
                 //Vue.nextTick(function () {
@@ -274,11 +276,10 @@
         },
         updateLotNumbers: function () {
             this.production.Markers.forEach((element, index) => {
-                element.LotNumber = this.production.LastLotNumber + index + 1;
+                element.LotNumber = parseInt(this.production.LastLotNumber) + index + 1;
             });
         },
         allSizeBtn: function (index) {
-            console.log('sdjkjsadhflk');
             this.production.Markers[index].AllSizes = true;
             var marker = this.production.Markers[index];
             if (marker.Name && this.markers.includes(marker.Name)) {

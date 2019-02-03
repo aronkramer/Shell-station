@@ -91,6 +91,26 @@ namespace ProductionTracker.Data
             }
         }
 
+        public ItemQuantity GetQuantitysPerItemFromNonCompleteCTs(Item item)
+        {
+
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var openedCTIDs = context.CuttingInstructions.Where(i => i.Completed == false).Select(ct => ct.Id);
+                return new ItemQuantity
+                {
+                    AmountOrdered = context.CuttingInstructionItems
+                    .Where(i => i.ItemId == item.Id && openedCTIDs
+                    .Contains(i.CuttingInstructionDetail.CuttingInstructionId)).Count() > 0 ?
+                    context.CuttingInstructionItems
+                    .Where(i => i.ItemId == item.Id && openedCTIDs
+                    .Contains(i.CuttingInstructionDetail.CuttingInstructionId))
+                    .Sum(p => p.Quantity) : 0,
+                    AmountReceived = context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Count() > 0 ? context.ReceivingItemsTransactions.Where(i => i.ItemId == item.Id && openedCTIDs.Contains(i.CuttingInstuctionId)).Sum(p => p.Quantity) : 0
+                };
+            }
+        }
+
         public ItemQuantity GetQuantitysPerItemFromCT(int Id, int cuttingTicketId)
         {
 

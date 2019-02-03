@@ -395,7 +395,9 @@ namespace ProductionTracker.Web.Excel
                             MarkerCatId = markerCat.Id,
                             Name = markerCat.Name,
                             AllSizes = marker.AllSizes,
-                            Sizes = marker.Sizes
+                            Sizes = marker.Sizes,
+                            PlannedProductionId = marker.PlannedProductionId
+                            
                         }
                     }
                 );

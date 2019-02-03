@@ -18,7 +18,7 @@
                                     <th>{{header}}</th>
                                 </template>
                             </tr>
-                            <template v-for="item in itemsInProduction">
+                            <template v-for="item in itemsInProduction" :key="item.Id">
                                 <tr>
 
                                     <td>{{item.Id}}</td>
@@ -47,7 +47,7 @@
                                 <th>Percentage Filled</th>
                                 <th>Actions</th>
                             </tr>
-                            <template v-for="item in productions">
+                            <template v-for="item in productions" :key="item.Id">
                                 <tr>
                                     <td>{{item.Id}}</td>
                                     <td class="lot-cell">{{item.Lot}}</td>

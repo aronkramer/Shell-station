@@ -473,6 +473,33 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<PlannedProduction> GetPlannedProductions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                
+                loadOptions.LoadWith<PlannedProduction>(pd => pd.ProductionCatergory);
+                context.LoadOptions = loadOptions;
+                return context.PlannedProductions.ToList();
+            }
+        }
+
+        public IEnumerable<CuttingInstruction> GetNonCompleteInstructions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.Where(i => i.Completed == false).ToList();
+            }
+        }
+
+
         public IEnumerable<CuttingInstruction> GetOpenedInstructions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -490,6 +517,25 @@ namespace ProductionTracker.Data
                 
             }
         }
+
+        public IEnumerable<int> GetClosedInstructionsIds()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
+                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                context.LoadOptions = loadOptions;
+                return context.CuttingInstructions.Where(i =>
+                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
+                <= (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
+
+
+            }
+        }
+
         public IEnumerable<Production> GetOpenedProductions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -516,6 +562,32 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<Production> GetNonClosedProductions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                //loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionItems);
+                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
+                loadOptions.LoadWith<Production>(p => p.CuttingInstructions);
+                context.LoadOptions = loadOptions;
+                var prods = new List<Production>();
+                foreach (var productin in context.Productions.Where(p => !p.CuttingInstructions.All(i => i.Completed == true)))
+                {
+                    if (productin.CuttingInstructions.Count() > 0)
+                    {
+                        var CuttingInstructionItemsSum = productin.CuttingInstructions.Where(c => c.CuttingInstructionDetails.Count() > 0).Sum(c => c.CuttingInstructionDetails.Sum(cd => cd.CuttingInstructionItems.Sum(d => d.Quantity)));
+                        var recivedItemSum = productin.CuttingInstructions.Where(c => c.ReceivingItemsTransactions.Count() > 0).Sum(c => c.ReceivingItemsTransactions.Sum(cd => cd.Quantity));
+                        if (CuttingInstructionItemsSum != recivedItemSum)
+                        {
+                            prods.Add(productin);
+                        }
+                    }
+                }
+                return prods.ToList();
+            }
+        }
+
         public IEnumerable<int> GetOpenedInstructionsIds()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -528,6 +600,14 @@ namespace ProductionTracker.Data
                 //(i.CuttingInstructionItems.Count() > 0 ? i.CuttingInstructionItems.Sum(d => d.Quantity) : 0)
                 //!= (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).Select(ct => ct.Id).ToList();
                 return null;
+            }
+        }
+
+        public void MarkCuttingTicketAsCompleate(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.ExecuteCommand("UPDATE CuttingInstructions SET Completed = 1 WHERE Id = {0}", id);
             }
         }
 

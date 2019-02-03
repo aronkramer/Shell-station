@@ -101,7 +101,8 @@ namespace ProductionTracker.Web.Controllers
                     ProductionId = prod.Id,
                     LotNumber = cI.LotNumber,
                     MarkerText = cI.Marker.MarkerSizeText,
-                    MarkerId = MarkerId(cI.Marker)
+                    MarkerId = MarkerId(cI.Marker),
+                    PlannedProductionId = cI.Marker.PlannedProductionId
                 };
                 repo.AddCuttingTicket(cutInst);
                 //if (!cI.Marker.AllSizes)
@@ -234,6 +235,14 @@ namespace ProductionTracker.Web.Controllers
             var sizes = repo.GetSizes();
             var markers = repo.GetMarkerCatergorys();
             var colors = repo.GetColors().ToList();
+            var plannedProductions = repo.GetPlannedProductions().Select(pp =>
+            {
+                return new
+                {
+                    pp.Id,
+                    Name = $"{pp.ProductionCatergory.Name} {pp.ProductionCatYear}"
+                };
+            });
             colors.AddRange(repo.GetColorDetails().Select(c => { return new Color { Id = c.ColorId, Name = c.Name }; }));
             return Json(new
             {
@@ -241,6 +250,7 @@ namespace ProductionTracker.Web.Controllers
                 colors = colors.Select(r => r.Name),
                 sizes = sizes.Select(r =>  { return new { r.Id, r.Name }; } ),
                 markers = markers.Select(r => r.Name),
+                plannedProductions
 
             }, JsonRequestBehavior.AllowGet);
         }
@@ -344,6 +354,20 @@ namespace ProductionTracker.Web.Controllers
             TempData["Message"] = $"You succsesfully added a new season planned production for {pc.Name} {plannedProduction.ProductionCatYear} <br/>" +
                 $"With {items.Count()} Items : Total Quantity {items.Sum(i => i.Quantity)}";
         }
+
+        public ActionResult GetPlannedProductions()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetPlannedProductions().Select(pp =>
+            {
+                return new
+                {
+                    pp.Id,
+                    Name = $"{pp.ProductionCatergory.Name} {pp.ProductionCatYear}"
+                };
+            }),JsonRequestBehavior.AllowGet);
+        }
+
         private int LastLotNumber()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);

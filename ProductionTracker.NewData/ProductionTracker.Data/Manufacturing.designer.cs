@@ -78,9 +78,6 @@ namespace ProductionTracker.Data
     partial void InsertMarkerDetail(MarkerDetail instance);
     partial void UpdateMarkerDetail(MarkerDetail instance);
     partial void DeleteMarkerDetail(MarkerDetail instance);
-    partial void InsertCuttingInstruction(CuttingInstruction instance);
-    partial void UpdateCuttingInstruction(CuttingInstruction instance);
-    partial void DeleteCuttingInstruction(CuttingInstruction instance);
     partial void InsertCuttingInstructionDetail(CuttingInstructionDetail instance);
     partial void UpdateCuttingInstructionDetail(CuttingInstructionDetail instance);
     partial void DeleteCuttingInstructionDetail(CuttingInstructionDetail instance);
@@ -99,6 +96,9 @@ namespace ProductionTracker.Data
     partial void InsertPlannedProductionDetail(PlannedProductionDetail instance);
     partial void UpdatePlannedProductionDetail(PlannedProductionDetail instance);
     partial void DeletePlannedProductionDetail(PlannedProductionDetail instance);
+    partial void InsertCuttingInstruction(CuttingInstruction instance);
+    partial void UpdateCuttingInstruction(CuttingInstruction instance);
+    partial void DeleteCuttingInstruction(CuttingInstruction instance);
     #endregion
 		
 		public ManufacturingDataContext() : 
@@ -259,14 +259,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		public System.Data.Linq.Table<CuttingInstruction> CuttingInstructions
-		{
-			get
-			{
-				return this.GetTable<CuttingInstruction>();
-			}
-		}
-		
 		public System.Data.Linq.Table<CuttingInstructionDetail> CuttingInstructionDetails
 		{
 			get
@@ -312,6 +304,14 @@ namespace ProductionTracker.Data
 			get
 			{
 				return this.GetTable<PlannedProductionDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<CuttingInstruction> CuttingInstructions
+		{
+			get
+			{
+				return this.GetTable<CuttingInstruction>();
 			}
 		}
 	}
@@ -3167,9 +3167,9 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<MarkerDetail> _MarkerDetails;
 		
-		private EntitySet<CuttingInstruction> _CuttingInstructions;
-		
 		private EntitySet<MarkerCategory> _MarkerCategories;
+		
+		private EntitySet<CuttingInstruction> _CuttingInstructions;
 		
 		private EntityRef<MarkerCategory> _MarkerCategory;
 		
@@ -3190,8 +3190,8 @@ namespace ProductionTracker.Data
 		public Marker()
 		{
 			this._MarkerDetails = new EntitySet<MarkerDetail>(new Action<MarkerDetail>(this.attach_MarkerDetails), new Action<MarkerDetail>(this.detach_MarkerDetails));
-			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
 			this._MarkerCategories = new EntitySet<MarkerCategory>(new Action<MarkerCategory>(this.attach_MarkerCategories), new Action<MarkerCategory>(this.detach_MarkerCategories));
+			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
 			this._MarkerCategory = default(EntityRef<MarkerCategory>);
 			OnCreated();
 		}
@@ -3293,19 +3293,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Marker_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="MarkerId")]
-		public EntitySet<CuttingInstruction> CuttingInstructions
-		{
-			get
-			{
-				return this._CuttingInstructions;
-			}
-			set
-			{
-				this._CuttingInstructions.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Marker_MarkerCategory", Storage="_MarkerCategories", ThisKey="Id", OtherKey="DefaltMarkerId")]
 		public EntitySet<MarkerCategory> MarkerCategories
 		{
@@ -3316,6 +3303,19 @@ namespace ProductionTracker.Data
 			set
 			{
 				this._MarkerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Marker_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="MarkerId")]
+		public EntitySet<CuttingInstruction> CuttingInstructions
+		{
+			get
+			{
+				return this._CuttingInstructions;
+			}
+			set
+			{
+				this._CuttingInstructions.Assign(value);
 			}
 		}
 		
@@ -3385,18 +3385,6 @@ namespace ProductionTracker.Data
 			entity.Marker = null;
 		}
 		
-		private void attach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Marker = this;
-		}
-		
-		private void detach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Marker = null;
-		}
-		
 		private void attach_MarkerCategories(MarkerCategory entity)
 		{
 			this.SendPropertyChanging();
@@ -3404,6 +3392,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_MarkerCategories(MarkerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Marker = null;
+		}
+		
+		private void attach_CuttingInstructions(CuttingInstruction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Marker = this;
+		}
+		
+		private void detach_CuttingInstructions(CuttingInstruction entity)
 		{
 			this.SendPropertyChanging();
 			entity.Marker = null;
@@ -3626,419 +3626,6 @@ namespace ProductionTracker.Data
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CuttingInstructions")]
-	public partial class CuttingInstruction : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private int _ProductionId;
-		
-		private int _LotNumber;
-		
-		private string _MarkerText;
-		
-		private int _MarkerId;
-		
-		private System.Nullable<int> _ProductionCatergoryId;
-		
-		private System.Nullable<int> _ProductionCatergoryYear;
-		
-		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
-		
-		private EntitySet<CuttingInstructionSize> _CuttingInstructionSizes;
-		
-		private EntitySet<CuttingInstructionDetail> _CuttingInstructionDetails;
-		
-		private EntityRef<Marker> _Marker;
-		
-		private EntityRef<Production> _Production;
-		
-		private EntityRef<ProductionCatergory> _ProductionCatergory;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnProductionIdChanging(int value);
-    partial void OnProductionIdChanged();
-    partial void OnLotNumberChanging(int value);
-    partial void OnLotNumberChanged();
-    partial void OnMarkerTextChanging(string value);
-    partial void OnMarkerTextChanged();
-    partial void OnMarkerIdChanging(int value);
-    partial void OnMarkerIdChanged();
-    partial void OnProductionCatergoryIdChanging(System.Nullable<int> value);
-    partial void OnProductionCatergoryIdChanged();
-    partial void OnProductionCatergoryYearChanging(System.Nullable<int> value);
-    partial void OnProductionCatergoryYearChanged();
-    #endregion
-		
-		public CuttingInstruction()
-		{
-			this._ReceivingItemsTransactions = new EntitySet<ReceivingItemsTransaction>(new Action<ReceivingItemsTransaction>(this.attach_ReceivingItemsTransactions), new Action<ReceivingItemsTransaction>(this.detach_ReceivingItemsTransactions));
-			this._CuttingInstructionSizes = new EntitySet<CuttingInstructionSize>(new Action<CuttingInstructionSize>(this.attach_CuttingInstructionSizes), new Action<CuttingInstructionSize>(this.detach_CuttingInstructionSizes));
-			this._CuttingInstructionDetails = new EntitySet<CuttingInstructionDetail>(new Action<CuttingInstructionDetail>(this.attach_CuttingInstructionDetails), new Action<CuttingInstructionDetail>(this.detach_CuttingInstructionDetails));
-			this._Marker = default(EntityRef<Marker>);
-			this._Production = default(EntityRef<Production>);
-			this._ProductionCatergory = default(EntityRef<ProductionCatergory>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionId", DbType="Int NOT NULL")]
-		public int ProductionId
-		{
-			get
-			{
-				return this._ProductionId;
-			}
-			set
-			{
-				if ((this._ProductionId != value))
-				{
-					if (this._Production.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnProductionIdChanging(value);
-					this.SendPropertyChanging();
-					this._ProductionId = value;
-					this.SendPropertyChanged("ProductionId");
-					this.OnProductionIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LotNumber", DbType="Int NOT NULL")]
-		public int LotNumber
-		{
-			get
-			{
-				return this._LotNumber;
-			}
-			set
-			{
-				if ((this._LotNumber != value))
-				{
-					this.OnLotNumberChanging(value);
-					this.SendPropertyChanging();
-					this._LotNumber = value;
-					this.SendPropertyChanged("LotNumber");
-					this.OnLotNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MarkerText", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string MarkerText
-		{
-			get
-			{
-				return this._MarkerText;
-			}
-			set
-			{
-				if ((this._MarkerText != value))
-				{
-					this.OnMarkerTextChanging(value);
-					this.SendPropertyChanging();
-					this._MarkerText = value;
-					this.SendPropertyChanged("MarkerText");
-					this.OnMarkerTextChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MarkerId", DbType="Int NOT NULL")]
-		public int MarkerId
-		{
-			get
-			{
-				return this._MarkerId;
-			}
-			set
-			{
-				if ((this._MarkerId != value))
-				{
-					if (this._Marker.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnMarkerIdChanging(value);
-					this.SendPropertyChanging();
-					this._MarkerId = value;
-					this.SendPropertyChanged("MarkerId");
-					this.OnMarkerIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatergoryId", DbType="Int")]
-		public System.Nullable<int> ProductionCatergoryId
-		{
-			get
-			{
-				return this._ProductionCatergoryId;
-			}
-			set
-			{
-				if ((this._ProductionCatergoryId != value))
-				{
-					if (this._ProductionCatergory.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnProductionCatergoryIdChanging(value);
-					this.SendPropertyChanging();
-					this._ProductionCatergoryId = value;
-					this.SendPropertyChanged("ProductionCatergoryId");
-					this.OnProductionCatergoryIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatergoryYear", DbType="Int")]
-		public System.Nullable<int> ProductionCatergoryYear
-		{
-			get
-			{
-				return this._ProductionCatergoryYear;
-			}
-			set
-			{
-				if ((this._ProductionCatergoryYear != value))
-				{
-					this.OnProductionCatergoryYearChanging(value);
-					this.SendPropertyChanging();
-					this._ProductionCatergoryYear = value;
-					this.SendPropertyChanged("ProductionCatergoryYear");
-					this.OnProductionCatergoryYearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_ReceivingItemsTransaction", Storage="_ReceivingItemsTransactions", ThisKey="Id", OtherKey="CuttingInstuctionId")]
-		public EntitySet<ReceivingItemsTransaction> ReceivingItemsTransactions
-		{
-			get
-			{
-				return this._ReceivingItemsTransactions;
-			}
-			set
-			{
-				this._ReceivingItemsTransactions.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionSize", Storage="_CuttingInstructionSizes", ThisKey="Id", OtherKey="CuttingInstructId")]
-		public EntitySet<CuttingInstructionSize> CuttingInstructionSizes
-		{
-			get
-			{
-				return this._CuttingInstructionSizes;
-			}
-			set
-			{
-				this._CuttingInstructionSizes.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionDetail", Storage="_CuttingInstructionDetails", ThisKey="Id", OtherKey="CuttingInstructionId")]
-		public EntitySet<CuttingInstructionDetail> CuttingInstructionDetails
-		{
-			get
-			{
-				return this._CuttingInstructionDetails;
-			}
-			set
-			{
-				this._CuttingInstructionDetails.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Marker_CuttingInstruction", Storage="_Marker", ThisKey="MarkerId", OtherKey="Id", IsForeignKey=true)]
-		public Marker Marker
-		{
-			get
-			{
-				return this._Marker.Entity;
-			}
-			set
-			{
-				Marker previousValue = this._Marker.Entity;
-				if (((previousValue != value) 
-							|| (this._Marker.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Marker.Entity = null;
-						previousValue.CuttingInstructions.Remove(this);
-					}
-					this._Marker.Entity = value;
-					if ((value != null))
-					{
-						value.CuttingInstructions.Add(this);
-						this._MarkerId = value.Id;
-					}
-					else
-					{
-						this._MarkerId = default(int);
-					}
-					this.SendPropertyChanged("Marker");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_CuttingInstruction", Storage="_Production", ThisKey="ProductionId", OtherKey="Id", IsForeignKey=true)]
-		public Production Production
-		{
-			get
-			{
-				return this._Production.Entity;
-			}
-			set
-			{
-				Production previousValue = this._Production.Entity;
-				if (((previousValue != value) 
-							|| (this._Production.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Production.Entity = null;
-						previousValue.CuttingInstructions.Remove(this);
-					}
-					this._Production.Entity = value;
-					if ((value != null))
-					{
-						value.CuttingInstructions.Add(this);
-						this._ProductionId = value.Id;
-					}
-					else
-					{
-						this._ProductionId = default(int);
-					}
-					this.SendPropertyChanged("Production");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_CuttingInstruction", Storage="_ProductionCatergory", ThisKey="ProductionCatergoryId", OtherKey="Id", IsForeignKey=true)]
-		public ProductionCatergory ProductionCatergory
-		{
-			get
-			{
-				return this._ProductionCatergory.Entity;
-			}
-			set
-			{
-				ProductionCatergory previousValue = this._ProductionCatergory.Entity;
-				if (((previousValue != value) 
-							|| (this._ProductionCatergory.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ProductionCatergory.Entity = null;
-						previousValue.CuttingInstructions.Remove(this);
-					}
-					this._ProductionCatergory.Entity = value;
-					if ((value != null))
-					{
-						value.CuttingInstructions.Add(this);
-						this._ProductionCatergoryId = value.Id;
-					}
-					else
-					{
-						this._ProductionCatergoryId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("ProductionCatergory");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = this;
-		}
-		
-		private void detach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = null;
-		}
-		
-		private void attach_CuttingInstructionSizes(CuttingInstructionSize entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = this;
-		}
-		
-		private void detach_CuttingInstructionSizes(CuttingInstructionSize entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = null;
-		}
-		
-		private void attach_CuttingInstructionDetails(CuttingInstructionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = this;
-		}
-		
-		private void detach_CuttingInstructionDetails(CuttingInstructionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.CuttingInstruction = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CuttingInstructionDetails")]
 	public partial class CuttingInstructionDetail : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -4059,9 +3646,9 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<CuttingInstructionItem> _CuttingInstructionItems;
 		
-		private EntityRef<CuttingInstruction> _CuttingInstruction;
-		
 		private EntityRef<Fabric> _Fabric;
+		
+		private EntityRef<CuttingInstruction> _CuttingInstruction;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -4083,8 +3670,8 @@ namespace ProductionTracker.Data
 		{
 			this._CuttingInstructionDetailRolls = new EntitySet<CuttingInstructionDetailRoll>(new Action<CuttingInstructionDetailRoll>(this.attach_CuttingInstructionDetailRolls), new Action<CuttingInstructionDetailRoll>(this.detach_CuttingInstructionDetailRolls));
 			this._CuttingInstructionItems = new EntitySet<CuttingInstructionItem>(new Action<CuttingInstructionItem>(this.attach_CuttingInstructionItems), new Action<CuttingInstructionItem>(this.detach_CuttingInstructionItems));
-			this._CuttingInstruction = default(EntityRef<CuttingInstruction>);
 			this._Fabric = default(EntityRef<Fabric>);
+			this._CuttingInstruction = default(EntityRef<CuttingInstruction>);
 			OnCreated();
 		}
 		
@@ -4222,40 +3809,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionDetail", Storage="_CuttingInstruction", ThisKey="CuttingInstructionId", OtherKey="Id", IsForeignKey=true)]
-		public CuttingInstruction CuttingInstruction
-		{
-			get
-			{
-				return this._CuttingInstruction.Entity;
-			}
-			set
-			{
-				CuttingInstruction previousValue = this._CuttingInstruction.Entity;
-				if (((previousValue != value) 
-							|| (this._CuttingInstruction.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._CuttingInstruction.Entity = null;
-						previousValue.CuttingInstructionDetails.Remove(this);
-					}
-					this._CuttingInstruction.Entity = value;
-					if ((value != null))
-					{
-						value.CuttingInstructionDetails.Add(this);
-						this._CuttingInstructionId = value.Id;
-					}
-					else
-					{
-						this._CuttingInstructionId = default(int);
-					}
-					this.SendPropertyChanged("CuttingInstruction");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Fabric_CuttingInstructionDetail", Storage="_Fabric", ThisKey="FabricId", OtherKey="Id", IsForeignKey=true)]
 		public Fabric Fabric
 		{
@@ -4286,6 +3839,40 @@ namespace ProductionTracker.Data
 						this._FabricId = default(int);
 					}
 					this.SendPropertyChanged("Fabric");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionDetail", Storage="_CuttingInstruction", ThisKey="CuttingInstructionId", OtherKey="Id", IsForeignKey=true)]
+		public CuttingInstruction CuttingInstruction
+		{
+			get
+			{
+				return this._CuttingInstruction.Entity;
+			}
+			set
+			{
+				CuttingInstruction previousValue = this._CuttingInstruction.Entity;
+				if (((previousValue != value) 
+							|| (this._CuttingInstruction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CuttingInstruction.Entity = null;
+						previousValue.CuttingInstructionDetails.Remove(this);
+					}
+					this._CuttingInstruction.Entity = value;
+					if ((value != null))
+					{
+						value.CuttingInstructionDetails.Add(this);
+						this._CuttingInstructionId = value.Id;
+					}
+					else
+					{
+						this._CuttingInstructionId = default(int);
+					}
+					this.SendPropertyChanged("CuttingInstruction");
 				}
 			}
 		}
@@ -4585,8 +4172,6 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
-		private EntitySet<CuttingInstruction> _CuttingInstructions;
-		
 		private EntitySet<PlannedProduction> _PlannedProductions;
 		
     #region Extensibility Method Definitions
@@ -4601,7 +4186,6 @@ namespace ProductionTracker.Data
 		
 		public ProductionCatergory()
 		{
-			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
 			this._PlannedProductions = new EntitySet<PlannedProduction>(new Action<PlannedProduction>(this.attach_PlannedProductions), new Action<PlannedProduction>(this.detach_PlannedProductions));
 			OnCreated();
 		}
@@ -4646,19 +4230,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="ProductionCatergoryId")]
-		public EntitySet<CuttingInstruction> CuttingInstructions
-		{
-			get
-			{
-				return this._CuttingInstructions;
-			}
-			set
-			{
-				this._CuttingInstructions.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_PlannedProduction", Storage="_PlannedProductions", ThisKey="Id", OtherKey="ProductionCatergoryId")]
 		public EntitySet<PlannedProduction> PlannedProductions
 		{
@@ -4690,18 +4261,6 @@ namespace ProductionTracker.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductionCatergory = this;
-		}
-		
-		private void detach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductionCatergory = null;
 		}
 		
 		private void attach_PlannedProductions(PlannedProduction entity)
@@ -5105,6 +4664,8 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
 		
+		private EntitySet<CuttingInstruction> _CuttingInstructions;
+		
 		private EntityRef<ProductionCatergory> _ProductionCatergory;
 		
     #region Extensibility Method Definitions
@@ -5122,6 +4683,7 @@ namespace ProductionTracker.Data
 		public PlannedProduction()
 		{
 			this._PlannedProductionDetails = new EntitySet<PlannedProductionDetail>(new Action<PlannedProductionDetail>(this.attach_PlannedProductionDetails), new Action<PlannedProductionDetail>(this.detach_PlannedProductionDetails));
+			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
 			this._ProductionCatergory = default(EntityRef<ProductionCatergory>);
 			OnCreated();
 		}
@@ -5203,6 +4765,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="PlannedProductionId")]
+		public EntitySet<CuttingInstruction> CuttingInstructions
+		{
+			get
+			{
+				return this._CuttingInstructions;
+			}
+			set
+			{
+				this._CuttingInstructions.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_PlannedProduction", Storage="_ProductionCatergory", ThisKey="ProductionCatergoryId", OtherKey="Id", IsForeignKey=true)]
 		public ProductionCatergory ProductionCatergory
 		{
@@ -5264,6 +4839,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_PlannedProductionDetails(PlannedProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = null;
+		}
+		
+		private void attach_CuttingInstructions(CuttingInstruction entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = this;
+		}
+		
+		private void detach_CuttingInstructions(CuttingInstruction entity)
 		{
 			this.SendPropertyChanging();
 			entity.PlannedProduction = null;
@@ -5483,6 +5070,419 @@ namespace ProductionTracker.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CuttingInstructions")]
+	public partial class CuttingInstruction : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _ProductionId;
+		
+		private int _LotNumber;
+		
+		private string _MarkerText;
+		
+		private int _MarkerId;
+		
+		private System.Nullable<int> _PlannedProductionId;
+		
+		private bool _Completed;
+		
+		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
+		
+		private EntitySet<CuttingInstructionSize> _CuttingInstructionSizes;
+		
+		private EntitySet<CuttingInstructionDetail> _CuttingInstructionDetails;
+		
+		private EntityRef<Marker> _Marker;
+		
+		private EntityRef<PlannedProduction> _PlannedProduction;
+		
+		private EntityRef<Production> _Production;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnProductionIdChanging(int value);
+    partial void OnProductionIdChanged();
+    partial void OnLotNumberChanging(int value);
+    partial void OnLotNumberChanged();
+    partial void OnMarkerTextChanging(string value);
+    partial void OnMarkerTextChanged();
+    partial void OnMarkerIdChanging(int value);
+    partial void OnMarkerIdChanged();
+    partial void OnPlannedProductionIdChanging(System.Nullable<int> value);
+    partial void OnPlannedProductionIdChanged();
+    partial void OnCompletedChanging(bool value);
+    partial void OnCompletedChanged();
+    #endregion
+		
+		public CuttingInstruction()
+		{
+			this._ReceivingItemsTransactions = new EntitySet<ReceivingItemsTransaction>(new Action<ReceivingItemsTransaction>(this.attach_ReceivingItemsTransactions), new Action<ReceivingItemsTransaction>(this.detach_ReceivingItemsTransactions));
+			this._CuttingInstructionSizes = new EntitySet<CuttingInstructionSize>(new Action<CuttingInstructionSize>(this.attach_CuttingInstructionSizes), new Action<CuttingInstructionSize>(this.detach_CuttingInstructionSizes));
+			this._CuttingInstructionDetails = new EntitySet<CuttingInstructionDetail>(new Action<CuttingInstructionDetail>(this.attach_CuttingInstructionDetails), new Action<CuttingInstructionDetail>(this.detach_CuttingInstructionDetails));
+			this._Marker = default(EntityRef<Marker>);
+			this._PlannedProduction = default(EntityRef<PlannedProduction>);
+			this._Production = default(EntityRef<Production>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionId", DbType="Int NOT NULL")]
+		public int ProductionId
+		{
+			get
+			{
+				return this._ProductionId;
+			}
+			set
+			{
+				if ((this._ProductionId != value))
+				{
+					if (this._Production.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductionIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductionId = value;
+					this.SendPropertyChanged("ProductionId");
+					this.OnProductionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LotNumber", DbType="Int NOT NULL")]
+		public int LotNumber
+		{
+			get
+			{
+				return this._LotNumber;
+			}
+			set
+			{
+				if ((this._LotNumber != value))
+				{
+					this.OnLotNumberChanging(value);
+					this.SendPropertyChanging();
+					this._LotNumber = value;
+					this.SendPropertyChanged("LotNumber");
+					this.OnLotNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MarkerText", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string MarkerText
+		{
+			get
+			{
+				return this._MarkerText;
+			}
+			set
+			{
+				if ((this._MarkerText != value))
+				{
+					this.OnMarkerTextChanging(value);
+					this.SendPropertyChanging();
+					this._MarkerText = value;
+					this.SendPropertyChanged("MarkerText");
+					this.OnMarkerTextChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MarkerId", DbType="Int NOT NULL")]
+		public int MarkerId
+		{
+			get
+			{
+				return this._MarkerId;
+			}
+			set
+			{
+				if ((this._MarkerId != value))
+				{
+					if (this._Marker.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnMarkerIdChanging(value);
+					this.SendPropertyChanging();
+					this._MarkerId = value;
+					this.SendPropertyChanged("MarkerId");
+					this.OnMarkerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlannedProductionId", DbType="Int")]
+		public System.Nullable<int> PlannedProductionId
+		{
+			get
+			{
+				return this._PlannedProductionId;
+			}
+			set
+			{
+				if ((this._PlannedProductionId != value))
+				{
+					if (this._PlannedProduction.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlannedProductionIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlannedProductionId = value;
+					this.SendPropertyChanged("PlannedProductionId");
+					this.OnPlannedProductionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Completed", DbType="Bit NOT NULL")]
+		public bool Completed
+		{
+			get
+			{
+				return this._Completed;
+			}
+			set
+			{
+				if ((this._Completed != value))
+				{
+					this.OnCompletedChanging(value);
+					this.SendPropertyChanging();
+					this._Completed = value;
+					this.SendPropertyChanged("Completed");
+					this.OnCompletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_ReceivingItemsTransaction", Storage="_ReceivingItemsTransactions", ThisKey="Id", OtherKey="CuttingInstuctionId")]
+		public EntitySet<ReceivingItemsTransaction> ReceivingItemsTransactions
+		{
+			get
+			{
+				return this._ReceivingItemsTransactions;
+			}
+			set
+			{
+				this._ReceivingItemsTransactions.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionSize", Storage="_CuttingInstructionSizes", ThisKey="Id", OtherKey="CuttingInstructId")]
+		public EntitySet<CuttingInstructionSize> CuttingInstructionSizes
+		{
+			get
+			{
+				return this._CuttingInstructionSizes;
+			}
+			set
+			{
+				this._CuttingInstructionSizes.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CuttingInstruction_CuttingInstructionDetail", Storage="_CuttingInstructionDetails", ThisKey="Id", OtherKey="CuttingInstructionId")]
+		public EntitySet<CuttingInstructionDetail> CuttingInstructionDetails
+		{
+			get
+			{
+				return this._CuttingInstructionDetails;
+			}
+			set
+			{
+				this._CuttingInstructionDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Marker_CuttingInstruction", Storage="_Marker", ThisKey="MarkerId", OtherKey="Id", IsForeignKey=true)]
+		public Marker Marker
+		{
+			get
+			{
+				return this._Marker.Entity;
+			}
+			set
+			{
+				Marker previousValue = this._Marker.Entity;
+				if (((previousValue != value) 
+							|| (this._Marker.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Marker.Entity = null;
+						previousValue.CuttingInstructions.Remove(this);
+					}
+					this._Marker.Entity = value;
+					if ((value != null))
+					{
+						value.CuttingInstructions.Add(this);
+						this._MarkerId = value.Id;
+					}
+					else
+					{
+						this._MarkerId = default(int);
+					}
+					this.SendPropertyChanged("Marker");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_PlannedProduction", ThisKey="PlannedProductionId", OtherKey="Id", IsForeignKey=true)]
+		public PlannedProduction PlannedProduction
+		{
+			get
+			{
+				return this._PlannedProduction.Entity;
+			}
+			set
+			{
+				PlannedProduction previousValue = this._PlannedProduction.Entity;
+				if (((previousValue != value) 
+							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PlannedProduction.Entity = null;
+						previousValue.CuttingInstructions.Remove(this);
+					}
+					this._PlannedProduction.Entity = value;
+					if ((value != null))
+					{
+						value.CuttingInstructions.Add(this);
+						this._PlannedProductionId = value.Id;
+					}
+					else
+					{
+						this._PlannedProductionId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("PlannedProduction");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_CuttingInstruction", Storage="_Production", ThisKey="ProductionId", OtherKey="Id", IsForeignKey=true)]
+		public Production Production
+		{
+			get
+			{
+				return this._Production.Entity;
+			}
+			set
+			{
+				Production previousValue = this._Production.Entity;
+				if (((previousValue != value) 
+							|| (this._Production.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Production.Entity = null;
+						previousValue.CuttingInstructions.Remove(this);
+					}
+					this._Production.Entity = value;
+					if ((value != null))
+					{
+						value.CuttingInstructions.Add(this);
+						this._ProductionId = value.Id;
+					}
+					else
+					{
+						this._ProductionId = default(int);
+					}
+					this.SendPropertyChanged("Production");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = this;
+		}
+		
+		private void detach_ReceivingItemsTransactions(ReceivingItemsTransaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = null;
+		}
+		
+		private void attach_CuttingInstructionSizes(CuttingInstructionSize entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = this;
+		}
+		
+		private void detach_CuttingInstructionSizes(CuttingInstructionSize entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = null;
+		}
+		
+		private void attach_CuttingInstructionDetails(CuttingInstructionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = this;
+		}
+		
+		private void detach_CuttingInstructionDetails(CuttingInstructionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.CuttingInstruction = null;
 		}
 	}
 }

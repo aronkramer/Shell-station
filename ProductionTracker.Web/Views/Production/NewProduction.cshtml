@@ -110,16 +110,7 @@
     }
 </style>
 <div id="prodApp" class="container">
-    <div class="clearfix">
-        <div class="btn-group btn-group-circle" data-toggle="buttons">
-            <label class="btn blue active btn-sm">
-                <input type="radio" class="toggle"> Option 1
-            </label>
-            <label class="btn blue btn-sm">
-                <input type="radio" class="toggle"> Option 3
-            </label>
-        </div>
-    </div>
+    
    
     <div class="col-md-10" v-if="production == null">
         <h2 class="page-header">Create new production</h2>
@@ -189,11 +180,26 @@
                 </div>
                 <div class="col-md-11">
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="MarkerName">Marker Name:</label>
-                        <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-1 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
+                        <div class="col-md-3">
+
+                        <label class="col-md-8 col-form-label" for="MarkerName">Marker Name:</label>
+                        <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-4 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
                         <datalist id="markers">
                             <option v-for="marker in markers">{{marker}}</option>
                         </datalist>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="plannedProductions" >Seasons</label>
+                            </div>
+                            <select class="custom-select" v-model="marker.PlannedProductionId" id="plannedProductions">
+                                <option value="null" selected>Choose...</option>
+                                <template v-for="palnnedProd in plannedProductions">
+                                    <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
+                                </template>
+                                
+                            </select>
+                        </div>
+                        </div>
                         @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
                         <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
                         <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
@@ -238,18 +244,18 @@
                                         </div>
                                     </div>
                                     @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
-                                        </div>*@
+                    </div>*@
                                 </template>
                             </div>
                         </div>
                         @*<div v-else>
-                                <div class="col-md-1">
-                                    <label>All sizes</label>
-                                </div>
-                                <div class="col-md-1">
-                                    <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
-                                </div>
-                            </div>*@
+            <div class="col-md-1">
+                <label>All sizes</label>
+            </div>
+            <div class="col-md-1">
+                <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+            </div>
+        </div>*@
                         <div class="row" v-if="marker.ColorMaterials.length > 0">
                             <table class="table table-bordered table-striped table-responsive">
                                 <tr>

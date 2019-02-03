@@ -36,8 +36,8 @@ namespace Testing.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\sqlexpress;Initial Catalog=ManufacturingDB;Integrated Security=True" +
-            "")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=shell-station.cik0lyjx63a6.us-east-2.rds.amazonaws.com;user=barry218;" +
+            "password=218barry;Initial Catalog=ManufacturingDB;")]
         public string ManuConst {
             get {
                 return ((string)(this["ManuConst"]));

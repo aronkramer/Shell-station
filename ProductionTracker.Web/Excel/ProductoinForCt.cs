@@ -19,6 +19,7 @@ namespace ProductionTracker.Web.Excel
         public List<ColorMaterial> ColorMaterials { get; set; }
         public int LotNumber { get; set; }
         public bool AllSizes { get; set; }
+        public int? PlannedProductionId { get; set; }
     }
     public class ProductionForCT
     {
@@ -84,6 +85,7 @@ namespace ProductionTracker.Web.Excel
         public bool AllSizes { get; set; }
         public IEnumerable<SizeWithLayer> Sizes { get; set; }
         public string MarkerSizeText { get; set; }
+        public int? PlannedProductionId { get; set; }
     }
     public class ItemMatColComparer : IEqualityComparer<CuttingInstructionItem>
     {

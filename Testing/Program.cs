@@ -12,6 +12,7 @@ namespace Testing
     {
         static void Main(string[] args)
         {
+            UpdateComleatedToMarkAsCompleate();
             //var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
             //var prod = repo.GetProductionForExcel(42);
             //var prodexcel = ExcelActions.ProductionToFormatForExcel(prod);
@@ -187,6 +188,18 @@ namespace Testing
         //}
 
 
-        
+
+
+        static void UpdateComleatedToMarkAsCompleate()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
+            var listOfCompleteCTIds = repo.GetClosedInstructionsIds();
+            listOfCompleteCTIds.ToList().ForEach(i =>
+            {
+                repo.MarkCuttingTicketAsCompleate(i);
+                Console.WriteLine("sucsses");
+            });
+            Console.WriteLine("Done");
+        }
     }
 }

@@ -36,7 +36,8 @@ namespace ProductionTracker.Web.Controllers
                 });
                 return Json(itemsWithextras.Select(it =>
                 {
-                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item);
+                    //var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item);
+                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromNonCompleteCTs(it.Item);
                     return new
                     {
                         it.Item.Id,
@@ -121,7 +122,9 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult GetCuttingInstructionsWithInfo()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var CuttingInstructions = repo.GetOpenedProductions();
+            //var CuttingInstructions = repo.GetOpenedProductions();
+            var CuttingInstructions = repo.GetNonClosedProductions();
+
 
             return Json(CuttingInstructions.Select(p =>
             {
