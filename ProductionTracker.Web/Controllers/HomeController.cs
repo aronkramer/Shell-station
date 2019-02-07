@@ -7,6 +7,7 @@ using System.Data.Linq;
 //using ProductionTracker.OldData;
 using ProductionTracker.Web.Models;
 using ProductionTracker.Data;
+using ProductionTracker.Web.Reports;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -25,27 +26,39 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             if (isInCuttingTicket)
             {
-                var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select(i =>
-                {
-                    return new ItemWithQuantityVM
-                    {
-                        Item = i,
-                        Quantitys = repo.GetQuantitysPerItem(i),
-                        LastCuttingInstruction = repo.LastCuttingInstruction(i)
-                    };
-                });
+                //var itemsWithextras = repo.GetItemsInCuttingInstruction(isInCuttingTicket).Select(i =>
+                //{
+                //    return new ItemWithQuantityVM
+                //    {
+                //        Item = i,
+                //        Quantitys = repo.GetQuantitysPerItem(i),
+                //        LastCuttingInstruction = repo.LastCuttingInstruction(i)
+                //    };
+                //});
+                //return Json(itemsWithextras.Select(it =>
+                //{
+                //    //var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item);
+                //    //var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromNonCompleteCTs(it.Item);
+                //    return new
+                //    {
+                //        it.Item.Id,
+                //        it.Item.SKU,
+                //        LastCuttingInstructionDate = it.LastCuttingInstruction.Production.Date.ToShortDateString(),
+                //        ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
+                //        //PercentageRecived = string.Format("{0:P}", double.Parse(lastCuttingInstructionQuantitys.AmountReceived.ToString()) / lastCuttingInstructionQuantitys.AmountOrdered)
+                //        //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
+                //    };
+                //}), JsonRequestBehavior.AllowGet);
+
+                var itemsWithextras = repo.GetItemsWithQuantitys();
                 return Json(itemsWithextras.Select(it =>
                 {
-                    //var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromOpenCTs(it.Item);
-                    var lastCuttingInstructionQuantitys = repo.GetQuantitysPerItemFromNonCompleteCTs(it.Item);
                     return new
                     {
                         it.Item.Id,
                         it.Item.SKU,
-                        LastCuttingInstructionDate = it.LastCuttingInstruction.Production.Date.ToShortDateString(),
+                        it.LastCuttingInstructionDate,
                         ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
-                        PercentageRecived = string.Format("{0:P}", double.Parse(lastCuttingInstructionQuantitys.AmountReceived.ToString()) / lastCuttingInstructionQuantitys.AmountOrdered)
-                        //PercentageRecived = double.Parse(it.Quantitys.AmountReceived.ToString()) / it.Quantitys.AmountOrdered
                     };
                 }), JsonRequestBehavior.AllowGet);
             }
@@ -140,7 +153,7 @@ namespace ProductionTracker.Web.Controllers
                     PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
 
                 };
-            }).OrderByDescending(p => p.Date), JsonRequestBehavior.AllowGet);
+            }).OrderByDescending(p => p.Id), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetDeatilsOfACuttingInstruction(int id)
@@ -183,6 +196,22 @@ namespace ProductionTracker.Web.Controllers
                 details
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public void BarcodesFromProduction(int id)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var itemsFromProduction = repo.GetItemsForBarcodes(id);
+            var data = new ReportController().ConvertProductionIntoBarcodeItems(itemsFromProduction, 80);
+            PrintBarcodes(data);
+          
+        }
+        public ActionResult PrintBarcodes(IEnumerable<object> data)
+        {
+            var dt = CrystalReportGenerator.LINQToDataTable(data.ToList());
+            CrystalReportGenerator.GenerateReportInPDF(dt, "RegularBarcodes.rpt");
+            return View();
+        }
+            
 
         [HttpPost]
         public void AddRecivedItems(IEnumerable<RecivingItemWithOrdered> items)

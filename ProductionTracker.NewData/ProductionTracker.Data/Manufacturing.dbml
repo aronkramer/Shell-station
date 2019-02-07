@@ -243,4 +243,20 @@
       <Association Name="Production_CuttingInstruction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
     </Type>
   </Table>
+  <Function Name="dbo.ItemsForBarcodes2" Method="ItemsForBarcodes2">
+    <ElementType Name="ItemsForBarcodes2Result">
+      <Column Name="Barcode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SKU" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Departmet" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BodyStyle" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BodyStyleAtt" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Sleeve" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Color" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Material" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Size" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="SizeDis" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </ElementType>
+  </Function>
 </Database>

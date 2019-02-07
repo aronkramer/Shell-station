@@ -11,4 +11,10 @@ namespace ProductionTracker.Data
         public int AmountOrdered { get; set; }
         public int AmountReceived { get; set; }
     }
+    public class ItemWithQuantity
+    {
+        public Item Item { get; set; }
+        public ItemQuantity Quantitys { get; set; }
+        public string LastCuttingInstructionDate { get; set; }
+    }
 }

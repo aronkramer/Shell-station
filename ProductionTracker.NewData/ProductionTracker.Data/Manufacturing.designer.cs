@@ -314,6 +314,13 @@ namespace ProductionTracker.Data
 				return this.GetTable<CuttingInstruction>();
 			}
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.ItemsForBarcodes2")]
+		public ISingleResult<ItemsForBarcodes2Result> ItemsForBarcodes2()
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+			return ((ISingleResult<ItemsForBarcodes2Result>)(result.ReturnValue));
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BodyStyle")]
@@ -5483,6 +5490,230 @@ namespace ProductionTracker.Data
 		{
 			this.SendPropertyChanging();
 			entity.CuttingInstruction = null;
+		}
+	}
+	
+	public partial class ItemsForBarcodes2Result
+	{
+		
+		private string _Barcode;
+		
+		private System.Nullable<int> _Id;
+		
+		private string _SKU;
+		
+		private string _Departmet;
+		
+		private string _BodyStyle;
+		
+		private string _BodyStyleAtt;
+		
+		private string _Sleeve;
+		
+		private System.Nullable<int> _ColorId;
+		
+		private string _Color;
+		
+		private string _Material;
+		
+		private string _Size;
+		
+		private string _SizeDis;
+		
+		public ItemsForBarcodes2Result()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Barcode", DbType="VarChar(50)")]
+		public string Barcode
+		{
+			get
+			{
+				return this._Barcode;
+			}
+			set
+			{
+				if ((this._Barcode != value))
+				{
+					this._Barcode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int")]
+		public System.Nullable<int> Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKU", DbType="VarChar(50)")]
+		public string SKU
+		{
+			get
+			{
+				return this._SKU;
+			}
+			set
+			{
+				if ((this._SKU != value))
+				{
+					this._SKU = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Departmet", DbType="VarChar(50)")]
+		public string Departmet
+		{
+			get
+			{
+				return this._Departmet;
+			}
+			set
+			{
+				if ((this._Departmet != value))
+				{
+					this._Departmet = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BodyStyle", DbType="VarChar(50)")]
+		public string BodyStyle
+		{
+			get
+			{
+				return this._BodyStyle;
+			}
+			set
+			{
+				if ((this._BodyStyle != value))
+				{
+					this._BodyStyle = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BodyStyleAtt", DbType="VarChar(50)")]
+		public string BodyStyleAtt
+		{
+			get
+			{
+				return this._BodyStyleAtt;
+			}
+			set
+			{
+				if ((this._BodyStyleAtt != value))
+				{
+					this._BodyStyleAtt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Sleeve", DbType="VarChar(50)")]
+		public string Sleeve
+		{
+			get
+			{
+				return this._Sleeve;
+			}
+			set
+			{
+				if ((this._Sleeve != value))
+				{
+					this._Sleeve = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ColorId", DbType="Int")]
+		public System.Nullable<int> ColorId
+		{
+			get
+			{
+				return this._ColorId;
+			}
+			set
+			{
+				if ((this._ColorId != value))
+				{
+					this._ColorId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Color", DbType="VarChar(50)")]
+		public string Color
+		{
+			get
+			{
+				return this._Color;
+			}
+			set
+			{
+				if ((this._Color != value))
+				{
+					this._Color = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Material", DbType="VarChar(50)")]
+		public string Material
+		{
+			get
+			{
+				return this._Material;
+			}
+			set
+			{
+				if ((this._Material != value))
+				{
+					this._Material = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Size", DbType="VarChar(50)")]
+		public string Size
+		{
+			get
+			{
+				return this._Size;
+			}
+			set
+			{
+				if ((this._Size != value))
+				{
+					this._Size = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SizeDis", DbType="VarChar(50)")]
+		public string SizeDis
+		{
+			get
+			{
+				return this._SizeDis;
+			}
+			set
+			{
+				if ((this._SizeDis != value))
+				{
+					this._SizeDis = value;
+				}
+			}
 		}
 	}
 }

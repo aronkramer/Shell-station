@@ -89,7 +89,7 @@
                         <input placeholder="Production Catergory" v-on:change="validatePlannedProd" v-bind:class="[validationLists.prodCats && validationLists.prodCats.some(i => i.Name === productionCat.Name) ? '': 'hasError' ]" type="text" list="production-catergories" class="form-control" v-model="productionCat.Name" />
                     </div>
                     <div class="form-group">
-                        <input placeholder="Production Catergory Year" v-on:change="validatePlannedProd" v-bind:class="[productionCatYear && productionCatYear.length === 4 ? '': 'hasError' ]" type="number" class="form-control" v-model="productionCatYear" />
+                        <input placeholder="Production Catergory Year" v-on:keydown.up="$event.preventDefault()" v-on:change="validatePlannedProd" v-bind:class="[productionCatYear && productionCatYear.length === 4 ? '': 'hasError' ]" type="number" class="form-control" v-model="productionCatYear" />
                     </div>
                 </div>
             </div>

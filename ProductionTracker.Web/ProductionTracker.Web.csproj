@@ -52,6 +52,9 @@
     <Reference Include="ClosedXML, Version=0.93.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.93.1\lib\net46\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -174,6 +177,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BarcodeLable.cs" />
     <Compile Include="Models\ColorVM.cs" />
     <Compile Include="Models\CutingIntructionDetails.cs" />
     <Compile Include="Models\ItemActivity.cs" />
@@ -190,6 +194,52 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="RecivingItemWithOrdered.cs" />
+    <Compile Include="Reports\Barcode.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Barcode1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Barcode2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Barcode.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Controller\CrystalReportGenerator.cs" />
+    <Compile Include="Reports\Controller\ReportController.cs" />
+    <Compile Include="Reports\CrystalReportBarcode.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CrystalReportBarcode1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CrystalReportBarcode2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CrystalReportBarcode.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\LableFont.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\LableFont1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LableFont.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RegularBarcodes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RegularBarcodes1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegularBarcodes.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportModel\ProgressofFilesModel.cs" />
+    <Compile Include="Reports\ReportModel\SummeryModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-multiselect.css" />
@@ -6625,9 +6675,12 @@
     <Content Include="Scripts\SiteScripts\prod-conf.vue" />
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
     <Content Include="Views\Production\PlannedProduction.cshtml" />
+    <Content Include="Views\Home\PrintBarcodesFromProduction.cshtml" />
+    <Content Include="Views\Home\PrintBarcodes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="DataAcsess\" />
     <Folder Include="Metronic\theme\assets\apps\img\" />
     <Folder Include="Metronic\theme\assets\global\plugins\angularjs\plugins\angular-file-upload\uploads\" />
   </ItemGroup>
@@ -6655,6 +6708,25 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\Barcode.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Barcode2.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CrystalReportBarcode.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CrystalReportBarcode2.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\LableFont.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>LableFont1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RegularBarcodes.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RegularBarcodes1.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -40,7 +40,7 @@
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
-            this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items Not Received', 'Percentage Filled', 'actions'];
+            this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
             $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
             });
@@ -184,6 +184,11 @@
             var productionId = event.target.id;
             window.location = `/Production/DownloadCuttingInstuctions?productionId=${productionId}`;
             //$.get("/Production/DownloadCuttingInstuctions", { productionId });
+        },
+        printBarCodes: function (event) {
+            var productionId = event.target.id;
+            //$.get("/home/BarcodesFromProduction", { id: productionId });
+            window.open(`/home/BarcodesFromProduction?id=${productionId}`);
         }
         //checkVal: function () {
         //    var temp = this.recivedItems;

@@ -18,14 +18,14 @@
                                     <th>{{header}}</th>
                                 </template>
                             </tr>
-                            <template v-for="item in itemsInProduction" :key="item.Id">
+                            <template v-for="item in itemsInProduction" >
                                 <tr>
 
                                     <td>{{item.Id}}</td>
                                     <td>{{item.SKU}}</td>
                                     <td>{{item.LastCuttingInstructionDate}}</td>
                                     <td>{{item.ItemsNotReceived}}</td>
-                                    <td>{{item.PercentageRecived}}</td>
+                                    @*<td>{{item.PercentageRecived}}</td>*@
                                     <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForItem($event)">Details</button></td>
                                 </tr>
                             </template>
@@ -47,7 +47,7 @@
                                 <th>Percentage Filled</th>
                                 <th>Actions</th>
                             </tr>
-                            <template v-for="item in productions" :key="item.Id">
+                            <template v-for="item in productions" >
                                 <tr>
                                     <td>{{item.Id}}</td>
                                     <td class="lot-cell">{{item.Lot}}</td>
@@ -59,6 +59,9 @@
                                         <button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForProduction($event)">Details</button>
                                         <button v-bind:id="item.Id" :disabled="item.ItemsNotReceived <= 0" class="btn btn-success" v-on:click="recivedItemButton($event)">Recived Items</button>
                                         <button v-bind:id="item.Id" class="btn btn-secondary" v-on:click="download($event)">Download</button>
+                                        <a v-bind:id="item.Id" v-on:click="printBarCodes($event)" title="Print Barcodes" href="#" class="btn btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-barcode"></span>
+                                        </a>
                                     </td>
                                 </tr>
                             </template>
@@ -144,7 +147,7 @@
                                     <th>Percent Filled</th>
                                     <th>Recived <button class="btn btn-success" v-on:click="fillAll">{{fillBtnText}}</button></th>
                                 </tr>
-                                <template v-for="(item,key,index) in recivedItems">
+                                <template v-for="(item,index) in recivedItems">
                                     <tr>
                                         <td>{{item.SKU}}</td>
                                         <td>{{item.Ordered}}</td>
