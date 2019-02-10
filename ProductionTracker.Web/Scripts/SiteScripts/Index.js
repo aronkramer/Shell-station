@@ -185,10 +185,10 @@
             window.location = `/Production/DownloadCuttingInstuctions?productionId=${productionId}`;
             //$.get("/Production/DownloadCuttingInstuctions", { productionId });
         },
-        printBarCodes: function (event) {
-            var productionId = event.target.id;
+        printBarCodes: function (id) {
+            //var productionId = event.target.id;
             //$.get("/home/BarcodesFromProduction", { id: productionId });
-            window.open(`/home/BarcodesFromProduction?id=${productionId}`);
+            window.open(`/home/BarcodesFromProduction?id=${id}`);
         }
         //checkVal: function () {
         //    var temp = this.recivedItems;

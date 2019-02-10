@@ -1,0 +1,167 @@
+﻿body {
+}
+.s-mb-3, .my-3 {
+    margin-bottom: 1rem !important;
+}
+
+.s-input-group {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+}
+
+.s-input-group-prepend {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.s-input-group-text {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: .375rem .75rem;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #95afca;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.s-custom-select {
+    display: inline-block;
+    width: 150px;
+    height: calc(2.25rem + 2px);
+    padding: .375rem 1.75rem .375rem .75rem;
+    line-height: 1.5;
+    color: #495057;
+    vertical-align: middle;
+    background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center;
+    background-size: 8px 10px;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /*appearance: none;*/
+}
+
+.size-btn {
+    height: 26.979166px;
+}
+
+.allsize-btn {
+    height: 26.979166px;
+    width: 58.979166px;
+}
+
+.size-allsize-conainer {
+    width: 130px;
+    left: auto;
+    right: 55px;
+    bottom: 4px;
+}
+
+.size-allsize-conainer-all {
+    top: 25px !important;
+}
+
+.title-cl {
+    font-weight: bold;
+    padding-top: 4px;
+    font-size: larger;
+    text-align: right;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.remove-btn {
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.size-remove-btn {
+    font-size: 5px;
+}
+
+.size-container {
+    position: relative;
+    width: 50px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.add-size-btn {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    margin-left: 20px;
+    height: 25px;
+    width: 25px;
+}
+
+.size-element button {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 15px;
+    width: 15px;
+    font-size: 10px;
+    margin-left: 15px;
+}
+
+.page-header {
+    text-align: center;
+    height: 60px;
+    font-weight: bold;
+}
+
+.size-element {
+    width: 50px;
+    height: 15px;
+    margin: 5px auto;
+}
+
+.markerNumber {
+    font-size: 35px;
+    text-align: center;
+    margin-top: 150%;
+    margin-bottom: 150%;
+}
+
+th {
+    text-align: center;
+}
+
+input[type="text"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.marker-input {
+    padding: 1px 5px;
+}
+
+.total-layers {
+    border: 1px solid lightgrey;
+    background-color: white;
+    font-size: 12px;
+    padding: 2px;
+}
+
+option {
+    text-align-last: center;
+}

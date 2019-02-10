@@ -59,7 +59,7 @@
                                         <button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForProduction($event)">Details</button>
                                         <button v-bind:id="item.Id" :disabled="item.ItemsNotReceived <= 0" class="btn btn-success" v-on:click="recivedItemButton($event)">Recived Items</button>
                                         <button v-bind:id="item.Id" class="btn btn-secondary" v-on:click="download($event)">Download</button>
-                                        <a v-bind:id="item.Id" v-on:click="printBarCodes($event)" title="Print Barcodes" href="#" class="btn btn-default btn-sm">
+                                        <a v-bind:id="item.Id" v-on:click="printBarCodes(item.Id)" title="Print Barcodes" href="#" class="btn btn-default btn-sm">
                                             <span class="glyphicon glyphicon-barcode"></span>
                                         </a>
                                     </td>

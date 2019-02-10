@@ -219,7 +219,7 @@ namespace ProductionTracker.Web.Excel
                             var sizeFromMarker = new List<SizeWithLayer>();
                             if (marker != null)
                             {
-                                sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
+                                sizeFromMarker = repo.GetDefaltMarkerDetails(marker.Id).Select(md =>
                                 {
                                     return new SizeWithLayer { SizeId = md.SizeId, AmountPerLayer = md.AmountPerLayer, Name = md.Size.Name };
                                 }).ToList();
@@ -489,7 +489,7 @@ namespace ProductionTracker.Web.Excel
             {
                 if (split.Count() > 2 && int.TryParse(split[2], out int amountInt))
                 {
-                    sizeFromMarker = repo.GetMarkerDetails(marker.Id).Select(md =>
+                    sizeFromMarker = repo.GetDefaltMarkerDetails(marker.Id).Select(md =>
                     {
                         return new SizeWithLayer { SizeId = md.SizeId,Name = md.Size.Name };
                     }).ToList();

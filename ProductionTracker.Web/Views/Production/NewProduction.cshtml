@@ -2,116 +2,10 @@
 @{
     ViewBag.Title = "New Production";
 }
-<style>
-    .size-btn {
-        height: 26.979166px;
-    }
 
-    .allsize-btn {
-        height: 26.979166px;
-        width: 58.979166px;
-    }
-
-    .size-allsize-conainer {
-        width: 130px;
-        left: auto;
-        right: 55px;
-        bottom: 4px;
-    }
-
-    .size-allsize-conainer-all {
-        top: 25px !important;
-    }
-
-    .title-cl {
-        font-weight: bold;
-        padding-top: 4px;
-        font-size: larger;
-        text-align: right;
-    }
-
-    [hidden] {
-        display: none !important;
-    }
-
-    .remove-btn {
-        font-weight: 800;
-        font-size: 13px;
-    }
-
-    .size-remove-btn {
-        font-size: 5px;
-    }
-
-    .size-container {
-        position: relative;
-        width: 50px;
-        height: 60px;
-        margin-bottom: 15px;
-    }
-
-    .add-size-btn {
-        padding-bottom: 0px;
-        padding-top: 0px;
-        margin-left: 20px;
-        height: 25px;
-        width: 25px;
-    }
-
-    .size-element button {
-        padding-top: 0px;
-        padding-bottom: 0px;
-        height: 15px;
-        width: 15px;
-        font-size: 10px;
-        margin-left: 15px;
-    }
-
-    .page-header {
-        text-align: center;
-        height: 60px;
-        font-weight: bold;
-    }
-
-    .size-element {
-        width: 50px;
-        height: 15px;
-        margin: 5px auto;
-    }
-
-    .markerNumber {
-        font-size: 35px;
-        text-align: center;
-        margin-top: 150%;
-        margin-bottom: 150%;
-    }
-
-    th {
-        text-align: center;
-    }
-
-    input[type="text"]::-webkit-calendar-picker-indicator {
-        display: none;
-    }
-
-    .marker-input {
-        padding: 1px 5px;
-    }
-
-    .total-layers {
-        border: 1px solid lightgrey;
-        background-color: white;
-        font-size: 12px;
-        padding: 2px;
-    }
-
-    option {
-        text-align-last: center;
-    }
-</style>
 <div id="prodApp" class="container">
-    
-   
+
+
     <div class="col-md-10" v-if="production == null">
         <h2 class="page-header">Create new production</h2>
 
@@ -166,7 +60,7 @@
             <div class="form-row">
 
                 <label class="col-md-2 col-form-label" for="date">Date</label>
-                    <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
+                <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
                 <label class="col-md-3 col-form-label" for="lot">Last Lot#</label>
                 <input type="text" class=" col-md-3" name="Lot_" v-model="production.LastLotNumber" />
             </div>
@@ -182,23 +76,23 @@
                     <div class="form-group row">
                         <div class="col-md-3">
 
-                        <label class="col-md-8 col-form-label" for="MarkerName">Marker Name:</label>
-                        <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-4 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
-                        <datalist id="markers">
-                            <option v-for="marker in markers">{{marker}}</option>
-                        </datalist>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="plannedProductions" >Seasons</label>
+                            <label class="col-md-8 col-form-label" for="MarkerName">Marker Name:</label>
+                            <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-4 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
+                            <datalist id="markers">
+                                <option v-for="marker in markers">{{marker}}</option>
+                            </datalist>
+                            <div class="s-input-group s-mb-3">
+                                <div class="s-input-group-prepend">
+                                    <label class="s-input-group-text" for="plannedProductions">Seasons</label>
+                                </div>
+                                <select class="s-custom-select" v-model="marker.PlannedProductionId" id="plannedProductions">
+                                    <option value="null" selected>Choose...</option>
+                                    <template v-for="palnnedProd in plannedProductions">
+                                        <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
+                                    </template>
+
+                                </select>
                             </div>
-                            <select class="custom-select" v-model="marker.PlannedProductionId" id="plannedProductions">
-                                <option value="null" selected>Choose...</option>
-                                <template v-for="palnnedProd in plannedProductions">
-                                    <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
-                                </template>
-                                
-                            </select>
-                        </div>
                         </div>
                         @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
                         <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
@@ -244,18 +138,18 @@
                                         </div>
                                     </div>
                                     @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
-                    </div>*@
+                                        </div>*@
                                 </template>
                             </div>
                         </div>
                         @*<div v-else>
-            <div class="col-md-1">
-                <label>All sizes</label>
-            </div>
-            <div class="col-md-1">
-                <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
-            </div>
-        </div>*@
+                                <div class="col-md-1">
+                                    <label>All sizes</label>
+                                </div>
+                                <div class="col-md-1">
+                                    <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+                                </div>
+                            </div>*@
                         <div class="row" v-if="marker.ColorMaterials.length > 0">
                             <table class="table table-bordered table-striped table-responsive">
                                 <tr>
@@ -352,6 +246,7 @@
 
 </div>
 @section css{
+    <link href="~/Content/new-production.css" rel="stylesheet" type="text/css" />
     <link href="~/Metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
     <link href="~/Metronic/theme/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" type="text/css" />
 }

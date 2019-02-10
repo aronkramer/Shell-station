@@ -16,6 +16,18 @@ namespace ProductionTracker.Web.Reports
 
         }
 
+        public static void GenerateReportInHtml(DataTable tb, string reportName)
+        {
+            using (var reportDocument = new ReportDocument())
+            {
+                var reportPath = HttpContext.Current.Server.MapPath("~/") + "Reports//" + reportName;
+                reportDocument.Load(reportPath);
+                reportDocument.Database.Tables[0].SetDataSource(tb);
+
+                reportDocument.ExportToHttpResponse(ExportFormatType.HTML40, HttpContext.Current.Response, false, reportName);
+            }
+        }
+
         public static void GenerateReportInPDF(DataTable tb, string reportName)
         {
             using (var reportDocument = new ReportDocument())

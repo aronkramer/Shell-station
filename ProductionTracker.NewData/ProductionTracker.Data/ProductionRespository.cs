@@ -224,11 +224,23 @@ namespace ProductionTracker.Data
                 return context.MarkerDetails.Where(m => m.MarkerId == defaltId).ToList();
             }
         }
+        public IEnumerable<MarkerDetail> GetDefaltMarkerDetails(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOption = new DataLoadOptions();
+                loadOption.LoadWith<MarkerDetail>(c => c.Size);
+                context.LoadOptions = loadOption;
+                var defaltId = context.MarkerCategories.FirstOrDefault(c => c.Id == id).DefaltMarkerId;
+                return context.MarkerDetails.Where(m => m.MarkerId == defaltId).ToList();
+            }
+        }
 
         public IEnumerable<MarkerDetail> GetMarkerDetails(int markerId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
+
                 return context.MarkerDetails.Where(m => m.MarkerId == markerId).ToList();
             }
         }
