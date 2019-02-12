@@ -55,7 +55,7 @@ namespace ProductionTracker.Web.Reports
                 if (tempItem != null)
                 {
                     var mod = i.Quantity % amountPerSheet;
-                    var result = mod != 0 ? (i.Quantity - mod) + 80 : i.Quantity;
+                    var result = mod != 0 ? (i.Quantity - mod) + amountPerSheet : i.Quantity;
                     items.AddRange(Enumerable.Repeat(tempItem, result));
 
                 }

@@ -19,4 +19,19 @@
     overflow: auto;
    
 }
+table th .fa-sort-asc {
+    position: absolute !important;
+    right: 4px !important;
+    bottom: 7px !important;
+}
+
+table th .fa-sort-desc {
+    position: absolute !important;
+    right: 4px !important;
+    bottom: 4px !important;
+}
+.th-sort{
+    position:relative !important;
+}
+
 

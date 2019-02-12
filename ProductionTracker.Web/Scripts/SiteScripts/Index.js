@@ -1,4 +1,4 @@
-﻿new Vue({
+﻿var app = new Vue({
     el: '#app',
     mounted: function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -36,13 +36,17 @@
         backButton: false,
         recivedItems: [],
         recivedItemProduction: '',
-        fillBtnText:''
+        fillBtnText: '',
+        itemsInProductionSortKey: '',
+        itemsInProductionDescSortKey: true,
+        orderedUsers: []
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
             this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
             $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
+                this.orderArray();
             });
         },
         detailsForItem: function (event) {
@@ -189,7 +193,24 @@
             //var productionId = event.target.id;
             //$.get("/home/BarcodesFromProduction", { id: productionId });
             window.open(`/home/BarcodesFromProduction?id=${id}`);
+        },
+        orderArray: function () {
+            if (this.itemsInProduction.length && this.itemsInProductionSortKey ) {
+            var array = this.itemsInProduction;
+            var sortKey = this.itemsInProductionSortKey;
+                var minus = this.itemsInProductionDescSortKey;
+                
+                this.orderedUsers = array.sort(function (a, b) {
+                if (minus)
+                    return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+                else
+                    return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+            });
+            }
+            else
+                this.orderedUsers = this.itemsInProduction;
         }
+
         //checkVal: function () {
         //    var temp = this.recivedItems;
         //    //var isRight = $(temp).is(function (i) { return i.ItemsRecived > (i.Ordered - i.Received); });
@@ -215,7 +236,9 @@
             //console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
             return !hasValues;
         }
-    }
+    },
+    
+
 });
 function fixDigit(val) {
     return val.toString().length === 1 ? "0" + val : val;

@@ -14,21 +14,46 @@
                         <table class="table table-bordered table-responsive table-striped">
 
                             <tr>
-                                <template v-for="header in tableHeaders">
-                                    <th>{{header}}</th>
-                                </template>
-                            </tr>
-                            <template v-for="item in itemsInProduction" >
-                                <tr>
+                                @*<template v-for="header in tableHeaders">
 
-                                    <td>{{item.Id}}</td>
-                                    <td>{{item.SKU}}</td>
-                                    <td>{{item.LastCuttingInstructionDate}}</td>
-                                    <td>{{item.ItemsNotReceived}}</td>
-                                    @*<td>{{item.PercentageRecived}}</td>*@
-                                    <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForItem($event)">Details</button></td>
-                                </tr>
-                            </template>
+            <th>{{header}}</th>
+        </template>*@
+                                <th class="th-sort" v-on:dblclick="itemsInProductionDescSortKey = itemsInProductionSortKey==='Id' ? !itemsInProductionDescSortKey : itemsInProductionDescSortKey; itemsInProductionSortKey='Id'; orderArray()">
+                                     <span>Id</span>
+                                    <i v-if="(!itemsInProductionDescSortKey && itemsInProductionSortKey==='Id') || itemsInProductionSortKey!=='Id'" class="fa fa-sort-asc"></i>
+                                    <i v-if="(itemsInProductionDescSortKey && itemsInProductionSortKey==='Id') || itemsInProductionSortKey!=='Id'" class="fa fa-sort-desc"></i>
+                                </th>
+                                <th class="th-sort" v-on:dblclick="itemsInProductionDescSortKey = itemsInProductionSortKey==='SKU' ? !itemsInProductionDescSortKey : itemsInProductionDescSortKey; itemsInProductionSortKey='SKU'; orderArray()">
+                                    <i v-if="(!itemsInProductionDescSortKey && itemsInProductionSortKey==='SKU') || itemsInProductionSortKey!=='SKU'" class="fa fa-sort-asc"></i>
+                                    <i v-if="(itemsInProductionDescSortKey && itemsInProductionSortKey==='SKU') || itemsInProductionSortKey!=='SKU'" class="fa fa-sort-desc"></i>SKU
+                                </th>
+                                <th class="th-sort" v-on:dblclick="itemsInProductionDescSortKey = itemsInProductionSortKey==='LastCuttingInstructionDate' ? !itemsInProductionDescSortKey : itemsInProductionDescSortKey; itemsInProductionSortKey='LastCuttingInstructionDate'; orderArray()">
+                                    <i v-if="(!itemsInProductionDescSortKey && itemsInProductionSortKey==='LastCuttingInstructionDate') || itemsInProductionSortKey!=='LastCuttingInstructionDate'" class="fa fa-sort-asc"></i>
+                                    <i v-if="(itemsInProductionDescSortKey && itemsInProductionSortKey==='LastCuttingInstructionDate') || itemsInProductionSortKey!=='LastCuttingInstructionDate'" class="fa fa-sort-desc"></i>Last Production Date
+                                </th>
+                                <th class="th-sort" v-on:dblclick="itemsInProductionDescSortKey = itemsInProductionSortKey==='ItemsNotReceived' ? !itemsInProductionDescSortKey : itemsInProductionDescSortKey; itemsInProductionSortKey='ItemsNotReceived'; orderArray()">
+                                    <i v-if="(!itemsInProductionDescSortKey && itemsInProductionSortKey==='ItemsNotReceived') || itemsInProductionSortKey!=='ItemsNotReceived'" class="fa fa-sort-asc"></i>
+                                    <i v-if="(itemsInProductionDescSortKey && itemsInProductionSortKey==='ItemsNotReceived') || itemsInProductionSortKey!=='ItemsNotReceived'" class="fa fa-sort-desc"></i>Items In Production
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                            @*<template v-for="item in itemsInProduction">*@
+                            @*<div  v-if="itemsInProduction.length">*@
+
+                                <template v-for="item in orderedUsers">
+                                    <tr>
+
+                                        <td>{{item.Id}}</td>
+                                        <td>{{item.SKU}}</td>
+                                        <td>{{item.LastCuttingInstructionDate}}</td>
+                                        <td>{{item.ItemsNotReceived}}</td>
+                                        @*<td>{{item.PercentageRecived}}</td>*@
+                                        <td><button v-bind:id="item.Id" class="btn btn-primary" v-on:click="detailsForItem($event)">Details</button></td>
+                                    </tr>
+                                </template>
+                            @*</div>*@
 
                         </table>
                     </div>
@@ -174,6 +199,7 @@
 </div>
 
 @section Scripts{
+    <script src="~/Scripts/lodash.js"></script>
     <script src="~/Scripts/vue.js"4></script>
     <script src="~/Scripts/SiteScripts/Index.js"></script>
     }

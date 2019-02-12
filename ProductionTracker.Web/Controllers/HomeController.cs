@@ -205,11 +205,11 @@ namespace ProductionTracker.Web.Controllers
             PrintBarcodes(data);
           
         }
-        public ActionResult PrintBarcodes(IEnumerable<object> data)
+        public void PrintBarcodes(IEnumerable<object> data)
         {
             var dt = CrystalReportGenerator.LINQToDataTable(data.ToList());
             CrystalReportGenerator.GenerateReportInPDF(dt, "RegularBarcodes.rpt");
-            return View();
+            //return View();
         }
             
 
