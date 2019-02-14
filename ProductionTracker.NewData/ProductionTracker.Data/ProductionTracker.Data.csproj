@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CuttingInstructionItemWithQuantityRecived.cs" />
     <Compile Include="Manufacturing.cs">
       <DependentUpon>Manufacturing.dbml</DependentUpon>
     </Compile>

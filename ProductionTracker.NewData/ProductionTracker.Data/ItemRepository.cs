@@ -80,6 +80,31 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<CuttingInstructionItemWithQuantityRecived> CuttingInstructionItemsWithQuantityReciveds(List<int> cuttingInstructionIds)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var list = context.CuttingInstructions.Where(c => cuttingInstructionIds.Contains(c.Id)).ToList();
+                 return list.SelectMany(ct => ct.CuttingInstructionDetails).SelectMany(cid => cid.CuttingInstructionItems).Select(cii => 
+                    {
+                        return new CuttingInstructionItemWithQuantityRecived
+                        {
+                            Id = cii.Id,
+                            LotNumber = cii.CuttingInstructionDetail.CuttingInstruction.LotNumber,
+                            CuttingInstructionId = cii.CuttingInstructionDetail.CuttingInstructionId,
+                            ItemId = cii.ItemId,
+                            SKU = cii.Item.SKU,
+                            QuantityOrdered = cii.Quantity,
+                            QuantityReceived = cii.CuttingInstructionDetail.CuttingInstruction.ReceivingItemsTransactions
+                            .Where(i => i.ItemId == cii.ItemId)
+                            .Sum(i => i.Quantity)
+
+                        };
+
+                    }).ToList();
+            }
+        }
+
         public ItemQuantity GetQuantitysPerItem(Item item)
         {
             using (var context = new ManufacturingDataContext(_connectionString))

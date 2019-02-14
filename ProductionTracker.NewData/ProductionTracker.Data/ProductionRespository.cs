@@ -409,16 +409,12 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<CuttingInstruction> GetInstructions()
+        public IEnumerable<CuttingInstruction> GetNotCompleteInstructionForLots()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<CuttingInstruction>(p => p.CuttingInstructionDetails);
-                loadOptions.LoadWith<CuttingInstructionDetail>(p => p.CuttingInstructionItems);
-                loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
-                context.LoadOptions = loadOptions;
-                return context.CuttingInstructions.ToList();
+               
+                return context.CuttingInstructions.Where(ct => !ct.Completed).ToList();
             }
         }
 
@@ -510,6 +506,8 @@ namespace ProductionTracker.Data
                 return context.CuttingInstructions.Where(i => i.Completed == false).ToList();
             }
         }
+        
+
 
 
         public IEnumerable<CuttingInstruction> GetOpenedInstructions()

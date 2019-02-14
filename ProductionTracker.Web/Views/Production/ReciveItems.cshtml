@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Recived Items";
+}
+<style>
+    .lot-submit-btn {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        left: 500px;
+    }
+</style>
+
+<h2>ReciveItems</h2>
+<div id="app" class="page-container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2" style="position:relative">
+
+            <select class="lot-numbers-select col-md-11" name="states[]" multiple="multiple"></select>
+            <button type="button" v-on:click="submitLotNumbers" class="btn btn-circle btn-success lot-submit-btn">Submit</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top:100px;">
+        <div class="col-md-8 col-md-offset-2" style="overflow:auto; max-height:450px;">
+            <table class="table table-bordered table-hover table-responsive">
+                <tr>
+                    <th >LotNumber</th>
+                    <th >SKU</th>
+                    <th >Quantity Ordered</th>
+                    <th >Quantity Recived</th>
+                    <th >Recived <button class="btn btn-success" v-on:click="fillAll">{{fillBtnText}}</button></th>
+                </tr>
+                <template v-for="(item,index) in items">
+                    <tr>
+                        <td class="small-input">{{item.LotNumber}}</td>
+                        <td class="small-input">{{item.SKU}}</td>
+                        <td class="small-input" >{{item.QuantityOrdered}}</td>
+                        <td class="small-input">{{item.QuantityReceived}}</td>
+                        <td class="small-input"><label style="color:red" v-if="item.ItemsRecived > (item.Ordered - item.Received)" for="item.Id">You entered to many items!</label><input type="text" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control small-input" name="item.Id" /></td>
+                    </tr>
+                </template>
+            </table>
+        </div>
+    </div>
+</div>
+
+    @section scripts{
+        @*<script src="~/Metronic/theme/assets/global/plugins/select2/js/select2.full.js"></script>*@
+        <script src="~/Metronic/theme/assets/global/plugins/select2/js/select2.js"></script>
+        <script src="~/Scripts/vue.js"></script>
+        <script src="~/Scripts/SiteScripts/recive-items-vue.js"></script>
+
+    }
+    @section css{
+        <link rel="stylesheet" href="~/Metronic/theme/assets/global/plugins/select2/css/select2.css" />
+        <link rel="stylesheet" href="~/Metronic/theme/assets/global/plugins/select2/css/select2-bootstrap.min.css" />
+    }
+

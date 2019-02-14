@@ -367,6 +367,30 @@ namespace ProductionTracker.Web.Controllers
                 };
             }),JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult GetItemsFromLotNumbers(List<int> cuttingInstructionIds)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var result = repo.CuttingInstructionItemsWithQuantityReciveds(cuttingInstructionIds);
+            return Json(result);
+        }
+
+        public ActionResult ReciveItems()
+        {
+            return View();
+        }
+        public ActionResult GetLotNumbers()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetNotCompleteInstructionForLots().Select(ct => {
+                return new
+                {
+                    id = ct.Id,
+                    text = ct.LotNumber
+                };
+            }),JsonRequestBehavior.AllowGet);
+        }
+
 
         private int LastLotNumber()
         {

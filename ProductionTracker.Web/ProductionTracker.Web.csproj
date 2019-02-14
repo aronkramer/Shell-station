@@ -6657,6 +6657,7 @@
     <Content Include="Scripts\SiteScripts\new-production.js" />
     <Content Include="Scripts\SiteScripts\planned-production.js" />
     <Content Include="Scripts\SiteScripts\prod-confrimation-vue.js" />
+    <Content Include="Scripts\SiteScripts\recive-items-vue.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />
@@ -6682,8 +6683,7 @@
     <Content Include="Scripts\SiteScripts\prod-conf.vue" />
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
     <Content Include="Views\Production\PlannedProduction.cshtml" />
-    <Content Include="Views\Home\PrintBarcodesFromProduction.cshtml" />
-    <Content Include="Views\Home\PrintBarcodes.cshtml" />
+    <Content Include="Views\Production\ReciveItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
