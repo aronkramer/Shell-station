@@ -43,10 +43,15 @@
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
+            $('.byItems').block({
+                message: '<h4>Processing....</h4>',
+                css: { border: '3px solid #a00' }
+            }); 
             this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
             $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
                 this.orderArray();
+                $('.byItems').unblock();
             });
         },
         detailsForItem: function (event) {
@@ -79,8 +84,13 @@
             }
         },
         getProductions: function () {
+            $('.byProductions').block({
+                message: '<h4>Processing....</h4>',
+                css: { border: '3px solid #a00' }
+            }); 
             $.get("/home/GetCuttingInstructionsWithInfo", result => {
                 this.productions = result;
+                $('.byProductions').unblock();
             });
         },
         detailsForProduction: function (event) {
@@ -139,9 +149,10 @@
                     };
                 });
                 this.recivedItemProduction = { Id: this.currentProduction.Id, Date: this.getDateInputFormat() };
+                $("#recive-items-modal").modal();
             });
             this.fillBtnText = 'Fill All';
-            $("#recive-items-modal").modal();
+            
         },
         getDateInputFormat: function () {
             var date = new Date();
@@ -151,6 +162,10 @@
             return [year, month, day].join('-');
         },
         submitRecivedItems: function () {
+            $(".modal-content").block({
+                message: '<h4>Processing....</h4>',
+                css: { border: '3px solid #a00' }
+            });
             var items = this.recivedItems.map(p => {
                 return {
                     ItemId: p.Id,
@@ -161,8 +176,8 @@
 
                 };
             });
-            $.post("/home/AddRecivedItems", { items }, () => { this.getProductions(); });
-            $("#recive-items-modal").modal('hide');
+            $.post("/home/AddRecivedItems", { items }, () => { this.getProductions(); $(".modal-content").unblock(); $("#recive-items-modal").modal('hide'); });
+            
             
         },
         itemRecivedChange: function () {

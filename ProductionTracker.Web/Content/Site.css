@@ -2,3 +2,10 @@
     color: red;
     border: 2px solid red;
 }
+.small-input {
+    text-align: center;
+    width: 75px;
+}
+td.small-input {
+    text-align: left !important;
+}

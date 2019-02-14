@@ -8,8 +8,8 @@
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane active" id="byItems">
-                    <div class="col-md-10 col-md-offset-1">
+                <div class="tab-pane active tab-div" id="byItems">
+                    <div class="col-md-10 col-md-offset-1 byItems">
                         <br />
                         <table class="table table-bordered table-responsive table-striped">
 
@@ -58,8 +58,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="byProductions">
-                    <div class="col-md-10 col-md-offset-1">
+                <div class="tab-pane tab-div" id="byProductions">
+                    <div class="col-md-10 col-md-offset-1 byProductions">
                         <br />
                         <table class="table table-bordered table-responsive table-striped">
 
@@ -199,9 +199,10 @@
 </div>
 
 @section Scripts{
-    <script src="~/Scripts/lodash.js"></script>
-    <script src="~/Scripts/vue.js"4></script>
+    @*<script src="~/Scripts/lodash.js"></script>*@
+    <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/Index.js"></script>
+    
     }
 
 @section css{
