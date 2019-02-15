@@ -5,44 +5,58 @@
 <style>
     .lot-submit-btn {
         position: absolute;
-        top: 0px;
+        bottom: 0px;
+        top: 25px;
         right: 0px;
         left: 500px;
+    }
+    .select2-container{
+        width:480px !important;
     }
 </style>
 
 <h2>ReciveItems</h2>
-<div id="app" class="page-container">
+<div id="app" class="page-container" v-show="select2Loaded">
     <div class="row">
         <div class="col-md-8 col-md-offset-2" style="position:relative">
-
-            <select class="lot-numbers-select col-md-11" name="states[]" multiple="multiple"></select>
+            <label class="" for="lots">Please choose lot numbers:</label>
+            <select class="lot-numbers-select col-md-11" name="lots[]" multiple="multiple"></select>
             <button type="button" v-on:click="submitLotNumbers" class="btn btn-circle btn-success lot-submit-btn">Submit</button>
         </div>
     </div>
-    <div class="row" style="margin-top:100px;">
+    <div v-if="items.length" class="row" style="margin-top:100px;">
+        <div class="col-md-4 col-md-offset-4">
+
+        <label class="" for="date">Date</label>
+        <input type="date" class="" name="date" v-model="recivedDate" />
+        </div>
         <div class="col-md-8 col-md-offset-2" style="overflow:auto; max-height:450px;">
             <table class="table table-bordered table-hover table-responsive">
                 <tr>
-                    <th >LotNumber</th>
-                    <th >SKU</th>
-                    <th >Quantity Ordered</th>
-                    <th >Quantity Recived</th>
-                    <th >Recived <button class="btn btn-success" v-on:click="fillAll">{{fillBtnText}}</button></th>
+                    <th>LotNumber</th>
+                    <th>SKU</th>
+                    <th>Quantity Ordered</th>
+                    <th>Quantity Recived</th>
+                    <th>Recived <button class="btn btn-success" v-on:click="fillAll">{{fillBtnText}}</button></th>
                 </tr>
                 <template v-for="(item,index) in items">
                     <tr>
                         <td class="small-input">{{item.LotNumber}}</td>
                         <td class="small-input">{{item.SKU}}</td>
-                        <td class="small-input" >{{item.QuantityOrdered}}</td>
+                        <td class="small-input">{{item.QuantityOrdered}}</td>
                         <td class="small-input">{{item.QuantityReceived}}</td>
-                        <td class="small-input"><label style="color:red" v-if="item.ItemsRecived > (item.Ordered - item.Received)" for="item.Id">You entered to many items!</label><input type="text" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control small-input" name="item.Id" /></td>
+                        <td class="small-input"><label style="color:red" v-if="item.ItemsRecived > (item.QuantityOrdered - item.QuantityReceived)" for="item.Id">You entered to many items!</label><input type="text" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control small-input" name="item.Id" /></td>
                     </tr>
                 </template>
             </table>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <button v-on:click="submitRecivedItems" :disabled="checkVal" id="submitRecivedItems" class="btn btn-success btn-block">Submit</button>
         </div>
     </div>
-</div>
+    </div>
+        </div>
+    </div>
 
     @section scripts{
         @*<script src="~/Metronic/theme/assets/global/plugins/select2/js/select2.full.js"></script>*@
