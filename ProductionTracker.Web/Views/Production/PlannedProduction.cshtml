@@ -4,35 +4,40 @@
 }
 <style>
     .medium-input {
-        width:125px;
-
+        width: 125px;
     }
+
     .add-size-btn {
         padding-bottom: 0px;
         padding-top: 0px;
-        margin-right: 0px!important;
-        margin-left:-5px!important;
+        margin-right: 0px !important;
+        margin-left: -5px !important;
         height: 25px;
         width: 25px;
     }
+
     .increment-number-input {
         width: 40px;
     }
+
     .smalll-table {
         display: inline-flex;
         width: unset;
     }
+
     .small-input {
-        
         text-align: center;
-        width:75px;
+        width: 75px;
     }
-    td.small-input{
-        text-align:left !important;
+
+    td.small-input {
+        text-align: left !important;
     }
+
     input::-webkit-calendar-picker-indicator {
         display: none;
     }
+
     input[type="number"] {
         -moz-appearance: textfield;
     }
@@ -45,15 +50,20 @@
     .head-input {
         margin-bottom: 50px;
     }
+
     .mini-button {
         width: 16.979166px;
         height: 16.979166px;
         padding-top: 0px;
         padding-bottom: 0px;
     }
+
+   
+    
+
 </style>
 
-<div id="pp-app">
+<div id="pp-app" v-cloak>
     <datalist id="skus">
         <option v-for="x in validationLists.skus">{{x.SKU}}</option>
     </datalist>
@@ -86,20 +96,22 @@
             <div class="col-md-8">
                 <div class="form-inline" style="text-align:center;">
                     <div class="form-group">
-                        <input placeholder="Production Catergory" v-on:change="validatePlannedProd" v-bind:class="[validationLists.prodCats && validationLists.prodCats.some(i => i.Name === productionCat.Name) ? '': 'hasError' ]" type="text" list="production-catergories" class="form-control" v-model="productionCat.Name" />
+                        <input placeholder="Production Catergory" v-on:change="validatePlannedProd" v-on:blur="checkIfExsits" v-bind:class="[validationLists.prodCats && validationLists.prodCats.some(i => i.Name === plannedProduction.productionCat.Name) ? '': 'hasError' ]" type="text" list="production-catergories" class="form-control" v-model="plannedProduction.productionCat.Name" ref="productionCatInput" />
                     </div>
                     <div class="form-group">
-                        <input placeholder="Production Catergory Year" v-on:keydown.up="$event.preventDefault()" v-on:change="validatePlannedProd" v-bind:class="[productionCatYear && productionCatYear.length === 4 ? '': 'hasError' ]" type="number" class="form-control" v-model="productionCatYear" />
+                        <input placeholder="Production Catergory Year" v-on:blur="checkIfExsits" @*v-on:keydown.up="$event.preventDefault()"*@ v-on:change="validatePlannedProd" v-bind:class="[plannedProduction.productionCatYear && plannedProduction.productionCatYear.length === 4 ? '': 'hasError' ]" type="number" class="form-control" v-model="plannedProduction.productionCatYear" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
+                <div class="row">
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="icon-social-dribbble font-green"></i>
+                            <span class="caption-subject font-green bold uppercase">New</span>
                             <span class="caption-subject font-green bold uppercase">Items</span>
                         </div>
                         <div class="actions">
@@ -107,12 +119,12 @@
                                 <i class="glyphicon glyphicon-plus"></i>
                             </a>
                             <input type="number" class="increment-number-input" v-model="rowIncremntNumber" />
-                            @*<a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-wrench"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-trash"></i>
-                                </a>*@
+                            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                <i class="icon-wrench"></i>
+                            </a>
+                            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                <i class="icon-trash"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -148,11 +160,67 @@
                         </div>
                     </div>
                 </div>
+               </div>
+                <div class="row">
+                    <div class="portlet light bordered">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-social-dribbble font-green"></i>
+                                <span class="caption-subject font-green bold uppercase">Old Items</span>
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" v-on:click="addSkuRows(rowIncremntNumber)" href="javascript:;">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </a>
+                                <input type="number" class="increment-number-input" v-model="rowIncremntNumber" />
+                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-wrench"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-scrollable smalll-table">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th> # </th>
+                                            <th> SKU </th>
+                                            <th> Quantity </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item,index) in items">
+                                            <td>{{item.Id}}</td>
+                                            <td>
+                                                <input class="small-input" v-on:change="validatePlannedProd" type="text" v-bind:class="[validationLists.skus && validationLists.skus.some(i => i.SKU === item.SKU) ? '': 'hasError' ]" list="skus" v-model="item.SKU" />
 
+                                            </td>
+                                            <td>
+                                                <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
+                                            </td>
+                                            <td>
+                                                <a v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</a>
+                                            </td>
+
+
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
             <div class="col-md-8">
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
+                    <div class="portlet-title" style="border-bottom:none;">
+                        <h3 style="text-align:center;margin-bottom:25px;font-weight:bold;border-bottom: 1px solid #eef1f5;">Item Wizard</h3>
                         <div v-if="productionWizard.errors.length > 0" class="alert alert-danger">
                             @*<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>*@
                             <p v-for="msg in productionWizard.errors">
@@ -168,11 +236,11 @@
 
                         <div class="actions">
                             @*<a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-wrench"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-trash"></i>
-                                </a>*@
+                            <i class="icon-wrench"></i>
+                        </a>
+                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                            <i class="icon-trash"></i>
+                        </a>*@
                         </div>
                     </div>
                     <div v-if="productionWizard.items.length > 0" class="portlet-body" style="overflow:auto">
@@ -218,7 +286,7 @@
                         </div>
                         <br />
                         <div class="col-md-4 col-md-offset-4">
-                            <a v-on:click="submitWizard" :disabled="!formVaild" class="btn btn-info btn-block">Save</a>
+                            <a id="blockui_sample_2_4" v-on:click="submitWizard" :disabled="!formVaild" class="btn btn-info btn-block">Save</a>
                         </div>
                     </div>
                     <div v-else>
@@ -232,7 +300,11 @@
 </div>
    
 @section scripts{
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.js"></script>
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/planned-production.js"></script>
 }
+@section css{
+    <link href="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" />
+    }
 

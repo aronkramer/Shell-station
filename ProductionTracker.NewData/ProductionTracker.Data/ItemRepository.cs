@@ -60,7 +60,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-
+                
                 return  context.CuttingInstructionItems.Select(i => i.Item)
                     .Distinct().ToList()
                     .Select(it =>

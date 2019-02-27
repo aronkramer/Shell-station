@@ -342,6 +342,7 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public void SubmitPlannedProduction(PlannedProduction plannedProduction, IEnumerable<PlannedProductionDetail> items)
         {
+            
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             repo.AddPlannedProduction(plannedProduction);
             items = items.Select(i =>
@@ -373,6 +374,13 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             var result = repo.CuttingInstructionItemsWithQuantityReciveds(cuttingInstructionIds);
             return Json(result);
+        }
+
+        public ActionResult GetPlannedProduction(PlannedProduction plannedProduction)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var pp = repo.GetPlannedProduction(plannedProduction);
+            return Json(pp != null ? new { pp.Id, pp.ProductionCatergoryId, pp.ProductionCatYear } : null);
         }
 
         public ActionResult ReciveItems()

@@ -1,17 +1,17 @@
 ﻿const app = new Vue({
     el: '#app',
     mounted: function () {
-        $("#app").block({
-            message: '<h4>Processing....</h4>',
-            css: { border: '3px solid #a00' }
-        });
+        //$("#app").block({
+        //    message: '<h4>Processing....</h4>',
+        //    css: { border: '3px solid #a00' }
+        //});
         this.getLotNumbers(() => {
             $('.lot-numbers-select').select2({
                 data: this.lotNumbers,
                 placeholder: "Select lot numbers",
                 
             });
-            $("#app").unblock();
+            //$("#app").unblock();
             this.select2Loaded = true;
         });
         this.recivedDate = this.getDateInputFormat();

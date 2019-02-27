@@ -32,7 +32,7 @@
             <h4>Select What    Fabric</h4>
             <br />
             <br />
-            <select id="fabric-dropdown" name="fabricIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
+            <select id="fabric-dropdown" name="materialIds[]" multiple="multiple" style="width: 1000px; height:1000px; color:pink;">
                 @foreach (var fabric in Model.Materials)
                 {
                     <option value="@fabric.Id">@fabric.Name</option>

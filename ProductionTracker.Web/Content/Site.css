@@ -9,3 +9,6 @@
 td.small-input {
     text-align: left !important;
 }
+[v-cloak] {
+    display: none;
+}

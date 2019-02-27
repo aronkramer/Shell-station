@@ -493,6 +493,36 @@ namespace ProductionTracker.Data
             }
         }
 
+        public PlannedProduction GetPlannedProduction(PlannedProduction plannedProduction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.PlannedProductions.FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+            }
+
+        }
+
+        public IEnumerable<PlannedProductionDetail> GetPlannedProductionDetails(int plannedProductionId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<PlannedProductionDetail>(p => p.Item);
+                context.LoadOptions = loadOptions;
+                return context.PlannedProductionDetails.Where(pd => pd.PlannedProductionId == plannedProductionId).ToList();
+            }
+        }
+
+        public void UpdatePlannedProductionDetails(IEnumerable<PlannedProductionDetail> plannedProductionDetails)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.PlannedProductionDetails.AttachAll(plannedProductionDetails);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetails);
+                context.SubmitChanges();
+            }
+        }
+
         public IEnumerable<CuttingInstruction> GetNonCompleteInstructions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))

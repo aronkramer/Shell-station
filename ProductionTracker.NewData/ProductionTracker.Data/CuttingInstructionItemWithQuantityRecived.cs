@@ -15,6 +15,7 @@ namespace ProductionTracker.Data
         public int QuantityReceived { get; set; }
         public int CuttingInstructionId { get; set; }
         public int LotNumber { get; set; }
+        public int? ItemsRecived { get; set; }
 
     }
 }

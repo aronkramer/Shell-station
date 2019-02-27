@@ -32,6 +32,11 @@ table th .fa-sort-desc {
 }
 .th-sort{
     position:relative !important;
+    cursor:pointer;
+    
+}
+.th-sort:hover {
+        background-color: lightslategrey;
 }
 
 

@@ -10,8 +10,11 @@
     data: {
         hello: 'hi',
         items: [],
+        existigItems:[],
         rowIncremntNumber: 1,
         errors: [],
+        plannedProduction: { id: null, productionCat: { Id: null, Name: '' }, productionCatYear: null },
+        existingItems:[],
         vaildPlannedProduction: false,
         productionCat: { Id: null, Name:'' },
         productionCatYear: null,
@@ -102,10 +105,11 @@
             this.productionWizard = wizard;
         },
         validatePlannedProd: function () {
+            console.log('validating......');
             var errors = [];
             var items = this.items;
-            let prodCat = this.productionCat;
-            if (!this.productionCatYear || this.productionCatYear.length !== 4) {
+            let prodCat = this.plannedProduction.productionCat;
+            if (!this.plannedProduction.productionCatYear || this.plannedProduction.productionCatYear.length !== 4) {
                 errors.push('Sorry its not a vaild year');
             }
             if (!prodCat.Name) {
@@ -141,8 +145,8 @@
             }
             this.errors = errors;
             this.items = items;
-            this.productionCat = prodCat;
-            this.vaildPlannedProduction = errors.length < 1 ;
+            this.plannedProduction.productionCat = prodCat;
+            this.vaildPlannedProduction = errors.length < 1;
         },
         prodCatIdSet: function () {
             const list = JSON.parse(JSON.stringify(this.validationLists.prodCats));
@@ -153,6 +157,17 @@
             this.productionCat = prodCat;
         },
         addSkuRows: function (number) {
+            //App.alert({
+            //    container: $('#alert_container').val(), // alerts parent container 
+            //    place: 'append', // append or prepent in container 
+            //    type: 'success', // alert's type 
+            //    message: 'Test alert', // alert's message
+            //    close: true, // make alert closable
+            //    reset: false, // close all previouse alerts first 
+            //    focus: true, // auto scroll to the alert after shown 
+            //    closeInSeconds: 10000, // auto close after defined seconds 
+            //    icon: 'fa fa-check' // put icon class before the message 
+            //    });
             for (var i = 0; i < number; i++)
                 this.items.push({ Id: null, SKU: '', Quantity: null });
             //this.validatePlannedProd();
@@ -175,7 +190,64 @@
             this.items[index] = thisItem;
         },
         removeSkuLine: function (index) {
+            //swal({
+            //    title: "Are you sure?",
+            //    text: "Your will not be able to recover this imaginary file!",
+            //    type: "warning",
+            //    showCancelButton: true,
+            //    confirmButtonClass: "btn-danger",
+            //    confirmButtonText: "Yes, delete it!",
+            //    closeOnConfirm: false
+            //},
+            //     () => {
+            //        swal("Deleted!", "Your imaginary file has been deleted.", "success");
+            //        this.items.splice(index, 1);
+            //    });
             this.items.splice(index, 1);
+        },
+        checkIfExsits: function () {
+            var pp = this.plannedProduction;
+            var existingitems = this.existigItems;
+            if (pp.productionCat.Id && pp.productionCatYear) {
+                $.post("/production/GetPlannedProduction", {
+                    plannedProduction: { ProductionCatergoryId: pp.productionCat.Id, ProductionCatYear: pp.productionCatYear }
+                },
+                    function (result) {
+                        swal({
+                            title: "This season has been planned already!",
+                            text: "Do you want to add to it?",
+                            type: "success",
+                            showCancelButton: true,
+                            confirmButtonClass: "btn-success",
+                            confirmButtonText: "Yes",
+                            cancelButtonText: "No",
+                            closeOnConfirm: false,
+                            closeOnCancel: false
+                        },
+                            
+                            function (isConfirm) {
+                                window.onkeydown = null;
+                                window.onfocus = null;
+                                if (isConfirm) {
+                                    
+                                    pp.id = result.Id;
+                                    swal("Pulling up the data", "The data is loading", "success");
+                                   
+                                    //this.$refs.productionCatInput.focus();
+                                }
+                                else {
+                                    pp.productionCat.Name = null;
+                                    pp.productionCat.Id = null;
+
+                                    swal("Cancelled", "You can try another season", "error");
+                                    app.validatePlannedProd();
+                                }
+                            });
+                        //this.plannedProduction = pp;
+                        //this.validatePlannedProd();
+                    }.bind(this)
+                );
+            }
         },
         getProdCatsList: function () {
             $.get("/production/GetProductionCats", result => {
@@ -274,7 +346,7 @@
             });
         },
         submitPlanedProduction: function () {
-            var plannedProduction = { ProductionCatergoryId: this.productionCat.Id, ProductionCatYear: this.productionCatYear };
+            var plannedProduction = { id: this.plannedProduction.id, ProductionCatergoryId: this.plannedProduction.productionCat.Id, ProductionCatYear: this.plannedProduction.productionCatYear };
             var items = this.items.filter(i => i.Quantity && i.Id).map(i => {
                 return {
                     ItemId: i.Id,

@@ -18,8 +18,8 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult ItemAdder()
         {
-            var colorRepo = new ColorRepository(Properties.Settings.Default.ConStr);
-            var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
+            var colorRepo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
+            var repo = new OldProductionRepository(Properties.Settings.Default.ManufacturingConStr);
             var vm = new ItemAdderVM
             {
                 Departments = repo.GetDepartments(),
@@ -39,7 +39,7 @@ namespace ProductionTracker.Web.Controllers
                 return RedirectToAction("ItemAdder");
             }
             var items = MakeItemsBasedOnCritera(departmentIds, styles, materialIds, sleaves, colorIds);
-            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             items = repo.GetUniqueItemsAndUnquieSKU(items.ToList());
             foreach (var item in items)
             {
@@ -54,7 +54,7 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public ActionResult AddItems(List<OldData.Item> items)
         {
-            var repo = new ItemRepository(Properties.Settings.Default.ConStr);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             items = items.Where(i => i.SKU != null).ToList();
             items = repo.GetUniqueItemsAndUnquieSKU(items).ToList();
             repo.AddItems(items);
@@ -62,7 +62,7 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult Colors()
         {
-            var repo = new ColorRepository(Properties.Settings.Default.ConStr);
+            var repo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
 
             return View(new ColorVM { Colors = repo.GetAllColors()});
         }
@@ -70,7 +70,7 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult AddColors(List<Color> colors)
         {
             colors.RemoveAll(c => c.Id == 0 || c.Name == null);
-            var repo = new ColorRepository(Properties.Settings.Default.ConStr);
+            var repo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
             repo.AddColors(colors);
             return RedirectToAction("Colors");
         }
@@ -94,7 +94,7 @@ namespace ProductionTracker.Web.Controllers
                                     if (SleeveRuleChecker(dep, sleave))
                                     {
                                         //var sizeList = SizeList(dep, sleave);
-                                        var repo = new OldProductionRepository(Properties.Settings.Default.ConStr);
+                                        var repo = new OldProductionRepository(Properties.Settings.Default.ManufacturingConStr);
                                         var sizeList = repo.GetAllSizesByDepartment(dep);
                                         sizeList = sleave == 2 ? sizeList.Where(s => s.Id != 10 && s.Id != 11) : sizeList;
                                         foreach (var color in colorIds)

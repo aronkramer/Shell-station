@@ -19,7 +19,7 @@
 </style>
 
 <h2>ReciveItems</h2>
-<div id="app" class="page-container" v-show="select2Loaded">
+<div id="app" class="page-container" v-show="select2Loaded" v-cloak>
     <div class="row">
         <div class="col-md-8 col-md-offset-2" style="position:relative">
             <label class="" for="lots">Please choose lot numbers:</label>
@@ -48,7 +48,7 @@
                         <td class="small-input">{{item.SKU}}</td>
                         <td class="small-input">{{item.QuantityOrdered}}</td>
                         <td class="small-input">{{item.QuantityReceived}}</td>
-                        <td class="small-input"><label style="color:red" v-if="item.ItemsRecived > (item.QuantityOrdered - item.QuantityReceived)" for="item.Id">You entered to many items!</label><input type="text" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control small-input" name="item.Id" /></td>
+                        <td class="small-input"><label style="color:red" v-if="item.ItemsRecived > (item.QuantityOrdered - item.QuantityReceived)" for="item.Id">You entered to many items!</label><input type="number" v-model="item.ItemsRecived" :disabled="(item.Ordered - item.Received) <= 0" class="form-control small-input" name="item.Id" /></td>
                     </tr>
                 </template>
             </table>
