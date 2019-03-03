@@ -10,10 +10,11 @@
     data: {
         hello: 'hi',
         items: [],
-        existigItems:[],
         rowIncremntNumber: 1,
         errors: [],
-        plannedProduction: { id: null, productionCat: { Id: null, Name: '' }, productionCatYear: null },
+        plannedProduction: {
+            id: null, productionCat: { Id: null, Name: '' }, productionCatYear: null, copy: {}
+        },
         existingItems:[],
         vaildPlannedProduction: false,
         productionCat: { Id: null, Name:'' },
@@ -207,44 +208,48 @@
         },
         checkIfExsits: function () {
             var pp = this.plannedProduction;
-            var existingitems = this.existigItems;
+            var existingitems = this.existingItems;
             if (pp.productionCat.Id && pp.productionCatYear) {
                 $.post("/production/GetPlannedProduction", {
                     plannedProduction: { ProductionCatergoryId: pp.productionCat.Id, ProductionCatYear: pp.productionCatYear }
                 },
                     function (result) {
-                        swal({
-                            title: "This season has been planned already!",
-                            text: "Do you want to add to it?",
-                            type: "success",
-                            showCancelButton: true,
-                            confirmButtonClass: "btn-success",
-                            confirmButtonText: "Yes",
-                            cancelButtonText: "No",
-                            closeOnConfirm: false,
-                            closeOnCancel: false
-                        },
-                            
-                            function (isConfirm) {
-                                window.onkeydown = null;
-                                window.onfocus = null;
-                                if (isConfirm) {
-                                    
-                                    pp.id = result.Id;
-                                    swal("Pulling up the data", "The data is loading", "success");
-                                   
-                                    //this.$refs.productionCatInput.focus();
-                                }
-                                else {
-                                    pp.productionCat.Name = null;
-                                    pp.productionCat.Id = null;
+                        if (result.Id !== pp.id) {
+                            swal({
+                                title: "This season has been planned already!",
+                                text: "Do you want to add to it?",
+                                type: "success",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "Yes",
+                                cancelButtonText: "No",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
 
-                                    swal("Cancelled", "You can try another season", "error");
-                                    app.validatePlannedProd();
-                                }
-                            });
-                        //this.plannedProduction = pp;
-                        //this.validatePlannedProd();
+                                function (isConfirm) {
+                                    window.onkeydown = null;
+                                    window.onfocus = null;
+                                    if (isConfirm) {
+
+                                        pp.id = result.Id;
+                                        app.existingItems = result.Items;
+                                        swal("Pulling up the data", "The data is loading", "success");
+
+                                        //this.$refs.productionCatInput.focus();
+                                    }
+                                    else {
+                                        pp.productionCat.Name = null;
+                                        pp.productionCat.Id = null;
+                                        app.existingItems = [];
+
+                                        swal("Cancelled", "You can try another season", "error");
+                                        app.validatePlannedProd();
+                                    }
+                                });
+                            //this.plannedProduction = pp;
+                            //this.validatePlannedProd();
+                        }
                     }.bind(this)
                 );
             }

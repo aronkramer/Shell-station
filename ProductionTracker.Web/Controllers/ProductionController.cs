@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ProductionTracker.Web.Excel;
 using ProductionTracker.Data;
+using ProductionTracker.Data.Models;
 using System.Text;
 using ClosedXML.Excel;
 using System.IO;
@@ -379,8 +380,16 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult GetPlannedProduction(PlannedProduction plannedProduction)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var pp = repo.GetPlannedProduction(plannedProduction);
-            return Json(pp != null ? new { pp.Id, pp.ProductionCatergoryId, pp.ProductionCatYear } : null);
+            var pp = repo.GetPlannedProductionWithDetails(plannedProduction);
+            return Json(pp != null ? new { pp.Id, pp.ProductionCatergoryId, pp.ProductionCatYear, Items = pp.PlannedProductionDetails.Count() > 0 ? pp.PlannedProductionDetails.Select(p => {
+                return new
+                {
+                    p.Item.Id,
+                    p.Item.SKU,
+                    p.Quantity,
+                    Edit = false
+                };
+            }) : null } : null);
         }
 
         public ActionResult ReciveItems()
