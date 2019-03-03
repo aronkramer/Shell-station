@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductionTracker.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;

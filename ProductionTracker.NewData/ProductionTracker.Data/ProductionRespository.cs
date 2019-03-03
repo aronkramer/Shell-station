@@ -4,6 +4,7 @@ using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProductionTracker.Data.Models;
 
 namespace ProductionTracker.Data
 {
@@ -497,6 +498,19 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
+                return context.PlannedProductions.FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+            }
+
+        }
+
+        public PlannedProduction GetPlannedProductionWithDetails(PlannedProduction plannedProduction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOption = new DataLoadOptions();
+                loadOption.LoadWith<PlannedProduction>(p => p.PlannedProductionDetails);
+                loadOption.LoadWith<PlannedProductionDetail>(p => p.Item);
+                context.LoadOptions = loadOption;
                 return context.PlannedProductions.FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
             }
 

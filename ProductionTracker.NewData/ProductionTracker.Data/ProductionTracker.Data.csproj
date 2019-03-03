@@ -43,13 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CuttingInstructionItemWithQuantityRecived.cs" />
+    <Compile Include="Models\CuttingInstructionItemWithQuantityRecived.cs" />
     <Compile Include="Manufacturing.cs">
       <DependentUpon>Manufacturing.dbml</DependentUpon>
     </Compile>
-    <Compile Include="Packaging.cs" />
-    <Compile Include="ItemQuantity.cs" />
+    <Compile Include="Models\Packaging.cs" />
+    <Compile Include="Models\ItemQuantity.cs" />
     <Compile Include="ItemRepository.cs" />
+    <Compile Include="Models\ppwithitmes.cs" />
     <Compile Include="ProductionRespository.cs" />
     <Compile Include="Manufacturing.designer.cs">
       <AutoGen>True</AutoGen>
