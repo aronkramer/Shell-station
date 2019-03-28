@@ -430,7 +430,7 @@ namespace ProductionTracker.Web.Excel
                         //var amountPerLayer = ci.CuttingInstructionSizes.Count() > 0 ? ci.CuttingInstructionSizes.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer : ci.MarkerCategory.MarkerDetails.FirstOrDefault(s => s.SizeId == c.Item.SizeId).AmountPerLayer;
                         return new ColorMaterial
                         {
-                            Color = c.Fabric.Color.Name,
+                            Color = c.Fabric.ColorDescriptionName ?? c.Fabric.Color.Name,
                             Material = c.Fabric.Material.Name,
                             Layers = c.Layers,
                             Packaging = c.Packaging

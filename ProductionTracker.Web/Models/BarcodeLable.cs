@@ -19,6 +19,7 @@ namespace ProductionTracker.Web.Models
          public string Material      {get;set;}
          public string Size          {get;set;}
          public string SizeDis       { get; set; }
+         public int MaterialId { get; set; }
     }
     public class TestLable
     {

@@ -109,16 +109,6 @@
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstruction" ThisKey="CuttingInstructId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Fabrics" Member="Fabrics">
-    <Type Name="Fabric">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Fabric_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="FabricId" Type="CuttingInstructionDetail" />
-      <Association Name="Color_Fabric" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
-      <Association Name="Material_Fabric" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.CuttingInstructionDetailRolls" Member="CuttingInstructionDetailRolls">
     <Type Name="CuttingInstructionDetailRoll">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -169,8 +159,8 @@
       <Column Name="Packaging" Type="Packaging" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionDetailRoll" Member="CuttingInstructionDetailRolls" ThisKey="Id" OtherKey="CuttingInstructionDetailId" Type="CuttingInstructionDetailRoll" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionItem" Member="CuttingInstructionItems" ThisKey="Id" OtherKey="CuttingInstructionDetailsId" Type="CuttingInstructionItem" />
-      <Association Name="Fabric_CuttingInstructionDetail" Member="Fabric" ThisKey="FabricId" OtherKey="Id" Type="Fabric" IsForeignKey="true" />
       <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstruction" ThisKey="CuttingInstructionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
+      <Association Name="Fabric_CuttingInstructionDetail" Member="Fabric" ThisKey="FabricId" OtherKey="Id" Type="Fabric" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.CuttingInstructionItems" Member="CuttingInstructionItems">
@@ -243,6 +233,17 @@
       <Association Name="Production_CuttingInstruction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Fabrics" Member="Fabrics">
+    <Type Name="Fabric">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ColorDescriptionName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Fabric_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="FabricId" Type="CuttingInstructionDetail" />
+      <Association Name="Color_Fabric" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
+      <Association Name="Material_Fabric" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Function Name="dbo.ItemsForBarcodes2" Method="ItemsForBarcodes2">
     <ElementType Name="ItemsForBarcodes2Result">
       <Column Name="Barcode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
@@ -257,6 +258,7 @@
       <Column Name="Material" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Size" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="SizeDis" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </ElementType>
   </Function>
 </Database>

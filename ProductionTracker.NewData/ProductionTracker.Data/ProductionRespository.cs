@@ -168,6 +168,13 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+        public IEnumerable<Fabric> GetFabicsWithColorDes()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Fabrics.Where(f=> f.ColorDescriptionName != null).ToList();
+            }
+        }
 
         public MarkerCategory GetMarkerCategory(int id)
         {

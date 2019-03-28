@@ -41,19 +41,27 @@ namespace ProductionTracker.Web.Reports
                             Departmet = a.Departmet,
                             Size = a.Size,
                             SizeDis = a.SizeDis,
-                            SKU = a.SKU
+                            SKU = a.SKU,
+                            MaterialId = (int)a.MaterialId
                         }).ToList();
             return data;
         }
         public List<BarcodeLable> ConvertProductionIntoBarcodeItems(IEnumerable<CuttingInstructionItem> cuttingInstructionItems, int amountPerSheet)
         {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var barcodeItems = RealBarcodes();
             var items = new List<BarcodeLable>();
+            var fabricsWithDis = repo.GetFabicsWithColorDes();
             cuttingInstructionItems.ToList().ForEach(i =>
             {
                 var tempItem = barcodeItems.FirstOrDefault(bi => bi.Id == i.ItemId);
                 if (tempItem != null)
                 {
+                    var colordis = fabricsWithDis.FirstOrDefault(f => f.MaterialId == tempItem.MaterialId && f.ColorId == tempItem.ColorId);
+                    if(colordis != null)
+                    {
+                        tempItem.Color = colordis.ColorDescriptionName;
+                    }
                     var mod = i.Quantity % amountPerSheet;
                     var result = mod != 0 ? (i.Quantity - mod) + amountPerSheet : i.Quantity;
                     items.AddRange(Enumerable.Repeat(tempItem, result));

@@ -97,14 +97,14 @@ namespace ProductionTracker.Web.Controllers
             {
                 
                 
-                    var cutInst = new CuttingInstruction
-                {
-                    ProductionId = prod.Id,
-                    LotNumber = cI.LotNumber,
-                    MarkerText = cI.Marker.MarkerSizeText,
-                    MarkerId = MarkerId(cI.Marker),
-                    PlannedProductionId = cI.Marker.PlannedProductionId
-                };
+                  var cutInst = new CuttingInstruction
+                  {
+                  ProductionId = prod.Id,
+                  LotNumber = cI.LotNumber,
+                  MarkerText = cI.Marker.MarkerSizeText,
+                  MarkerId = MarkerId(cI.Marker),
+                  PlannedProductionId = cI.Marker.PlannedProductionId
+                  };
                 repo.AddCuttingTicket(cutInst);
                 //if (!cI.Marker.AllSizes)
                 //{
