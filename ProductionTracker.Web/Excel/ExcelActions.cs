@@ -253,7 +253,7 @@ namespace ProductionTracker.Web.Excel
                                     var list = SplitStringOnSpace(temp1);
                                     color = list.Count > 2 ? $"{list[0]} {list[1]}" : list[0];
                                     matireal = list[list.Count - 1];
-                                    matireal = matireal == "NYLON" ? "LYCRA" : matireal;
+                                    matireal = matireal == "LYCRA" ? "NYLON" : matireal;
                                 }
                                 else
                                 {
