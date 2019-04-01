@@ -471,6 +471,8 @@ namespace ProductionTracker.Data
             }
         }
 
+        //PLANNED PRODUCTIONS
+
         public void AddPlannedProduction(PlannedProduction plannedProduction)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -497,7 +499,7 @@ namespace ProductionTracker.Data
                 
                 loadOptions.LoadWith<PlannedProduction>(pd => pd.ProductionCatergory);
                 context.LoadOptions = loadOptions;
-                return context.PlannedProductions.ToList();
+                return context.PlannedProductions.Where(x => !x.Deleted).ToList();
             }
         }
 
@@ -505,7 +507,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.PlannedProductions.FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+                return context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
             }
 
         }
@@ -518,7 +520,10 @@ namespace ProductionTracker.Data
                 loadOption.LoadWith<PlannedProduction>(p => p.PlannedProductionDetails);
                 loadOption.LoadWith<PlannedProductionDetail>(p => p.Item);
                 context.LoadOptions = loadOption;
-                return context.PlannedProductions.FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+                
+                var result =  context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+                result.PlannedProductionDetails = (EntitySet<PlannedProductionDetail>)result.PlannedProductionDetails.Where(x => !x.Deleted);
+                return result;
             }
 
         }
@@ -530,7 +535,17 @@ namespace ProductionTracker.Data
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<PlannedProductionDetail>(p => p.Item);
                 context.LoadOptions = loadOptions;
-                return context.PlannedProductionDetails.Where(pd => pd.PlannedProductionId == plannedProductionId).ToList();
+                return context.PlannedProductionDetails.Where(x => x.Deleted).Where(pd => pd.PlannedProductionId == plannedProductionId).ToList();
+            }
+        }
+
+        public void UpdatePlannedProductionDetail(PlannedProductionDetail plannedProductionDetail)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.PlannedProductionDetails.Attach(plannedProductionDetail);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
+                context.SubmitChanges();
             }
         }
 
@@ -543,6 +558,72 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+
+        public void DeletePlannedProductionDetail(PlannedProductionDetail plannedProductionDetail)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                plannedProductionDetail.Deleted = true;
+                context.PlannedProductionDetails.Attach(plannedProductionDetail);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
+                context.SubmitChanges();
+            }
+        }
+
+        public void DeletePlannedProduction(PlannedProduction plannedProduction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                plannedProduction.Deleted = true;
+                context.PlannedProductions.Attach(plannedProduction);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProduction);
+                context.SubmitChanges();
+            }
+        }
+
+        public void DeletePlannedProductionDetail(int plannedProductionDetailId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var plannedProductionDetail = context.PlannedProductionDetails.FirstOrDefault(p => p.Id == plannedProductionDetailId);
+                plannedProductionDetail.Deleted = true;
+                context.PlannedProductionDetails.Attach(plannedProductionDetail);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
+                context.SubmitChanges();
+            }
+        }
+
+        public void DeletePlannedProduction(int plannedProductionId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var plannedProduction = context.PlannedProductions.FirstOrDefault(p => p.Id == plannedProductionId);
+                //if (plannedProduction == null)
+                //    throw new Exception("The id does not exist");
+                plannedProduction.Deleted = true;
+                context.PlannedProductions.Attach(plannedProduction);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProduction);
+                context.SubmitChanges();
+            }
+        }
+
+
+        //public void DeletePlannedProduction(int plannedProductioId)
+        //{
+        //    using (var context = new ManufacturingDataContext(_connectionString))
+        //    {
+        //        context.ExecuteCommand("DELETE FROM PlannedProductions WHERE Id = {0}", plannedProductioId);
+
+        //    }
+        //}
+
+        //public void DeletePlannedProductionDetail(int plannedProductionDetailId)
+        //{
+        //    using (var context = new ManufacturingDataContext(_connectionString))
+        //    {
+        //        context.ExecuteCommand("DELETE FROM PlannedProductionDetails WHERE Id = {0}", plannedProductionDetailId);
+        //    }
+        //}
 
         public IEnumerable<CuttingInstruction> GetNonCompleteInstructions()
         {
