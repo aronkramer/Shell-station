@@ -196,26 +196,6 @@
       <Association Name="Sleeve_MarkerCategory" Member="Sleeve" ThisKey="SleeveId" OtherKey="Id" Type="Sleeve" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.PlannedProductions" Member="PlannedProductions">
-    <Type Name="PlannedProduction">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ProductionCatergoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="ProductionCatYear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="PlannedProductionId" Type="PlannedProductionDetail" />
-      <Association Name="PlannedProduction_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="PlannedProductionId" Type="CuttingInstruction" />
-      <Association Name="ProductionCatergory_PlannedProduction" Member="ProductionCatergory" ThisKey="ProductionCatergoryId" OtherKey="Id" Type="ProductionCatergory" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PlannedProductionDetails" Member="PlannedProductionDetails">
-    <Type Name="PlannedProductionDetail">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PlannedProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Item_PlannedProductionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
-      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.CuttingInstructions" Member="CuttingInstructions">
     <Type Name="CuttingInstruction">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -229,8 +209,8 @@
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstructionSizes" ThisKey="Id" OtherKey="CuttingInstructId" Type="CuttingInstructionSize" />
       <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="CuttingInstructionId" Type="CuttingInstructionDetail" />
       <Association Name="Marker_CuttingInstruction" Member="Marker" ThisKey="MarkerId" OtherKey="Id" Type="Marker" IsForeignKey="true" />
-      <Association Name="PlannedProduction_CuttingInstruction" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
       <Association Name="Production_CuttingInstruction" Member="Production" ThisKey="ProductionId" OtherKey="Id" Type="Production" IsForeignKey="true" />
+      <Association Name="PlannedProduction_CuttingInstruction" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Fabrics" Member="Fabrics">
@@ -242,6 +222,28 @@
       <Association Name="Fabric_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="FabricId" Type="CuttingInstructionDetail" />
       <Association Name="Color_Fabric" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
       <Association Name="Material_Fabric" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlannedProductionDetails" Member="PlannedProductionDetails">
+    <Type Name="PlannedProductionDetail">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PlannedProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Item_PlannedProductionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
+      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlannedProductions" Member="PlannedProductions">
+    <Type Name="PlannedProduction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductionCatergoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProductionCatYear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="PlannedProduction_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="PlannedProductionId" Type="CuttingInstruction" />
+      <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="PlannedProductionId" Type="PlannedProductionDetail" />
+      <Association Name="ProductionCatergory_PlannedProduction" Member="ProductionCatergory" ThisKey="ProductionCatergoryId" OtherKey="Id" Type="ProductionCatergory" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.ItemsForBarcodes2" Method="ItemsForBarcodes2">

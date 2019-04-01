@@ -87,18 +87,18 @@ namespace ProductionTracker.Data
     partial void InsertMarkerCategory(MarkerCategory instance);
     partial void UpdateMarkerCategory(MarkerCategory instance);
     partial void DeleteMarkerCategory(MarkerCategory instance);
-    partial void InsertPlannedProduction(PlannedProduction instance);
-    partial void UpdatePlannedProduction(PlannedProduction instance);
-    partial void DeletePlannedProduction(PlannedProduction instance);
-    partial void InsertPlannedProductionDetail(PlannedProductionDetail instance);
-    partial void UpdatePlannedProductionDetail(PlannedProductionDetail instance);
-    partial void DeletePlannedProductionDetail(PlannedProductionDetail instance);
     partial void InsertCuttingInstruction(CuttingInstruction instance);
     partial void UpdateCuttingInstruction(CuttingInstruction instance);
     partial void DeleteCuttingInstruction(CuttingInstruction instance);
     partial void InsertFabric(Fabric instance);
     partial void UpdateFabric(Fabric instance);
     partial void DeleteFabric(Fabric instance);
+    partial void InsertPlannedProductionDetail(PlannedProductionDetail instance);
+    partial void UpdatePlannedProductionDetail(PlannedProductionDetail instance);
+    partial void DeletePlannedProductionDetail(PlannedProductionDetail instance);
+    partial void InsertPlannedProduction(PlannedProduction instance);
+    partial void UpdatePlannedProduction(PlannedProduction instance);
+    partial void DeletePlannedProduction(PlannedProduction instance);
     #endregion
 		
 		public ManufacturingDataContext() : 
@@ -283,22 +283,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		public System.Data.Linq.Table<PlannedProduction> PlannedProductions
-		{
-			get
-			{
-				return this.GetTable<PlannedProduction>();
-			}
-		}
-		
-		public System.Data.Linq.Table<PlannedProductionDetail> PlannedProductionDetails
-		{
-			get
-			{
-				return this.GetTable<PlannedProductionDetail>();
-			}
-		}
-		
 		public System.Data.Linq.Table<CuttingInstruction> CuttingInstructions
 		{
 			get
@@ -312,6 +296,22 @@ namespace ProductionTracker.Data
 			get
 			{
 				return this.GetTable<Fabric>();
+			}
+		}
+		
+		public System.Data.Linq.Table<PlannedProductionDetail> PlannedProductionDetails
+		{
+			get
+			{
+				return this.GetTable<PlannedProductionDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<PlannedProduction> PlannedProductions
+		{
+			get
+			{
+				return this.GetTable<PlannedProduction>();
 			}
 		}
 		
@@ -4437,429 +4437,6 @@ namespace ProductionTracker.Data
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PlannedProductions")]
-	public partial class PlannedProduction : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private int _ProductionCatergoryId;
-		
-		private int _ProductionCatYear;
-		
-		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
-		
-		private EntitySet<CuttingInstruction> _CuttingInstructions;
-		
-		private EntityRef<ProductionCatergory> _ProductionCatergory;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnProductionCatergoryIdChanging(int value);
-    partial void OnProductionCatergoryIdChanged();
-    partial void OnProductionCatYearChanging(int value);
-    partial void OnProductionCatYearChanged();
-    #endregion
-		
-		public PlannedProduction()
-		{
-			this._PlannedProductionDetails = new EntitySet<PlannedProductionDetail>(new Action<PlannedProductionDetail>(this.attach_PlannedProductionDetails), new Action<PlannedProductionDetail>(this.detach_PlannedProductionDetails));
-			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
-			this._ProductionCatergory = default(EntityRef<ProductionCatergory>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatergoryId", DbType="Int NOT NULL")]
-		public int ProductionCatergoryId
-		{
-			get
-			{
-				return this._ProductionCatergoryId;
-			}
-			set
-			{
-				if ((this._ProductionCatergoryId != value))
-				{
-					if (this._ProductionCatergory.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnProductionCatergoryIdChanging(value);
-					this.SendPropertyChanging();
-					this._ProductionCatergoryId = value;
-					this.SendPropertyChanged("ProductionCatergoryId");
-					this.OnProductionCatergoryIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatYear", DbType="Int NOT NULL")]
-		public int ProductionCatYear
-		{
-			get
-			{
-				return this._ProductionCatYear;
-			}
-			set
-			{
-				if ((this._ProductionCatYear != value))
-				{
-					this.OnProductionCatYearChanging(value);
-					this.SendPropertyChanging();
-					this._ProductionCatYear = value;
-					this.SendPropertyChanged("ProductionCatYear");
-					this.OnProductionCatYearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_PlannedProductionDetail", Storage="_PlannedProductionDetails", ThisKey="Id", OtherKey="PlannedProductionId")]
-		public EntitySet<PlannedProductionDetail> PlannedProductionDetails
-		{
-			get
-			{
-				return this._PlannedProductionDetails;
-			}
-			set
-			{
-				this._PlannedProductionDetails.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="PlannedProductionId")]
-		public EntitySet<CuttingInstruction> CuttingInstructions
-		{
-			get
-			{
-				return this._CuttingInstructions;
-			}
-			set
-			{
-				this._CuttingInstructions.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_PlannedProduction", Storage="_ProductionCatergory", ThisKey="ProductionCatergoryId", OtherKey="Id", IsForeignKey=true)]
-		public ProductionCatergory ProductionCatergory
-		{
-			get
-			{
-				return this._ProductionCatergory.Entity;
-			}
-			set
-			{
-				ProductionCatergory previousValue = this._ProductionCatergory.Entity;
-				if (((previousValue != value) 
-							|| (this._ProductionCatergory.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ProductionCatergory.Entity = null;
-						previousValue.PlannedProductions.Remove(this);
-					}
-					this._ProductionCatergory.Entity = value;
-					if ((value != null))
-					{
-						value.PlannedProductions.Add(this);
-						this._ProductionCatergoryId = value.Id;
-					}
-					else
-					{
-						this._ProductionCatergoryId = default(int);
-					}
-					this.SendPropertyChanged("ProductionCatergory");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_PlannedProductionDetails(PlannedProductionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.PlannedProduction = this;
-		}
-		
-		private void detach_PlannedProductionDetails(PlannedProductionDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.PlannedProduction = null;
-		}
-		
-		private void attach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.PlannedProduction = this;
-		}
-		
-		private void detach_CuttingInstructions(CuttingInstruction entity)
-		{
-			this.SendPropertyChanging();
-			entity.PlannedProduction = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PlannedProductionDetails")]
-	public partial class PlannedProductionDetail : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private int _ItemId;
-		
-		private int _Quantity;
-		
-		private int _PlannedProductionId;
-		
-		private EntityRef<Item> _Item;
-		
-		private EntityRef<PlannedProduction> _PlannedProduction;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnItemIdChanging(int value);
-    partial void OnItemIdChanged();
-    partial void OnQuantityChanging(int value);
-    partial void OnQuantityChanged();
-    partial void OnPlannedProductionIdChanging(int value);
-    partial void OnPlannedProductionIdChanged();
-    #endregion
-		
-		public PlannedProductionDetail()
-		{
-			this._Item = default(EntityRef<Item>);
-			this._PlannedProduction = default(EntityRef<PlannedProduction>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemId", DbType="Int NOT NULL")]
-		public int ItemId
-		{
-			get
-			{
-				return this._ItemId;
-			}
-			set
-			{
-				if ((this._ItemId != value))
-				{
-					if (this._Item.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnItemIdChanging(value);
-					this.SendPropertyChanging();
-					this._ItemId = value;
-					this.SendPropertyChanged("ItemId");
-					this.OnItemIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
-		public int Quantity
-		{
-			get
-			{
-				return this._Quantity;
-			}
-			set
-			{
-				if ((this._Quantity != value))
-				{
-					this.OnQuantityChanging(value);
-					this.SendPropertyChanging();
-					this._Quantity = value;
-					this.SendPropertyChanged("Quantity");
-					this.OnQuantityChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlannedProductionId", DbType="Int NOT NULL")]
-		public int PlannedProductionId
-		{
-			get
-			{
-				return this._PlannedProductionId;
-			}
-			set
-			{
-				if ((this._PlannedProductionId != value))
-				{
-					if (this._PlannedProduction.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnPlannedProductionIdChanging(value);
-					this.SendPropertyChanging();
-					this._PlannedProductionId = value;
-					this.SendPropertyChanged("PlannedProductionId");
-					this.OnPlannedProductionIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_PlannedProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
-		public Item Item
-		{
-			get
-			{
-				return this._Item.Entity;
-			}
-			set
-			{
-				Item previousValue = this._Item.Entity;
-				if (((previousValue != value) 
-							|| (this._Item.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Item.Entity = null;
-						previousValue.PlannedProductionDetails.Remove(this);
-					}
-					this._Item.Entity = value;
-					if ((value != null))
-					{
-						value.PlannedProductionDetails.Add(this);
-						this._ItemId = value.Id;
-					}
-					else
-					{
-						this._ItemId = default(int);
-					}
-					this.SendPropertyChanged("Item");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_PlannedProductionDetail", Storage="_PlannedProduction", ThisKey="PlannedProductionId", OtherKey="Id", IsForeignKey=true)]
-		public PlannedProduction PlannedProduction
-		{
-			get
-			{
-				return this._PlannedProduction.Entity;
-			}
-			set
-			{
-				PlannedProduction previousValue = this._PlannedProduction.Entity;
-				if (((previousValue != value) 
-							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._PlannedProduction.Entity = null;
-						previousValue.PlannedProductionDetails.Remove(this);
-					}
-					this._PlannedProduction.Entity = value;
-					if ((value != null))
-					{
-						value.PlannedProductionDetails.Add(this);
-						this._PlannedProductionId = value.Id;
-					}
-					else
-					{
-						this._PlannedProductionId = default(int);
-					}
-					this.SendPropertyChanged("PlannedProduction");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CuttingInstructions")]
 	public partial class CuttingInstruction : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -4888,9 +4465,9 @@ namespace ProductionTracker.Data
 		
 		private EntityRef<Marker> _Marker;
 		
-		private EntityRef<PlannedProduction> _PlannedProduction;
-		
 		private EntityRef<Production> _Production;
+		
+		private EntityRef<PlannedProduction> _PlannedProduction;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -4918,8 +4495,8 @@ namespace ProductionTracker.Data
 			this._CuttingInstructionSizes = new EntitySet<CuttingInstructionSize>(new Action<CuttingInstructionSize>(this.attach_CuttingInstructionSizes), new Action<CuttingInstructionSize>(this.detach_CuttingInstructionSizes));
 			this._CuttingInstructionDetails = new EntitySet<CuttingInstructionDetail>(new Action<CuttingInstructionDetail>(this.attach_CuttingInstructionDetails), new Action<CuttingInstructionDetail>(this.detach_CuttingInstructionDetails));
 			this._Marker = default(EntityRef<Marker>);
-			this._PlannedProduction = default(EntityRef<PlannedProduction>);
 			this._Production = default(EntityRef<Production>);
+			this._PlannedProduction = default(EntityRef<PlannedProduction>);
 			OnCreated();
 		}
 		
@@ -5148,40 +4725,6 @@ namespace ProductionTracker.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_PlannedProduction", ThisKey="PlannedProductionId", OtherKey="Id", IsForeignKey=true)]
-		public PlannedProduction PlannedProduction
-		{
-			get
-			{
-				return this._PlannedProduction.Entity;
-			}
-			set
-			{
-				PlannedProduction previousValue = this._PlannedProduction.Entity;
-				if (((previousValue != value) 
-							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._PlannedProduction.Entity = null;
-						previousValue.CuttingInstructions.Remove(this);
-					}
-					this._PlannedProduction.Entity = value;
-					if ((value != null))
-					{
-						value.CuttingInstructions.Add(this);
-						this._PlannedProductionId = value.Id;
-					}
-					else
-					{
-						this._PlannedProductionId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("PlannedProduction");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Production_CuttingInstruction", Storage="_Production", ThisKey="ProductionId", OtherKey="Id", IsForeignKey=true)]
 		public Production Production
 		{
@@ -5212,6 +4755,40 @@ namespace ProductionTracker.Data
 						this._ProductionId = default(int);
 					}
 					this.SendPropertyChanged("Production");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_PlannedProduction", ThisKey="PlannedProductionId", OtherKey="Id", IsForeignKey=true)]
+		public PlannedProduction PlannedProduction
+		{
+			get
+			{
+				return this._PlannedProduction.Entity;
+			}
+			set
+			{
+				PlannedProduction previousValue = this._PlannedProduction.Entity;
+				if (((previousValue != value) 
+							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PlannedProduction.Entity = null;
+						previousValue.CuttingInstructions.Remove(this);
+					}
+					this._PlannedProduction.Entity = value;
+					if ((value != null))
+					{
+						value.CuttingInstructions.Add(this);
+						this._PlannedProductionId = value.Id;
+					}
+					else
+					{
+						this._PlannedProductionId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("PlannedProduction");
 				}
 			}
 		}
@@ -5514,6 +5091,477 @@ namespace ProductionTracker.Data
 		{
 			this.SendPropertyChanging();
 			entity.Fabric = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PlannedProductionDetails")]
+	public partial class PlannedProductionDetail : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _ItemId;
+		
+		private int _Quantity;
+		
+		private int _PlannedProductionId;
+		
+		private bool _Deleted;
+		
+		private EntityRef<Item> _Item;
+		
+		private EntityRef<PlannedProduction> _PlannedProduction;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnItemIdChanging(int value);
+    partial void OnItemIdChanged();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
+    partial void OnPlannedProductionIdChanging(int value);
+    partial void OnPlannedProductionIdChanged();
+    partial void OnDeletedChanging(bool value);
+    partial void OnDeletedChanged();
+    #endregion
+		
+		public PlannedProductionDetail()
+		{
+			this._Item = default(EntityRef<Item>);
+			this._PlannedProduction = default(EntityRef<PlannedProduction>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemId", DbType="Int NOT NULL")]
+		public int ItemId
+		{
+			get
+			{
+				return this._ItemId;
+			}
+			set
+			{
+				if ((this._ItemId != value))
+				{
+					if (this._Item.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnItemIdChanging(value);
+					this.SendPropertyChanging();
+					this._ItemId = value;
+					this.SendPropertyChanged("ItemId");
+					this.OnItemIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		public int Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlannedProductionId", DbType="Int NOT NULL")]
+		public int PlannedProductionId
+		{
+			get
+			{
+				return this._PlannedProductionId;
+			}
+			set
+			{
+				if ((this._PlannedProductionId != value))
+				{
+					if (this._PlannedProduction.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlannedProductionIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlannedProductionId = value;
+					this.SendPropertyChanged("PlannedProductionId");
+					this.OnPlannedProductionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deleted", DbType="Bit NOT NULL")]
+		public bool Deleted
+		{
+			get
+			{
+				return this._Deleted;
+			}
+			set
+			{
+				if ((this._Deleted != value))
+				{
+					this.OnDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._Deleted = value;
+					this.SendPropertyChanged("Deleted");
+					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_PlannedProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
+		public Item Item
+		{
+			get
+			{
+				return this._Item.Entity;
+			}
+			set
+			{
+				Item previousValue = this._Item.Entity;
+				if (((previousValue != value) 
+							|| (this._Item.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Item.Entity = null;
+						previousValue.PlannedProductionDetails.Remove(this);
+					}
+					this._Item.Entity = value;
+					if ((value != null))
+					{
+						value.PlannedProductionDetails.Add(this);
+						this._ItemId = value.Id;
+					}
+					else
+					{
+						this._ItemId = default(int);
+					}
+					this.SendPropertyChanged("Item");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_PlannedProductionDetail", Storage="_PlannedProduction", ThisKey="PlannedProductionId", OtherKey="Id", IsForeignKey=true)]
+		public PlannedProduction PlannedProduction
+		{
+			get
+			{
+				return this._PlannedProduction.Entity;
+			}
+			set
+			{
+				PlannedProduction previousValue = this._PlannedProduction.Entity;
+				if (((previousValue != value) 
+							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PlannedProduction.Entity = null;
+						previousValue.PlannedProductionDetails.Remove(this);
+					}
+					this._PlannedProduction.Entity = value;
+					if ((value != null))
+					{
+						value.PlannedProductionDetails.Add(this);
+						this._PlannedProductionId = value.Id;
+					}
+					else
+					{
+						this._PlannedProductionId = default(int);
+					}
+					this.SendPropertyChanged("PlannedProduction");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PlannedProductions")]
+	public partial class PlannedProduction : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _ProductionCatergoryId;
+		
+		private int _ProductionCatYear;
+		
+		private bool _Deleted;
+		
+		private EntitySet<CuttingInstruction> _CuttingInstructions;
+		
+		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
+		
+		private EntityRef<ProductionCatergory> _ProductionCatergory;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnProductionCatergoryIdChanging(int value);
+    partial void OnProductionCatergoryIdChanged();
+    partial void OnProductionCatYearChanging(int value);
+    partial void OnProductionCatYearChanged();
+    partial void OnDeletedChanging(bool value);
+    partial void OnDeletedChanged();
+    #endregion
+		
+		public PlannedProduction()
+		{
+			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
+			this._PlannedProductionDetails = new EntitySet<PlannedProductionDetail>(new Action<PlannedProductionDetail>(this.attach_PlannedProductionDetails), new Action<PlannedProductionDetail>(this.detach_PlannedProductionDetails));
+			this._ProductionCatergory = default(EntityRef<ProductionCatergory>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatergoryId", DbType="Int NOT NULL")]
+		public int ProductionCatergoryId
+		{
+			get
+			{
+				return this._ProductionCatergoryId;
+			}
+			set
+			{
+				if ((this._ProductionCatergoryId != value))
+				{
+					if (this._ProductionCatergory.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductionCatergoryIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductionCatergoryId = value;
+					this.SendPropertyChanged("ProductionCatergoryId");
+					this.OnProductionCatergoryIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductionCatYear", DbType="Int NOT NULL")]
+		public int ProductionCatYear
+		{
+			get
+			{
+				return this._ProductionCatYear;
+			}
+			set
+			{
+				if ((this._ProductionCatYear != value))
+				{
+					this.OnProductionCatYearChanging(value);
+					this.SendPropertyChanging();
+					this._ProductionCatYear = value;
+					this.SendPropertyChanged("ProductionCatYear");
+					this.OnProductionCatYearChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deleted", DbType="Bit NOT NULL")]
+		public bool Deleted
+		{
+			get
+			{
+				return this._Deleted;
+			}
+			set
+			{
+				if ((this._Deleted != value))
+				{
+					this.OnDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._Deleted = value;
+					this.SendPropertyChanged("Deleted");
+					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="PlannedProductionId")]
+		public EntitySet<CuttingInstruction> CuttingInstructions
+		{
+			get
+			{
+				return this._CuttingInstructions;
+			}
+			set
+			{
+				this._CuttingInstructions.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_PlannedProductionDetail", Storage="_PlannedProductionDetails", ThisKey="Id", OtherKey="PlannedProductionId")]
+		public EntitySet<PlannedProductionDetail> PlannedProductionDetails
+		{
+			get
+			{
+				return this._PlannedProductionDetails;
+			}
+			set
+			{
+				this._PlannedProductionDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductionCatergory_PlannedProduction", Storage="_ProductionCatergory", ThisKey="ProductionCatergoryId", OtherKey="Id", IsForeignKey=true)]
+		public ProductionCatergory ProductionCatergory
+		{
+			get
+			{
+				return this._ProductionCatergory.Entity;
+			}
+			set
+			{
+				ProductionCatergory previousValue = this._ProductionCatergory.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductionCatergory.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductionCatergory.Entity = null;
+						previousValue.PlannedProductions.Remove(this);
+					}
+					this._ProductionCatergory.Entity = value;
+					if ((value != null))
+					{
+						value.PlannedProductions.Add(this);
+						this._ProductionCatergoryId = value.Id;
+					}
+					else
+					{
+						this._ProductionCatergoryId = default(int);
+					}
+					this.SendPropertyChanged("ProductionCatergory");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_CuttingInstructions(CuttingInstruction entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = this;
+		}
+		
+		private void detach_CuttingInstructions(CuttingInstruction entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = null;
+		}
+		
+		private void attach_PlannedProductionDetails(PlannedProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = this;
+		}
+		
+		private void detach_PlannedProductionDetails(PlannedProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = null;
 		}
 	}
 	
