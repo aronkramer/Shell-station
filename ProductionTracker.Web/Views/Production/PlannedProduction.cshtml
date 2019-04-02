@@ -3,6 +3,26 @@
     ViewBag.Title = "Planned Production";
 }
 <style>
+    .action-btn-td {
+        padding-top: 0px !important;
+        padding-left: 0px !important;
+    }
+    .action-btn-span{
+        
+        font-size:2em;
+    }
+    .save-btn {
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-right: 5px;
+        color: #23232599;
+        
+    }
+    .save-btn:hover {
+        cursor: pointer;
+        /*background-color: #b7b4b4;*/
+        color:black;
+    }
     .medium-input {
         width: 125px;
     }
@@ -168,18 +188,7 @@
                                 <i class="icon-social-dribbble font-green"></i>
                                 <span class="caption-subject font-green bold uppercase">Old Items</span>
                             </div>
-                            <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" v-on:click="addSkuRows(rowIncremntNumber)" href="javascript:;">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </a>
-                                <input type="number" class="increment-number-input" v-model="rowIncremntNumber" />
-                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-wrench"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                    <i class="icon-trash"></i>
-                                </a>
-                            </div>
+                            
                         </div>
                         <div class="portlet-body">
                             <div class="table-scrollable smalll-table">
@@ -193,21 +202,33 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(item,index) in items">
-                                            <td>{{item.Id}}</td>
-                                            <td>
-                                                <input class="small-input" v-on:change="validatePlannedProd" type="text" v-bind:class="[validationLists.skus && validationLists.skus.some(i => i.SKU === item.SKU) ? '': 'hasError' ]" list="skus" v-model="item.SKU" />
+                                        <template v-for="(item,index) in existingItems">
+                                            <tr  v-if="item.Edit "v-on:blur="item.Edit = false">
+                                                <td>{{item.Id}}</td>
+                                                <td>
+                                                    @*<input class="small-input" v-on:change="validatePlannedProd" type="text" v-bind:class="[validationLists.skus && validationLists.skus.some(i => i.SKU === item.SKU) ? '': 'hasError' ]" list="skus" v-model="item.SKU" />*@
+                                                    {{item.SKU}}
+                                                </td>
+                                                <td>
+                                                    <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
+                                                </td>
+                                                <td class="action-btn-td">
+                                                    <span class="action-btn-span"><span class="save-btn"><i title="Save" class="fa fa-save"></i></span><a title="Delete" v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</a></span>
+                                                    <br />
+                                                    <button title="Cancel" class="btn btn-circle default" V-on:click="item.Edit = false; item.Quantity = item.QuanityCopy">Cancel</button>
+                                                </td>
+                                            </tr>
+                                            <tr v-else v-on:focus="existingItems[index].Edit = true; item.QuanityCopy = item.Quantity" tabindex="1">
+                                                <td>{{item.Id}}</td>
+                                                <td>
+                                                    {{item.SKU}}
+                                                </td>
+                                                <td>
+                                                    {{item.Quantity}}
+                                                </td>
+                                            </tr>
 
-                                            </td>
-                                            <td>
-                                                <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
-                                            </td>
-                                            <td>
-                                                <a v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</a>
-                                            </td>
-
-
-                                        </tr>
+                                        </template>
 
                                     </tbody>
                                 </table>

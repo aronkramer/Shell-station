@@ -233,7 +233,12 @@
                                     if (isConfirm) {
 
                                         pp.id = result.Id;
-                                        app.existingItems = result.Items;
+
+                                        app.existingItems = result.Items.map(function (item) {
+                                            item.Edit = false;
+                                            return item;
+
+                                        });
                                         swal("Pulling up the data", "The data is loading", "success");
 
                                         //this.$refs.productionCatInput.focus();
