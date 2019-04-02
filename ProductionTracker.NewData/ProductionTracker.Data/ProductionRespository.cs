@@ -522,7 +522,7 @@ namespace ProductionTracker.Data
                 context.LoadOptions = loadOption;
                 
                 var result =  context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
-                result.PlannedProductionDetails = (EntitySet<PlannedProductionDetail>)result.PlannedProductionDetails.Where(x => !x.Deleted);
+                result.PlannedProductionDetails = result.PlannedProductionDetails.Where(x => !x.Deleted).ToEntitySet();
                 return result;
             }
 
@@ -767,6 +767,6 @@ namespace ProductionTracker.Data
             {
                 context.ExecuteCommand("UPDATE CuttingInstructionItems SET Quantity = {0} WHERE Id = {1}", quantity, Id);
             }
-        } 
+        }
     }
 }
