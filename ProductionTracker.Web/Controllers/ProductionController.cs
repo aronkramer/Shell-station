@@ -17,6 +17,7 @@ namespace ProductionTracker.Web.Controllers
 {
     public class ProductionController : Controller
     {
+        //NEW PRODUCTION
         public ActionResult NewProduction()
         {
             ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
@@ -25,6 +26,7 @@ namespace ProductionTracker.Web.Controllers
             //items = items != null ? items : null;
             return View(items);
         }
+
         [HttpPost]
         public ActionResult NewProduction(HttpPostedFileBase cuttingTicket)
         {
@@ -36,6 +38,7 @@ namespace ProductionTracker.Web.Controllers
             Session["Production"] = production;
             return Json(new { production, errors },JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult ConvertCTToItems(ProductionForCT production)
         {
@@ -79,6 +82,7 @@ namespace ProductionTracker.Web.Controllers
             })
             }, errors }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public void SubmitProduction(FinalProduction production)
         {
@@ -156,35 +160,32 @@ namespace ProductionTracker.Web.Controllers
             TempData["Message"] = $"You susseffully added a new production with {production.CuttingInstructions.Count()} cuttting instuctoins from lot number {production.CuttingInstructions[0].LotNumber} - {production.CuttingInstructions[production.CuttingInstructions.Count() - 1].LotNumber}." +
                 $"<br/> {production.CuttingInstructions.Select(c => c.Details.Sum(co => co.Items.Count())).Sum()} Items. Total pieces: {production.CuttingInstructions.Select(c => c.Details.Sum(co => co.Items.Sum(i => i.Quantity))).Sum()} ";
         }
+
+        public ActionResult GetLastLotNUmber()
+        {
+            return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetDefaltSizesForAMarkerCat(string markerCatergoryName)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var sizes = repo.GetDefaltMarkerDetails(markerCatergoryName);
+            return Json(sizes.Select(c =>
+            {
+                return new
+                {
+                    c.SizeId,
+                    c.Size.Name,
+                    c.AmountPerLayer
+                };
+            }
+            ), JsonRequestBehavior.AllowGet);
+
+        }
+
         public ActionResult NewProductionConfimation()
         {
             return View();
-        }
-
-        public ActionResult PlannedProduction()
-        {
-            ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
-            return View();
-        }
-
-        //[HttpPost]
-        //public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionItem> items)
-        //{
-        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-        //    repo.AddCuttingTicket(instruction);
-        //    items = items.Select(i => { i.CuttingInstructionDetailsId = instruction.Id; return i; });
-        //    repo.AddCTDetails(items);
-        //    //TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
-        //    Session["ItemsWithErrors"] = null;
-        //    return RedirectToAction("NewProduction");
-        //}
-
-        public ActionResult GetItemId(string sku)
-        {
-            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var item = repo.GetItem(sku);
-
-            return item != null ? Json(new { item.Id, item.SKU }, JsonRequestBehavior.AllowGet): null;
         }
 
         public ActionResult GetProductionInProgress()
@@ -192,13 +193,18 @@ namespace ProductionTracker.Web.Controllers
             var hi = (ProductionForCT)Session["Production"];
             return Json((ProductionForCT)Session["Production"] ?? null, JsonRequestBehavior.AllowGet);
         }
-
+                                   
         public ActionResult GetMarker(string markerName)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var marker = repo.GetMarkerCategory(markerName.ToUpper());
             return Json(new { marker = marker == null ? null : new { marker.Id, marker.Name } } , JsonRequestBehavior.AllowGet);
         }
+
+
+
+
+        //DATA LISTS
 
         public ActionResult GetSKUsList()
         {
@@ -273,29 +279,49 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetLastLotNUmber()
+
+
+        
+        
+        //RECIVED ITEMS
+
+        [HttpPost]
+        public ActionResult GetItemsFromLotNumbers(List<int> cuttingInstructionIds)
         {
-            return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var result = repo.CuttingInstructionItemsWithQuantityReciveds(cuttingInstructionIds);
+            return Json(result);
         }
 
-        public ActionResult GetDefaltSizesForAMarkerCat(string markerCatergoryName)
+        public ActionResult ReciveItems()
+        {
+            return View();
+        }
+
+        public ActionResult GetLotNumbers()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var sizes = repo.GetDefaltMarkerDetails(markerCatergoryName);
-            return Json(sizes.Select(c =>
-            {
+            return Json(repo.GetNotCompleteInstructionForLots().Select(ct => {
                 return new
                 {
-                    c.SizeId,
-                    c.Size.Name,
-                    c.AmountPerLayer
+                    id = ct.Id,
+                    text = ct.LotNumber
                 };
-            }
-            ),JsonRequestBehavior.AllowGet);
+            }),JsonRequestBehavior.AllowGet);
+        }
 
+
+
+
+
+        //PLANNED PRODUCTIONS
+        public ActionResult PlannedProduction()
+        {
+            ViewBag.Message = TempData["Message"] != null ? TempData["Message"] : null;
+            return View();
         }
         [HttpPost]
-        public ActionResult GetSkusFromWizard(PlanedProductionWizardItem [] items, int MarkerId)
+        public ActionResult GetSkusFromWizard(PlanedProductionWizardItem[] items, int MarkerId)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var marker = repo.GetMarkerCategory(MarkerId);
@@ -320,14 +346,14 @@ namespace ProductionTracker.Web.Controllers
                 finalItems = finalItems.Select(i =>
                 {
                     var item = repo.GetItem(i.Item);
-                    if(item != null)
+                    if (item != null)
                     {
                         i.Item = item;
                         return i;
                     }
                     return null;
                 });
-                return Json(finalItems.Where(i=> i != null).Select(i =>
+                return Json(finalItems.Where(i => i != null).Select(i =>
                 {
                     return new
                     {
@@ -343,9 +369,12 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public void SubmitPlannedProduction(PlannedProduction plannedProduction, IEnumerable<PlannedProductionDetail> items)
         {
-            
+
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            repo.AddPlannedProduction(plannedProduction);
+            //if it's a new prdoduction then we add a new one
+            if (plannedProduction.Id == 0)
+                repo.AddPlannedProduction(plannedProduction);
+
             items = items.Select(i =>
             {
                 i.PlannedProductionId = plannedProduction.Id;
@@ -355,6 +384,27 @@ namespace ProductionTracker.Web.Controllers
             var pc = repo.GetProductionCatergory(plannedProduction.ProductionCatergoryId);
             TempData["Message"] = $"You succsesfully added a new season planned production for {pc.Name} {plannedProduction.ProductionCatYear} <br/>" +
                 $"With {items.Count()} Items : Total Quantity {items.Sum(i => i.Quantity)}";
+        }
+
+        [HttpPost]
+        public void UpdatePlannedProductionDetails(PlannedProductionDetail plannedProductionDetail)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.UpdatePlannedProductionDetail(plannedProductionDetail);
+        }
+
+        [HttpPost]
+        public void DeletePlannedProductionDetails(int plannedProductionDetailId)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.DeletePlannedProductionDetail(plannedProductionDetailId);
+        }
+
+        [HttpPost]
+        public void DeletePlannedProduction(int plannedProductionId)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.DeletePlannedProduction(plannedProductionId);
         }
 
         public ActionResult GetPlannedProductions()
@@ -367,47 +417,68 @@ namespace ProductionTracker.Web.Controllers
                     pp.Id,
                     Name = $"{pp.ProductionCatergory.Name} {pp.ProductionCatYear}"
                 };
-            }),JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public ActionResult GetItemsFromLotNumbers(List<int> cuttingInstructionIds)
-        {
-            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var result = repo.CuttingInstructionItemsWithQuantityReciveds(cuttingInstructionIds);
-            return Json(result);
+            }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetPlannedProduction(PlannedProduction plannedProduction)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var pp = repo.GetPlannedProductionWithDetails(plannedProduction);
-            return Json(pp != null ? new { pp.Id, pp.ProductionCatergoryId, pp.ProductionCatYear, Items = pp.PlannedProductionDetails.Count() > 0 ? pp.PlannedProductionDetails.Select(p => {
-                return new
-                {
-                    p.Item.Id,
-                    p.Item.SKU,
-                    p.Quantity,
-                    Edit = false
-                };
-            }) : null } : null);
+            return Json(pp != null ? new
+            {
+                pp.Id,
+                pp.ProductionCatergoryId,
+                pp.ProductionCatYear,
+                Items = pp.PlannedProductionDetails.Count() > 0 ? pp.PlannedProductionDetails.Select(p => {
+                    return new
+                    {
+                        p.Item.Id,
+                        p.Item.SKU,
+                        p.Quantity,
+                        Edit = false
+                    };
+                }) : null
+            } : null);
         }
 
-        public ActionResult ReciveItems()
+        public ActionResult GetItemId(string sku)
         {
-            return View();
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var item = repo.GetItem(sku);
+
+            return item != null ? Json(new { item.Id, item.SKU }, JsonRequestBehavior.AllowGet) : null;
         }
-        public ActionResult GetLotNumbers()
+
+
+
+
+        //FUNCTIONS
+
+        private int MarkerId(Finalmarker marker)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            return Json(repo.GetNotCompleteInstructionForLots().Select(ct => {
-                return new
+            var sizes = marker.Sizes.Select(s =>
+            {
+                return new MarkerDetail
                 {
-                    id = ct.Id,
-                    text = ct.LotNumber
+                    SizeId = s.SizeId,
+                    AmountPerLayer = s.AmountPerLayer
                 };
-            }),JsonRequestBehavior.AllowGet);
+            });
+            var existingMarker = repo.GetMarker(marker.MarkerCatId, sizes.ToList());
+            if (existingMarker != null)
+            {
+                return existingMarker.Id;
+            }
+            else
+            {
+                var newMarker = new Marker { MarkerCatId = marker.MarkerCatId };
+                repo.AddMarker(newMarker);
+                sizes = sizes.Select(s => { s.MarkerId = newMarker.Id; return s; });
+                repo.AddMarkerDetails(sizes);
+                return newMarker.Id;
+            }
         }
-
 
         private int LastLotNumber()
         {
@@ -415,13 +486,14 @@ namespace ProductionTracker.Web.Controllers
             return repo.LastLotNumber();
         }
 
-        private ProductionForCT AddLotNumbers (ProductionForCT production)
+        private ProductionForCT AddLotNumbers(ProductionForCT production)
         {
             production.LastLotNumber = LastLotNumber();
-            production.Markers = production.Markers.Select((m, i) => {m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
+            production.Markers = production.Markers.Select((m, i) => { m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
             return production;
-            
+
         }
+
         private void GetMarkerText(Finalmarker marker)
         {
             var markerSize = new StringBuilder();
@@ -444,14 +516,15 @@ namespace ProductionTracker.Web.Controllers
             }
             marker.MarkerSizeText = markerSize.ToString();
             //return markerSize.ToString();
-            
+
         }
+
         private int GetFabricId(int matId, int colId)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var fabric = new Fabric { MaterialId = matId, ColorId = colId };
             var existingFabric = repo.GetFabric(fabric);
-            if(existingFabric != null)
+            if (existingFabric != null)
             {
                 return existingFabric.Id;
             }
@@ -460,33 +533,13 @@ namespace ProductionTracker.Web.Controllers
                 repo.AddFabric(fabric);
                 return fabric.Id;
             }
-        }
+        }   
 
-        private int MarkerId (Finalmarker marker)
-        {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var sizes = marker.Sizes.Select(s =>
-            {
-                return new MarkerDetail
-                {
-                    SizeId = s.SizeId,
-                    AmountPerLayer = s.AmountPerLayer
-                };
-            });
-            var existingMarker = repo.GetMarker(marker.MarkerCatId,sizes.ToList());
-            if(existingMarker != null)
-            {
-                return existingMarker.Id;
-            }
-            else
-            {
-                var newMarker = new Marker { MarkerCatId = marker.MarkerCatId };
-                repo.AddMarker(newMarker);
-                sizes = sizes.Select(s => { s.MarkerId = newMarker.Id; return s; });
-                repo.AddMarkerDetails(sizes);
-                return newMarker.Id;
-            }
-        }
+
+
+
+        //FILE DOWNLOAD
+
         public void DownloadCuttingInstuctions(int productionId)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
@@ -501,7 +554,7 @@ namespace ProductionTracker.Web.Controllers
         {
             // Prepare the response
             HttpResponseBase httpResponse = Response;
-            
+
             httpResponse.Clear();
             httpResponse.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             httpResponse.AddHeader("content-disposition", $"attachment;filename=\"{fileName}.xlsx\"");
@@ -516,6 +569,25 @@ namespace ProductionTracker.Web.Controllers
 
             httpResponse.End();
         }
+
+        //[HttpPost]
+        //public ActionResult SubmitCT(CuttingInstruction instruction,IEnumerable<CuttingInstructionItem> items)
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    repo.AddCuttingTicket(instruction);
+        //    items = items.Select(i => { i.CuttingInstructionDetailsId = instruction.Id; return i; });
+        //    repo.AddCTDetails(items);
+        //    //TempData["Message"] = $"Sussessfully added a new cutting ticket: Id - {instruction.Id}, From date: {instruction.Date.ToShortDateString()} Lot# : {instruction.Lot_ ?? 0} => Number of items: {items.Count()}, Total items: {items.Sum(i => i.Quantity)}";
+        //    Session["ItemsWithErrors"] = null;
+        //    return RedirectToAction("NewProduction");
+        //}
+
+
+
+        //
+
+        //
+
     }
     public static class EnumExtensions
     {

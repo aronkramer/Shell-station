@@ -524,6 +524,7 @@ namespace ProductionTracker.Data
                 var result =  context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
                 result.PlannedProductionDetails = result.PlannedProductionDetails.Where(x => !x.Deleted).ToEntitySet();
                 return result;
+                //return context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
             }
 
         }
