@@ -74,7 +74,7 @@ namespace ProductionTracker.Web.Excel
             foreach (var marker in production.Markers)
             {
                 var markerCat = repo.GetMarkerCategory(marker.Name);
-                if (NotNull(markerCat))
+                if (markerCat.NotNull())
                 {
 
                     var sizes = marker.Sizes;

@@ -521,10 +521,10 @@ namespace ProductionTracker.Data
                 loadOption.LoadWith<PlannedProductionDetail>(p => p.Item);
                 context.LoadOptions = loadOption;
                 
-                var result =  context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+                var result =  context.PlannedProductions.NotDeleted().FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
+                if(result.NotNull())
                 result.PlannedProductionDetails = result.PlannedProductionDetails.Where(x => !x.Deleted).ToEntitySet();
                 return result;
-                //return context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.ProductionCatergoryId == plannedProduction.ProductionCatergoryId && p.ProductionCatYear == plannedProduction.ProductionCatYear);
             }
 
         }
@@ -540,10 +540,19 @@ namespace ProductionTracker.Data
             }
         }
 
+        public PlannedProductionDetail GetPlannedProductionDetail(int plannedProductionDetailId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.PlannedProductionDetails.Where(x => !x.Deleted).FirstOrDefault(p => p.Id == plannedProductionDetailId);
+            }
+        }
+
         public void UpdatePlannedProductionDetail(PlannedProductionDetail plannedProductionDetail)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
+                
                 context.PlannedProductionDetails.Attach(plannedProductionDetail);
                 context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
                 context.SubmitChanges();
@@ -565,7 +574,7 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 plannedProductionDetail.Deleted = true;
-                context.PlannedProductionDetails.Attach(plannedProductionDetail);
+                //context.PlannedProductionDetails.Attach(plannedProductionDetail);
                 context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
                 context.SubmitChanges();
             }
@@ -588,7 +597,7 @@ namespace ProductionTracker.Data
             {
                 var plannedProductionDetail = context.PlannedProductionDetails.FirstOrDefault(p => p.Id == plannedProductionDetailId);
                 plannedProductionDetail.Deleted = true;
-                context.PlannedProductionDetails.Attach(plannedProductionDetail);
+                //context.PlannedProductionDetails.Attach(plannedProductionDetail);
                 context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
                 context.SubmitChanges();
             }
@@ -654,8 +663,8 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<CuttingInstruction>(p => p.ReceivingItemsTransactions);
                 context.LoadOptions = loadOptions;
                 return context.CuttingInstructions.Where(i =>
-                (i.CuttingInstructionDetails.Count() > 0 ? i.CuttingInstructionDetails.Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
-                != (i.ReceivingItemsTransactions.Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).ToList();
+                (i.CuttingInstructionDetails.NotNUllOrEmpty() ? i.CuttingInstructionDetails.Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
+                != (i.ReceivingItemsTransactions.NotNUllOrEmpty() ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0)).ToList();
                 
                 
             }

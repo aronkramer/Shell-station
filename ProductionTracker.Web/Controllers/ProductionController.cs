@@ -397,6 +397,14 @@ namespace ProductionTracker.Web.Controllers
         public void DeletePlannedProductionDetails(int plannedProductionDetailId)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var pp = repo.GetPlannedProductionDetail(plannedProductionDetailId);
+            //repo.DeletePlannedProductionDetail(new PlannedProductionDetail
+            //{
+            //    Id = pp.Id,
+            //    ItemId = pp.ItemId,
+            //    Quantity = pp.Quantity,
+            //    Deleted = true
+            //});
             repo.DeletePlannedProductionDetail(plannedProductionDetailId);
         }
 
@@ -422,6 +430,8 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetPlannedProduction(PlannedProduction plannedProduction)
         {
+            var list = new List<string>();
+            var test = list.NotNUllOrEmpty();
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var pp = repo.GetPlannedProductionWithDetails(plannedProduction);
             return Json(pp != null ? new
@@ -429,10 +439,11 @@ namespace ProductionTracker.Web.Controllers
                 pp.Id,
                 pp.ProductionCatergoryId,
                 pp.ProductionCatYear,
-                Items = pp.PlannedProductionDetails.Count() > 0 ? pp.PlannedProductionDetails.Select(p => {
+                Items = pp.PlannedProductionDetails.NotNUllOrEmpty() ? pp.PlannedProductionDetails.Select(p => {
                     return new
                     {
-                        p.Item.Id,
+                        p.Id,
+                        ItemId = p.Item.Id,
                         p.Item.SKU,
                         p.Quantity,
                         Edit = false

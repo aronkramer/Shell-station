@@ -15,5 +15,25 @@ namespace ProductionTracker.Data
             es.AddRange(source);
             return es;
         }
+        public static bool NotNull<T> (this T source)
+        {
+            //if (source.GetType().GetInterfaces().Any(
+            //i => i.IsGenericType &&
+            //i.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+            //{
+            //    var elementType = source.GetType().GetGenericArguments()[0];
+            //    var iernbleSourse = source as List<>;
+            //    return iernbleSourse.Count() > 0;
+            //}
+            return source != null;
+        }
+        public static bool NotNUllOrEmpty<T>(this IEnumerable<T> source)
+        {
+            return source != null && source.Count() > 0;
+        }
+        public static IEnumerable<PlannedProduction> NotDeleted(this IEnumerable<PlannedProduction> source)
+        {
+            return source.Where(x => !x.Deleted);
+        }
     }
 }

@@ -204,7 +204,7 @@
                                     <tbody>
                                         <template v-for="(item,index) in existingItems">
                                             <tr  v-if="item.Edit "v-on:blur="item.Edit = false">
-                                                <td>{{item.Id}}</td>
+                                                <td>{{item.ItemId}}</td>
                                                 <td>
                                                     @*<input class="small-input" v-on:change="validatePlannedProd" type="text" v-bind:class="[validationLists.skus && validationLists.skus.some(i => i.SKU === item.SKU) ? '': 'hasError' ]" list="skus" v-model="item.SKU" />*@
                                                     {{item.SKU}}
@@ -213,13 +213,14 @@
                                                     <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
                                                 </td>
                                                 <td class="action-btn-td">
-                                                    <span class="action-btn-span"><span class="save-btn"><i title="Save" class="fa fa-save"></i></span><a title="Delete" v-on:click="removeSkuLine(index)" class="btn btn-circle red-sunglo btn-sm">X</a></span>
+                                                    <span class="action-btn-span"><span class="save-btn"><i title="Save"  v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span><a title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class=" btn btn-circle red-sunglo btn-sm">X</a></span>
+                                                    @*<a v-on:click="deleteAExistingItem(index)" class="btn btn-circle red-sunglo btn-sm" data-title="Do you agree to the Terms and Conditions?" data-type="warning" data-allow-outside-click="true" data-show-confirm-button="true" data-show-cancel-button="true" data-cancel-button-class="btn-danger" data-cancel-button-text="No, I do not agree" data-confirm-button-text="Yes, I agree" data-confirm-button-class="btn-info">X</a>*@
                                                     <br />
                                                     <button title="Cancel" class="btn btn-circle default" V-on:click="item.Edit = false; item.Quantity = item.QuanityCopy">Cancel</button>
                                                 </td>
                                             </tr>
                                             <tr v-else v-on:focus="existingItems[index].Edit = true; item.QuanityCopy = item.Quantity" tabindex="1">
-                                                <td>{{item.Id}}</td>
+                                                <td>{{item.ItemId}}</td>
                                                 <td>
                                                     {{item.SKU}}
                                                 </td>
@@ -311,7 +312,7 @@
                         </div>
                     </div>
                     <div v-else>
-                        <button v-on:click="addTheGrid" class="btn btn-circle green btn-sm">Add The Color and Sizes Grid</button>
+                        <button v-on:click="addTheGrid" data-toggle="confirmation" class="btn btn-circle green btn-sm">Add The Color and Sizes Grid</button>
                     </div>
                 </div>
 
@@ -322,6 +323,7 @@
    
 @section scripts{
     <script src="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.js"></script>
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js"></script>
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/planned-production.js"></script>
 }

@@ -6,6 +6,10 @@
         this.getTheDataTables();
         this.addSkuRows(1);
         //this.makeTheItems();
+        $('[data-toggle=confirmation]').confirmation({
+            rootSelector: '[data-toggle=confirmation]',
+            // other options
+        });
     },
     data: {
         hello: 'hi',
@@ -205,6 +209,7 @@
             //        this.items.splice(index, 1);
             //    });
             this.items.splice(index, 1);
+            this.validatePlannedProd();
         },
         checkIfExsits: function () {
             var pp = this.plannedProduction;
@@ -233,13 +238,17 @@
                                     if (isConfirm) {
 
                                         pp.id = result.Id;
+                                        if (result.Items) {
+                                            app.existingItems = result.Items.map(function (item) {
+                                                item.Edit = false;
+                                                return item;
 
-                                        app.existingItems = result.Items.map(function (item) {
-                                            item.Edit = false;
-                                            return item;
-
-                                        });
-                                        swal("Pulling up the data", "The data is loading", "success");
+                                            });
+                                            swal("Pulling up the data", "The data is loading", "success");
+                                        }
+                                        else {
+                                            swal("There was no existing items!", "You can add it!", "success");
+                                        }
 
                                         //this.$refs.productionCatInput.focus();
                                     }
@@ -314,17 +323,19 @@
             this.validateWizard();
         },
         addTheGrid: function () {
-            var colors = [{ Name: '', Id: null }];
-            var sizes = [{ Name: 'S', Id: null }, { Name: 'M', Id: null }, { Name: 'L', Id: null }, { Name: 'EL', Id: null }];
-            var items = [];
-            sizes.forEach(function (size) {
-                colors.forEach(function (color) {
-                    items.push({ size, color, Quantity: null });
+            
+                var colors = [{ Name: '', Id: null }];
+                var sizes = [{ Name: 'S', Id: null }, { Name: 'M', Id: null }, { Name: 'L', Id: null }, { Name: 'EL', Id: null }];
+                var items = [];
+                sizes.forEach(function (size) {
+                    colors.forEach(function (color) {
+                        items.push({ size, color, Quantity: null });
+                    });
                 });
-            });
-            this.productionWizard.items = items;
-            this.productionWizard.colors = colors;
-            this.productionWizard.sizes = sizes;
+                this.productionWizard.items = items;
+                this.productionWizard.colors = colors;
+                this.productionWizard.sizes = sizes;
+            
         },
         makeTheItems: function () {
             var colors = this.productionWizard.colors;
@@ -366,7 +377,35 @@
             if (plannedProduction.ProductionCatergoryId && items.length)
                 $.post('/production/SubmitPlannedProduction', { plannedProduction, items }, () => window.location = '/production/PlannedProduction');
 
+        },
+        deleteAExistingItem: function (id,index)
+        {
+            swal({
+                title: "Are you sure you want to delete this?",
+                text: "Your will not be able to recover!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                showLoaderOnConfirm: true,
+                closeOnConfirm: true
+            },
+                 () => {
+                    $.post('/production/DeletePlannedProductionDetails', { plannedProductionDetailId: id }, () => {
+                        this.existingItems.splice(index, 1);
+                    //swal("Item Was Deleted!");
+                    });
+                });
+        },
+        updateExistingItem: function (index) {
+            this.existingItems[index].Edit = false;
+            var existingItem = this.existingItems[index];
+            $.post('/production/UpdatePlannedProductionDetails', { plannedProductionDetail: { Id: existingItem.Id, Quantity: existingItem.Quantity, ItemId: existingItem.ItemId, PlannedProductionId: this.plannedProduction.id } }, () => {
+                this.existingItems[index].QuanityCopy = existingItem.Quantity;
+                console.log('worked');
+            });
         }
+        
     }
 
 });
