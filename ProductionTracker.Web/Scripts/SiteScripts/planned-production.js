@@ -19,9 +19,9 @@
         plannedProduction: {
             id: null, productionCat: { Id: null, Name: '' }, productionCatYear: null, copy: {}
         },
-        existingItems:[],
+        existingItems: [],
         vaildPlannedProduction: false,
-        productionCat: { Id: null, Name:'' },
+        productionCat: { Id: null, Name: '' },
         productionCatYear: null,
         productionWizard: {
             marker: { Name: null },
@@ -29,12 +29,12 @@
             colors: [],
             sizes: [],
             items: [],
-            errors:[]
+            errors: []
         },
         validationLists: {
             skus: null,
             prodCats: null,
-            materials:null,
+            materials: null,
             colors: null,
             sizes: null,
             markers: null
@@ -101,7 +101,7 @@
                     })[0].Id;
                 }
             });
-            
+
             if (!wizard.items.some(i => i.Quantity > 0)) {
                 errors.push('sorry you need a quantity to submit');
             }
@@ -189,7 +189,7 @@
                 thisItem.Id = allskus.filter(function (item) {
                     return item.SKU === thisItem.SKU;
                 })[0].Id;
-            }   else {
+            } else {
                 thisItem.Id = null;
             }
             this.items[index] = thisItem;
@@ -215,11 +215,14 @@
             var pp = this.plannedProduction;
             var existingitems = this.existingItems;
             if (pp.productionCat.Id && pp.productionCatYear) {
-                $.post("/production/GetPlannedProduction", {
-                    plannedProduction: { ProductionCatergoryId: pp.productionCat.Id, ProductionCatYear: pp.productionCatYear }
-                },
-                    function (result) {
-                        if (result.Id !== pp.id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/production/GetPlannedProduction',
+                    data: {
+                        plannedProduction: { ProductionCatergoryId: pp.productionCat.Id, ProductionCatYear: pp.productionCatYear }
+                    },
+                    success: function (result) {
+                        if (!pp.id) {
                             swal({
                                 title: "This season has been planned already!",
                                 text: "Do you want to add to it?",
@@ -238,6 +241,7 @@
                                     if (isConfirm) {
 
                                         pp.id = result.Id;
+                                        pp.copy = { id: pp.id, productionCat: jQuery.extend(true, {}, pp.productionCat), productionCatYear: pp.productionCatYear };
                                         if (result.Items) {
                                             app.existingItems = result.Items.map(function (item) {
                                                 item.Edit = false;
@@ -264,8 +268,150 @@
                             //this.plannedProduction = pp;
                             //this.validatePlannedProd();
                         }
-                    }.bind(this)
-                );
+                        else if (pp.id !== result.Id) {
+                            swal({
+                                title: "You chose another season that was planned already!",
+                                text: "The items from the old one will be replaced! Make sure you save any changes you did to the other season!",
+                                type: "error",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Continue with the new season",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
+
+                                function (isConfirm) {
+                                    window.onkeydown = null;
+                                    window.onfocus = null;
+                                    if (isConfirm) {
+
+                                        pp.id = result.Id;
+                                        pp.copy = { id: pp.id, productionCat: jQuery.extend(true, {}, pp.productionCat), productionCatYear: pp.productionCatYear };
+                                        if (result.Items) {
+                                            app.existingItems = result.Items.map(function (item) {
+                                                item.Edit = false;
+                                                return item;
+
+                                            });
+                                            swal("Pulling up the data", "The data is loading", "success");
+                                        }
+                                        else {
+                                            app.existingItems = [];
+                                            swal("There was no existing items!", "You can add it!", "success");
+                                        }
+
+                                        //this.$refs.productionCatInput.focus();
+                                    }
+                                    else {
+                                        pp.productionCat.Name = pp.copy.productionCat.Name;
+                                        pp.productionCat.Id = pp.copy.productionCat.Id;
+                                        pp.productionCatYear = pp.copy.productionCatYear;
+
+                                        swal("Cancelled", "You can continue with your old season", "success");
+                                        app.validatePlannedProd();
+                                    }
+                                });
+                            //this.plannedProduction = pp;
+                            //this.validatePlannedProd();
+                        }
+                    }.bind(this),
+                
+                    error: () => {
+                        if (pp.id) {
+                            swal({
+                                title: "You chose a new season!",
+                                text: "The items from the old one will be removed! Make sure you save any changes you did to the other season!",
+                                type: "error",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Continue with the new season",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
+
+                                function (isConfirm) {
+                                    window.onkeydown = null;
+                                    window.onfocus = null;
+                                    if (isConfirm) {
+
+                                        pp.id = null;
+                                        pp.copy = {};
+                                        app.existingItems = [];
+                                        swal("Season has been changed", "","success");
+                                    }
+                                    else {
+                                        pp.productionCat.Name = pp.copy.productionCat.Name;
+                                        pp.productionCat.Id = pp.copy.productionCat.Id;
+                                        pp.productionCatYear = pp.copy.productionCatYear;
+
+                                        swal("Cancelled", "You can continue with your old season", "success");
+                                        app.validatePlannedProd();
+                                    }
+                                });
+                            //this.plannedProduction = pp;
+                            //this.validatePlannedProd();
+                        }
+                    }
+                });
+            
+
+
+                // OLD AJAX $.POST
+                //$.post("/production/GetPlannedProduction", {
+                //    plannedProduction: { ProductionCatergoryId: pp.productionCat.Id, ProductionCatYear: pp.productionCatYear }
+                //},
+                //    function (result) {
+                //        if (result.Id !== pp.id) {
+                //            swal({
+                //                title: "This season has been planned already!",
+                //                text: "Do you want to add to it?",
+                //                type: "success",
+                //                showCancelButton: true,
+                //                confirmButtonClass: "btn-success",
+                //                confirmButtonText: "Yes",
+                //                cancelButtonText: "No",
+                //                closeOnConfirm: false,
+                //                closeOnCancel: false
+                //            },
+
+                //                function (isConfirm) {
+                //                    window.onkeydown = null;
+                //                    window.onfocus = null;
+                //                    if (isConfirm) {
+
+                //                        pp.id = result.Id;
+                //                        if (result.Items) {
+                //                            app.existingItems = result.Items.map(function (item) {
+                //                                item.Edit = false;
+                //                                return item;
+
+                //                            });
+                //                            swal("Pulling up the data", "The data is loading", "success");
+                //                        }
+                //                        else {
+                //                            swal("There was no existing items!", "You can add it!", "success");
+                //                        }
+
+                //                        //this.$refs.productionCatInput.focus();
+                //                    }
+                //                    else {
+                //                        pp.productionCat.Name = null;
+                //                        pp.productionCat.Id = null;
+                //                        app.existingItems = [];
+
+                //                        swal("Cancelled", "You can try another season", "error");
+                //                        app.validatePlannedProd();
+                //                    }
+                //                });
+                //            //this.plannedProduction = pp;
+                //            //this.validatePlannedProd();
+                //        }
+                //    }.bind(this)
+                //);
+
+
             }
         },
         getProdCatsList: function () {
