@@ -14,6 +14,7 @@
     },
     data: {
         hi: 'sdjfl;jas;lkj',
+        allSeasons: null,
         production: null,
         isProduction: false,
         file: null,
@@ -105,7 +106,7 @@
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: null  });
+            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons });
             this.updateLotNumbers();
             //var lastMarkerIndex = production.Markers.length - 1;
             this.vaidateMarker(index - 1);
@@ -302,6 +303,11 @@
             this.production.Markers.splice(index,1, marker);
             this.vaidateMarker(index);
 
+        },
+        allSeasonsSelected: function () {
+            this.production.Markers.forEach((marker) => {
+                marker.PlannedProductionId = this.allSeasons;
+            });
         }
     },
     computed: {
