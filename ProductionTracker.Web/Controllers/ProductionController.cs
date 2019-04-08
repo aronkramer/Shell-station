@@ -170,7 +170,7 @@ namespace ProductionTracker.Web.Controllers
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var sizes = repo.GetDefaltMarkerDetails(markerCatergoryName);
-            return Json(sizes.Select(c =>
+            return Json(sizes.OrderBy(a => a.SizeId).Select(c =>
             {
                 return new
                 {

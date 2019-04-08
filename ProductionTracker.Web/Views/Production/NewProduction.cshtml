@@ -94,7 +94,7 @@
                         <div class="col-md-3">
 
                             <label class="col-md-8 col-form-label" for="MarkerName">Marker Name:</label>
-                            <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="vaidateMarker(MarkerIndex)" class="col-md-4 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
+                            <input type="text" v-bind:class="[!markers.includes(marker.Name) ? 'hasError': '' ]" v-on:change="markerNameChange(MarkerIndex)" class="col-md-4 marker-input" name="MarkerName" v-model="marker.Name" list="markers" />
                             <datalist id="markers">
                                 <option v-for="marker in markers">{{marker}}</option>
                             </datalist>
@@ -122,10 +122,10 @@
                                     <button title="Add a size" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
                                 </div>
                                 <div class="size-element">
-                                    <div class="clearfix">
-                                        <div v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
+                                    <div  class="clearfix">
+                                        <div v-bind:title="marker.AllSizes ? allSizes(MarkerIndex): ''" v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
                                             <label v-bind:class="[marker.AllSizes ? 'active': '']" v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
-                                                <input v-bind:title="allSizes(MarkerIndex)" type="radio" class="toggle"> All Sizes
+                                                <input  type="radio" class="toggle"> All Sizes
                                             </label>
                                             <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
                                                 <input type="radio" class="toggle"> Size/s:

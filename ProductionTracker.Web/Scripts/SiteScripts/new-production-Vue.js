@@ -211,7 +211,14 @@
             this.formVaild = !hasErros;
 
         },
-
+        markerNameChange: function (markerIndex) {
+            var marker = this.production.Markers[markerIndex];
+            if (marker.Sizes.length) {
+                marker.Sizes = [];
+                marker.AllSizes = false;
+            }
+            this.vaidateMarker(markerIndex);
+        },
         editAllSizes: function (event, markerIndex) {
 
             this.production.Markers[markerIndex].AllSizes = false;
@@ -308,12 +315,24 @@
             this.production.Markers.forEach((marker) => {
                 marker.PlannedProductionId = this.allSeasons;
             });
+        },
+        allSizes: function (MarkerIndex) {
+
+            var sizes = this.production.Markers[MarkerIndex].Sizes;
+            var str = '';
+            for (var i = 0; i < sizes.length; i++) {
+                str += `${i + 1}) ${sizes[i].Name ? sizes[i].Name : '--'} *${sizes[i].AmountPerLayer ? sizes[i].AmountPerLayer : '--'}*`;
+                if (i !== sizes.length - 1)
+                    str += ", ";
+            }
+            return str;
         }
     },
     computed: {
         productoinHide: function () {
             return this.production === null;
         },
+        
         //formValid: function() {
         //    //var temp = this.production.Markers;
         //    var hasErros = this.production.Markers.some(function (i) {
