@@ -33,6 +33,14 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable< Department> GetDepartments()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Departments.ToList();
+            }
+        }
+
         public BodyStyle GetBodyStyle(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -41,11 +49,27 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<BodyStyle> GetBodyStyles()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.BodyStyles.ToList();
+            }
+        }
+
         public Sleeve GetSleeve (int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 return context.Sleeves.FirstOrDefault(c => c.Id == id);
+            }
+        }
+
+        public IEnumerable<Sleeve> GetSleeves()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Sleeves.ToList();
             }
         }
 

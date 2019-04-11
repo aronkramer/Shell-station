@@ -279,10 +279,35 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetAtributteListsForFilter()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var mats = repo.GetMaterials();
+            var sizes = repo.GetSizes();
+            var markers = repo.GetMarkerCatergorys();
+            var colors = repo.GetColors().ToList();
+            var bodyStyle = repo.GetBodyStyles();
+            var sleeve = repo.GetSleeves();
+            var departments = repo.GetDepartments();
+            //colors.AddRange(repo.GetColorDetails().Select(c => { return new Color { Id = c.ColorId, Name = c.Name }; }));
+            return Json(new
+            {
+                material = mats.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                colors = colors.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                sizes = sizes.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                markers = markers.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                bodyStyles = bodyStyle.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                sleeves = sleeve.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
+                departments = departments.Select(r => { return new { r.Id, r.Name, Selcted = false }; }),
 
 
-        
-        
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
+
         //RECIVED ITEMS
 
         [HttpPost]

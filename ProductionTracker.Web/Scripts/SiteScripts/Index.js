@@ -39,19 +39,40 @@
         fillBtnText: '',
         itemsInProductionSortKey: '',
         itemsInProductionDescSortKey: true,
-        orderedUsers: []
+        orderedUsers: [],
+        filterLists: {
+            skus: null,
+            prodCats: null,
+            materials: null,
+            colors: null,
+            sizes: null,
+            markers: null,
+            bodyStyles: null,
+            sleeves: null,
+            departments: null
+        }
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
             $('.byItems').block({
-                message: '<h4>Processing....</h4>',
-                css: { border: '3px solid #a00' }
+                message: '<img src="/Metronic/theme/assets/global/img/loading-spinner-grey.gif" align="middle" style="width:150px;"/>',
+                
+                overlayCSS: { backgroundColor: '#dcd8d8' },
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: 'none',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: 'none'  }
             }); 
             this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
             $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
                 this.itemsInProduction = SKU;
                 this.orderArray();
                 $('.byItems').unblock();
+                this.getTheDataTables();
             });
         },
         detailsForItem: function (event) {
@@ -224,6 +245,25 @@
             }
             else
                 this.orderedUsers = this.itemsInProduction;
+        },
+        getTheDataTables: function (func) {
+            $.get('/production/GetAtributteListsForFilter', result => {
+                this.filterLists.materials = result.material;
+                this.filterLists.colors = result.colors;
+                this.filterLists.sizes = result.sizes;
+                this.filterLists.markers = result.markers;
+                this.filterLists.bodyStyles = result.bodyStyles;
+                this.filterLists.sleeves = result.sleeves;
+                this.filterLists.departments = result.departments;
+                console.log(result);
+                if (func) func();
+
+            });
+        },
+        checkClearBoxesAtribute: function (list,check) {
+            this.filterLists[list] = this.filterLists[list].map(r => {
+                r.Selected = check; return r;
+            });
         }
 
         //checkVal: function () {
