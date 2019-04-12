@@ -200,7 +200,7 @@ namespace ProductionTracker.Web.Controllers
             var marker = repo.GetMarkerCategory(markerName.ToUpper());
             return Json(new { marker = marker == null ? null : new { marker.Id, marker.Name } } , JsonRequestBehavior.AllowGet);
         }
-
+        
 
 
 

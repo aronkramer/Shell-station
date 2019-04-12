@@ -11,7 +11,7 @@
             <div class="tab-content">
                 <div class="tab-pane active tab-div" id="byItems">
                     <div class="col-md-10 col-md-offset-1 byItems">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="portlet box green">
                                 <div class="portlet-title">
                                     <div class="expand caption">
@@ -27,24 +27,27 @@
                                 </div>
                                 <div class="portlet-body" style="display: none;">
                                     <div class="panel-group accordion" id="accordion1">
-                                        @*Departments*@
-                                        <div class="panel panel-default">
+                                        @*all test*@
+                                        <div v-for="(key,k,index) in filterLists" class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
-                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1"> Departments </a>
+                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" v-bind:href="'#collapse_' + index"> {{k}} </a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse_1" class="panel-collapse collapse">
+                                            <div class="row">
+                                                <div class="col-md-4 col-md-offset-1">
+                                                    <h4 class="selected-count-text">
+                                                        {{countMsg[k]}}
+                                                    </h4>
+                                                </div>
+                                                <div class="col-md-4 col-md-offset-2">
+                                                    <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,true)">Fill All</button>
+                                                    <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,false)">Clear</button>
+                                                </div>
+                                            </div>
+                                            <div :id="'collapse_' + index" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    <div class="col-md-12">
-                                                        <div class="col-md-4">
-                                                            <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('departments',true)">Fill All</button>
-                                                        </div>
-                                                        <div class="col-md-4 col-md-offset-4">
-                                                            <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('departments',false)">Clear All</button>
-                                                        </div>
-                                                    </div>
-                                                    <div v-for="item in filterLists.departments" class="pretty p-svg p-curve">
+                                                    <div v-for="item in filterLists[k]" class="pretty p-svg p-curve">
                                                         <input type="checkbox" v-model="item.Selected" />
                                                         <div class="state p-success">
                                                             <!-- svg path -->
@@ -57,23 +60,65 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @*materail*@
+                                        <!--oldway filter-->
+                                        <!--Departments-->
+                                        @*<div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1"> Departments </a>
+                </h4>
+            </div>
+            <div id="collapse_1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                            <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('departments',true)">Fill All</button>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4">
+                            <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('departments',false)">Clear All</button>
+                        </div>
+                    </div>
+                    <div v-for="item in filterLists.departments" class="pretty p-svg p-curve">
+                        <input type="checkbox" v-model="item.Selected" />
+                        <div class="state p-success">
+                            <!-- svg path -->
+                            <svg class="svg svg-icon" viewBox="0 0 20 20">
+                                <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
+                            </svg>
+                            <label>{{item.Name}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--materail-->
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_2"> Material </a>
                                                 </h4>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-md-offset-1">
+                                                    <h4 class="selected-count-text">
+                                                        {{countMsg['materials']}}
+                                                    </h4>
+                                                </div>
+                                                <div class="col-md-4 col-md-offset-2">
+                                                    <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtribute('materials',true)">Fill All</button>
+                                                    <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtribute('materials',false)">Clear</button>
+                                                </div>
+                                            </div>
                                             <div id="collapse_2" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    <div class="col-md-12">
-                                                        <div class="col-md-4">
-                                                            <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('materials',true)">Fill All</button>
-                                                        </div>
-                                                        <div class="col-md-4 col-md-offset-4">
-                                                            <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('materials',false)">Clear All</button>
-                                                        </div>
-                                                    </div>
+                                                    @*<div class="col-md-12">
+                        <div class="col-md-4">
+                            <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('materials',true)">Fill All</button>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4">
+                            <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('materials',false)">Clear All</button>
+                        </div>
+                    </div>
                                                     <div v-for="item in filterLists.materials" class="pretty p-svg p-curve">
                                                         <input type="checkbox" v-model="item.Selected" />
                                                         <div class="state p-success">
@@ -87,7 +132,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @*body stlye*@
+                                        <!--body stlye-->
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
@@ -96,14 +141,14 @@
                                             </div>
                                             <div id="collapse_3" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    <div class="col-md-12">
-                                                        <div class="col-md-4">
-                                                            <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('bodyStyles',true)">Fill All</button>
-                                                        </div>
-                                                        <div class="col-md-4 col-md-offset-4">
-                                                            <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('bodyStyles',false)">Clear All</button>
-                                                        </div>
-                                                    </div>
+                                                    <!--<div class="col-md-12">
+                    <div class="col-md-4">
+                        <button class="btn-success btn-circle" v-on:click="checkClearBoxesAtribute('bodyStyles',true)">Fill All</button>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <button class="btn-danger btn-circle" v-on:click="checkClearBoxesAtribute('bodyStyles',false)">Clear All</button>
+                    </div>
+                </div>-->
                                                     <div v-for="item in filterLists.bodyStyles" class="pretty p-svg p-curve">
                                                         <input type="checkbox" v-model="item.Selected" />
                                                         <div class="state p-success">
@@ -116,8 +161,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            </div>
-                                        @*sleeve*@
+                                        </div>
+                                        <!--sleeve-->
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
@@ -146,8 +191,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            </div>
-                                        @*color*@
+                                        </div>
+                                        <!--color-->
+
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
@@ -180,8 +226,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            </div>
-                                        @*Sizes*@
+                                        </div>
+                                        <!--Sizes-->
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
@@ -199,20 +245,20 @@
                                                         </div>
                                                     </div>
                                                     <div v-for="item in filterLists.sizes" class="pretty p-svg p-curve">
-                                                        
-                                                            <input type="checkbox" v-model="item.Selected" />
-                                                            <div class="state p-success">
-                                                                <!-- svg path -->
-                                                                <svg class="svg svg-icon" viewBox="0 0 20 20">
-                                                                    <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
-                                                                </svg>
-                                                                <label>{{item.Name}}</label>
-                                                            </div>
-                                                        
+
+                                                        <input type="checkbox" v-model="item.Selected" />
+                                                        <div class="state p-success">
+                                                            <!-- svg path -->
+                                                            <svg class="svg svg-icon" viewBox="0 0 20 20">
+                                                                <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
+                                                            </svg>
+                                                            <label>{{item.Name}}</label>
+                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>
-                                         </div>
+                                        </div>*@
                                     </div>
                                 </div>
                             </div>

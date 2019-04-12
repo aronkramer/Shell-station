@@ -41,15 +41,13 @@
         itemsInProductionDescSortKey: true,
         orderedUsers: [],
         filterLists: {
-            skus: null,
-            prodCats: null,
-            materials: null,
-            colors: null,
-            sizes: null,
-            markers: null,
-            bodyStyles: null,
-            sleeves: null,
-            departments: null
+            Departments: null,
+            Materials: null,
+            BodyStyles: null,
+            Sleeves: null,
+            Sizes: null,
+            Colors: null,
+            //markers: null
         }
     },
     methods: {
@@ -248,13 +246,13 @@
         },
         getTheDataTables: function (func) {
             $.get('/production/GetAtributteListsForFilter', result => {
-                this.filterLists.materials = result.material;
-                this.filterLists.colors = result.colors;
-                this.filterLists.sizes = result.sizes;
-                this.filterLists.markers = result.markers;
-                this.filterLists.bodyStyles = result.bodyStyles;
-                this.filterLists.sleeves = result.sleeves;
-                this.filterLists.departments = result.departments;
+                this.filterLists.Materials =   result.material;
+                this.filterLists.Colors =      result.colors;
+                this.filterLists.Sizes =       result.sizes;
+                //this.filterListS.markers = result.markers;
+                this.filterLists.BodyStyles =  result.bodyStyles;
+                this.filterLists.Sleeves =     result.sleeves;
+                this.filterLists.Departments = result.departments;
                 console.log(result);
                 if (func) func();
 
@@ -264,6 +262,24 @@
             this.filterLists[list] = this.filterLists[list].map(r => {
                 r.Selected = check; return r;
             });
+        },
+        atributeCountMsg: function (list) {
+            if (this.filterLists[list]) {
+                var theList = jQuery.extend(true, [], this.filterLists[list].filter(r => r.Selected));
+                this.filterLists[list] = jQuery.extend(true, [], this.filterLists[list]);
+                if (!theList) {
+                    return 'None Selected';
+                }
+                else if (theList.length === this.filterLists[list].length) {
+                    return 'All Selected';
+                }
+                else {
+                    return `${theList.length} selected`;
+                }
+            }
+            else {
+                return null;
+            }
         }
 
         //checkVal: function () {
@@ -290,8 +306,28 @@
             });
             //console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
             return !hasValues;
-        }
+        },
+        filterdLists: function () {
+            let ret = {};
+            
+            for (k in this.filterLists) {
+                    ret[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected) : null;
+            }
+            return ret;
+            },
+        countMsg: function () {
+            let ret = {};
+            for (k in this.filterdLists) {
+                ret[k] = this.filterdLists[k] ?
+                    this.filterdLists[k].length === 0 ? "None selected" :
+                        this.filterdLists[k].length === this.filterLists[k].length ? "All selected" :
+                            `${this.filterdLists[k].length} selected` : null;
+            }
+            return ret;
+            }
+        
     },
+    
     
 
 });
