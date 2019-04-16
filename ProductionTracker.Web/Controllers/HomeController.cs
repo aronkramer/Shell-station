@@ -57,6 +57,12 @@ namespace ProductionTracker.Web.Controllers
                     {
                         it.Item.Id,
                         it.Item.SKU,
+                        it.Item.BodyStyleId,
+                        it.Item.DepartmentId,
+                        it.Item.MaterialId,
+                        it.Item.ColorId,
+                        it.Item.SleeveId,
+                        it.Item.SizeId,
                         it.LastCuttingInstructionDate,
                         ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
                     };

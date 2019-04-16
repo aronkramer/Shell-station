@@ -48,7 +48,9 @@
             Sizes: null,
             Colors: null,
             //markers: null
-        }
+        },
+        itemSearch: '',
+        filterApliedList:[]
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
@@ -258,7 +260,18 @@
 
             });
         },
-        checkClearBoxesAtribute: function (list,check) {
+        clearFillAllFilter: function (fill) {
+            for (k in this.filterLists) {
+                this.checkClearBoxesAtribute(k, fill);
+            }
+        },
+        checkClearBoxesAtribute: function (list, check) {
+            //this.filterLists[list].forEach((r,x) => {
+            //    r.Selected = check;
+            //});
+            //for (k of this.filterLists[list]) {
+            //    k.Selected = check;
+            //}
             this.filterLists[list] = this.filterLists[list].map(r => {
                 r.Selected = check; return r;
             });
@@ -280,6 +293,16 @@
             else {
                 return null;
             }
+        },
+        applyFilter: function () {
+            this.filterApliedList = this.itemsInProduction.filter(element => {
+                return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+                    this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId)  &&
+                    this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+                    this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+                    this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
+                    this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
+            });
         }
 
         //checkVal: function () {
@@ -324,7 +347,36 @@
                             `${this.filterdLists[k].length} selected` : null;
             }
             return ret;
+        },
+        orderedArray: function () {
+            if (this.searchFileredItems.length && this.itemsInProductionSortKey) {
+                var sortKey = this.itemsInProductionSortKey;
+                var minus = this.itemsInProductionDescSortKey;
+
+                return this.searchFileredItems.sort( (a, b) => {
+                    if (minus)
+                        return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+                    else
+                        return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+                });
             }
+            else
+                return this.searchFileredItems;
+        },
+        searchFileredItems: function () {
+            if (this.filterApliedList.length) {
+                return this.filterApliedList.filter(element => {
+                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                });
+            }
+            else if (this.itemsInProduction.length) {
+                return this.itemsInProduction.filter(element => {
+                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                });
+            } else {
+                return [];
+            }
+        }
         
     },
     
