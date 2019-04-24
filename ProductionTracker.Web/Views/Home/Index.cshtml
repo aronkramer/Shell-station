@@ -21,12 +21,12 @@
                                     <div class="col-md-6">
                                         <button v-on:click="clearFillAllFilter(true)" class="btn btn-primary">Fill All</button>
                                         <button v-on:click="clearFillAllFilter(false)" class="btn btn-danger">Clear All</button>
-                                        <button v-on:click="applyFilter" class="btn btn-default">Apply</button>
+                                        <button :disabled="applyBtnDisable" v-on:click="applyFilter" class="btn btn-default">Apply</button>
                                     </div>
                                     <div class="tools col-md-3" style="text-align:end;">
                                         <a href="javascript:;" class="expand" data-original-title="" title=""> </a>
                                         <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
-                                        <a href="javascript:;" class="reload" data-original-title="" title=""> </a>
+                                        <a href="javascript:;" v-on:click="resetFilters" class="reload" data-original-title="" title=""> </a>
                                         @*<a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
                                     </div>
                                 </div>

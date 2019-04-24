@@ -303,6 +303,10 @@
                     this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
                     this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
             });
+        },
+        resetFilters: function () {
+            this.filterApliedList = [];
+            this.clearFillAllFilter(false);
         }
 
         //checkVal: function () {
@@ -376,6 +380,12 @@
             } else {
                 return [];
             }
+        },
+        applyBtnDisable: function () {
+            if (this.filterdLists) {
+                return !Object.values(this.filterdLists).every(x => x ? x.length > 0 : false);
+            }
+            else return true;
         }
         
     },

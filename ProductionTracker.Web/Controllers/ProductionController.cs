@@ -292,12 +292,12 @@ namespace ProductionTracker.Web.Controllers
             //colors.AddRange(repo.GetColorDetails().Select(c => { return new Color { Id = c.ColorId, Name = c.Name }; }));
             return Json(new
             {
-                material = mats.Select(r => { return new { r.Id, r.Name,           Selected = false }; }),
-                colors = colors.Select(r => { return new { r.Id, r.Name,           Selected = false }; }),
-                sizes = sizes.Select(r => { return new { r.Id, r.Name,             Selected = false }; }),
-                markers = markers.Select(r => { return new { r.Id, r.Name,         Selected = false }; }),
-                bodyStyles = bodyStyle.Select(r => { return new { r.Id, r.Name,    Selected = false }; }),
-                sleeves = sleeve.Select(r => { return new { r.Id, r.Name,          Selected = false }; }),
+                material = mats.Select          (r => { return new { r.Id, r.Name, Selected = false }; }),
+                colors = colors.Select          (r => { return new { r.Id, r.Name, Selected = false }; }),
+                sizes = sizes.Select            (r => { return new { r.Id, r.Name, Selected = false }; }),
+                markers = markers.Select        (r => { return new { r.Id, r.Name, Selected = false }; }),
+                bodyStyles = bodyStyle.Select   (r => { return new { r.Id, r.Name, Selected = false }; }),
+                sleeves = sleeve.Select         (r => { return new { r.Id, r.Name, Selected = false }; }),
                 departments = departments.Select(r => { return new { r.Id, r.Name, Selected = false }; }),
 
 
