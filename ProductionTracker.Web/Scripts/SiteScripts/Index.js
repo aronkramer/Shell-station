@@ -50,7 +50,11 @@
             //markers: null
         },
         itemSearch: '',
-        filterApliedList:[]
+        filterApliedList: null,
+        displayBody: {
+            expandTool: 'expand',
+            display: 'none'
+        }
     },
     methods: {
         loadSkus: function (isInCuttingTicket) {
@@ -305,9 +309,15 @@
             });
         },
         resetFilters: function () {
-            this.filterApliedList = [];
+            this.filterApliedList = null;
             this.clearFillAllFilter(false);
+        },
+        openClosePortlet: function () {
+            this.displayBody.expandTool = this.displayBody.expandTool === 'expand' ? 'collapse' : 'expand';
+            this.displayBody.display = this.displayBody.display === 'none' ? 'block' : 'none';
+
         }
+
 
         //checkVal: function () {
         //    var temp = this.recivedItems;
@@ -368,10 +378,13 @@
                 return this.searchFileredItems;
         },
         searchFileredItems: function () {
-            if (this.filterApliedList.length) {
-                return this.filterApliedList.filter(element => {
-                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
-                });
+            if (this.filterApliedList) {
+               
+                return this.filterApliedList.length ? this.filterApliedList.filter(element => {
+                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase()); 
+                })
+                    : [];
+                
             }
             else if (this.itemsInProduction.length) {
                 return this.itemsInProduction.filter(element => {

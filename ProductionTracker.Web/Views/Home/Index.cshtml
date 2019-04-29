@@ -13,8 +13,9 @@
                     <div class="col-md-10 col-md-offset-1 byItems">
                         <div class="col-md-6">
                             <div class="portlet box green">
-                                <div class="portlet-title">
-                                    <div class="expand caption col-md-2">
+                                <div class="tools portlet-title">
+                                    <a href="javascript:;" class="expand" data-original-title="" title=""> </a>
+                                    <div class="expand caption col-md-2" style="cursor:pointer;" v-on:click="openClosePortlet">
                                         <i class="fa fa-reorder"></i>
                                         Filter
                                     </div>
@@ -24,13 +25,13 @@
                                         <button :disabled="applyBtnDisable" v-on:click="applyFilter" class="btn btn-default">Apply</button>
                                     </div>
                                     <div class="tools col-md-3" style="text-align:end;">
-                                        <a href="javascript:;" class="expand" data-original-title="" title=""> </a>
+                                        <a href="javascript:;" v-on:click="openClosePortlet" v-bind:class="displayBody.expandTool" data-original-title="" title=""> </a>
                                         <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
                                         <a href="javascript:;" v-on:click="resetFilters" class="reload" data-original-title="" title=""> </a>
                                         @*<a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
                                     </div>
                                 </div>
-                                <div class="portlet-body" style="display: none;">
+                                <div class="portlet-body" v-bind:style="{display: displayBody.display}">
                                     <div class="panel-group accordion" id="accordion1">
                                         @*all test*@
                                         <div v-for="(key,k,index) in filterLists" class="panel panel-default">
@@ -280,6 +281,7 @@
                                         </div>
                                     </div>*@
                                     <br />
+                                    <p><h4>Showing {{orderedArray ? orderedArray.length : 0}} items</h4></p>
                                     <table class="table table-bordered table-responsive table-striped">
 
                                         <tr>
