@@ -50,7 +50,7 @@
             //markers: null
         },
         itemSearch: '',
-        filterApliedList: null,
+        //filterApliedList: null,
         displayBody: {
             expandTool: 'expand',
             display: 'none'
@@ -298,16 +298,16 @@
                 return null;
             }
         },
-        applyFilter: function () {
-            this.filterApliedList = this.itemsInProduction.filter(element => {
-                return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
-                    this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId)  &&
-                    this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
-                    this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
-                    this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
-                    this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
-            });
-        },
+        //applyFilter: function () {
+        //    this.filterApliedList = this.itemsInProduction.filter(element => {
+        //        return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+        //            this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId)  &&
+        //            this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+        //            this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+        //            this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
+        //            this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
+        //    });
+        //},
         resetFilters: function () {
             this.filterApliedList = null;
             this.clearFillAllFilter(false);
@@ -348,17 +348,21 @@
             let ret = {};
             
             for (k in this.filterLists) {
-                    ret[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected) : null;
+                ret[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected).length ? this.filterLists[k].filter(x => x.Selected) : this.filterLists[k] : [];
             }
             return ret;
             },
         countMsg: function () {
+            let filteredItems = {};
+            for (k in this.filterLists) {
+                filteredItems[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected) : null;
+            }
             let ret = {};
-            for (k in this.filterdLists) {
-                ret[k] = this.filterdLists[k] ?
-                    this.filterdLists[k].length === 0 ? "None selected" :
-                        this.filterdLists[k].length === this.filterLists[k].length ? "All selected" :
-                            `${this.filterdLists[k].length} selected` : null;
+            for (k in filteredItems) {
+                ret[k] = filteredItems[k] ?
+                    filteredItems[k].length === 0 ? "" :
+                        filteredItems[k].length === this.filterLists[k].length ? "All selected" :
+                            `${filteredItems[k].length} selected` : null;
             }
             return ret;
         },
@@ -398,7 +402,17 @@
             if (this.filterdLists) {
                 return !Object.values(this.filterdLists).every(x => x ? x.length > 0 : false);
             }
-            else return true;
+            else return false;
+        },
+        filterApliedList: function () {
+            return this.itemsInProduction.filter(element => {
+               return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+                   this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId) &&
+                   this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+                   this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+                   this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
+                   this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
+           });
         }
         
     },

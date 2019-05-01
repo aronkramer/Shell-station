@@ -13,18 +13,18 @@
                     <div class="col-md-10 col-md-offset-1 byItems">
                         <div class="col-md-6">
                             <div class="portlet box green">
-                                <div class="tools portlet-title">
-                                    <a href="javascript:;" class="expand" data-original-title="" title=""> </a>
-                                    <div class="expand caption col-md-2" style="cursor:pointer;" v-on:click="openClosePortlet">
+                                <div class="tools portlet-title" v-on:click="openClosePortlet" style="cursor:pointer;">
+                                    
+                                    <div class="expand caption col-md-2"  >
                                         <i class="fa fa-reorder"></i>
                                         Filter
                                     </div>
-                                    <div class="col-md-6">
+                                    @*<div class="col-md-6">
                                         <button v-on:click="clearFillAllFilter(true)" class="btn btn-primary">Fill All</button>
                                         <button v-on:click="clearFillAllFilter(false)" class="btn btn-danger">Clear All</button>
                                         <button :disabled="applyBtnDisable" v-on:click="applyFilter" class="btn btn-default">Apply</button>
-                                    </div>
-                                    <div class="tools col-md-3" style="text-align:end;">
+                                    </div>*@
+                                    <div v-on:click.stop="" class="tools col-md-3" style="text-align:end;">
                                         <a href="javascript:;" v-on:click="openClosePortlet" v-bind:class="displayBody.expandTool" data-original-title="" title=""> </a>
                                         <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
                                         <a href="javascript:;" v-on:click="resetFilters" class="reload" data-original-title="" title=""> </a>
