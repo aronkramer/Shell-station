@@ -32,27 +32,37 @@
                                     </div>
                                 </div>
                                 <div class="portlet-body" v-bind:style="{display: displayBody.display}">
-                                    <div class="panel-group accordion" id="accordion1">
+                                    <div class="panel-group accordion" >
                                         @*all test*@
                                         <div v-for="(key,k,index) in filterLists" class="panel panel-default">
-                                            <div class="panel-heading">
+                                            <div :class="{'not-selected-greyed' : !countMsg[k]}" class="row row-no-margin panel-heading">
+                                                <div class="col-md-4">
                                                 <h4 class="panel-title">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" v-bind:href="'#collapse_' + index"> {{k}} </a>
+                                                    @*<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1"> {{k}} </a>*@
                                                 </h4>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4 col-md-offset-1">
+                                                </div>
+                                                <div class="col-md-4 col-md-offset-4">
                                                     <h4 class="selected-count-text">
                                                         {{countMsg[k]}}
                                                     </h4>
                                                 </div>
-                                                <div class="col-md-4 col-md-offset-2">
-                                                    <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,true)">Fill All</button>
-                                                    <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,false)">Clear</button>
-                                                </div>
                                             </div>
+                                            
+                                            @*<div id="collapse_1" class="panel-collapse collapse">*@
                                             <div :id="'collapse_' + index" class="panel-collapse collapse">
                                                 <div class="panel-body">
+                                                    <div class="row">
+                                                        @*<div class="col-md-4 col-md-offset-1">
+                                                            <h4 class="selected-count-text">
+                                                                {{countMsg[k]}}
+                                                            </h4>
+                                                        </div>*@
+                                                        <div class="col-md-4">
+                                                            <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,true)">Fill All</button>
+                                                            <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,false)">Clear</button>
+                                                        </div>
+                                                    </div>
                                                     <div v-for="item in filterLists[k]" class="pretty p-svg p-curve">
                                                         <input type="checkbox" v-model="item.Selected" />
                                                         <div class="state p-success">

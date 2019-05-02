@@ -361,7 +361,7 @@
             for (k in filteredItems) {
                 ret[k] = filteredItems[k] ?
                     filteredItems[k].length === 0 ? "" :
-                        filteredItems[k].length === this.filterLists[k].length ? "All selected" :
+                        filteredItems[k].length === this.filterLists[k].length ? "All selected" : filteredItems[k].length <= 5 ? filteredItems[k].map(x => x.Name).join(', ') :
                             `${filteredItems[k].length} selected` : null;
             }
             return ret;
