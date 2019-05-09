@@ -4,6 +4,8 @@
     <Type Name="BodyStyle">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="BodyStyle_Item" Member="Items" ThisKey="Id" OtherKey="BodyStyleId" Type="Item" />
       <Association Name="BodyStyle_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="BodyStyleId" Type="MarkerCategory" />
     </Type>
@@ -12,6 +14,8 @@
     <Type Name="Sleeve">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Sleeve_Item" Member="Items" ThisKey="Id" OtherKey="SleeveId" Type="Item" />
       <Association Name="Sleeve_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="SleeveId" Type="MarkerCategory" />
     </Type>
@@ -20,6 +24,8 @@
     <Type Name="ColorDetail">
       <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Color_ColorDetail" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
     </Type>
   </Table>
@@ -27,6 +33,8 @@
     <Type Name="Color">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Color_ColorDetail" Member="ColorDetails" ThisKey="Id" OtherKey="ColorId" Type="ColorDetail" />
       <Association Name="Color_Item" Member="Items" ThisKey="Id" OtherKey="ColorId" Type="Item" />
       <Association Name="Color_Fabric" Member="Fabrics" ThisKey="Id" OtherKey="ColorId" Type="Fabric" />
@@ -36,6 +44,8 @@
     <Type Name="Department">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Department_Item" Member="Items" ThisKey="Id" OtherKey="DepartmentId" Type="Item" />
       <Association Name="Department_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="DepartmentId" Type="MarkerCategory" />
     </Type>
@@ -52,6 +62,8 @@
       <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="SizeDescription" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Item_ReceivingItemsTransaction" Member="ReceivingItemsTransactions" ThisKey="Id" OtherKey="ItemId" Type="ReceivingItemsTransaction" />
       <Association Name="Item_CuttingInstructionItem" Member="CuttingInstructionItems" ThisKey="Id" OtherKey="ItemId" Type="CuttingInstructionItem" />
       <Association Name="Item_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="ItemId" Type="PlannedProductionDetail" />
@@ -68,6 +80,8 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="PricePerYard" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Material_Item" Member="Items" ThisKey="Id" OtherKey="MaterialId" Type="Item" />
       <Association Name="Material_Fabric" Member="Fabrics" ThisKey="Id" OtherKey="MaterialId" Type="Fabric" />
     </Type>
@@ -76,6 +90,8 @@
     <Type Name="Size">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="true" />
       <Association Name="Size_Item" Member="Items" ThisKey="Id" OtherKey="SizeId" Type="Item" />
       <Association Name="Size_CuttingInstructionSize" Member="CuttingInstructionSizes" ThisKey="Id" OtherKey="SizeId" Type="CuttingInstructionSize" />
       <Association Name="Size_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="SizeId" Type="MarkerDetail" />
@@ -85,6 +101,8 @@
     <Type Name="Production">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Production_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="ProductionId" Type="CuttingInstruction" />
     </Type>
   </Table>
@@ -96,6 +114,8 @@
       <Column Name="Adjusment" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Item_ReceivingItemsTransaction" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
       <Association Name="CuttingInstruction_ReceivingItemsTransaction" Member="CuttingInstruction" ThisKey="CuttingInstuctionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
     </Type>
@@ -105,6 +125,8 @@
       <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="AmountPerLayer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CuttingInstructId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Size_CuttingInstructionSize" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstruction" ThisKey="CuttingInstructId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
     </Type>
@@ -115,6 +137,8 @@
       <Column Name="Yards" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CuttingInstructionDetailId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="RollId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Roll_CuttingInstructionDetailRoll" Member="Roll" ThisKey="RollId" OtherKey="Id" Type="Roll" IsForeignKey="true" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionDetailRoll" Member="CuttingInstructionDetail" ThisKey="CuttingInstructionDetailId" OtherKey="Id" Type="CuttingInstructionDetail" IsForeignKey="true" />
     </Type>
@@ -125,6 +149,8 @@
       <Column Name="FabricId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Length" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Used" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Roll_CuttingInstructionDetailRoll" Member="CuttingInstructionDetailRolls" ThisKey="Id" OtherKey="RollId" Type="CuttingInstructionDetailRoll" />
     </Type>
   </Table>
@@ -134,6 +160,8 @@
       <Column Name="MarkerCatId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Length" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
       <Column Name="PercentWaste" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Marker_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="MarkerId" Type="MarkerDetail" />
       <Association Name="Marker_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="DefaltMarkerId" Type="MarkerCategory" />
       <Association Name="Marker_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="MarkerId" Type="CuttingInstruction" />
@@ -146,6 +174,8 @@
       <Column Name="MarkerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="AmountPerLayer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Size_MarkerDetail" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
       <Association Name="Marker_MarkerDetail" Member="Marker" ThisKey="MarkerId" OtherKey="Id" Type="Marker" IsForeignKey="true" />
     </Type>
@@ -157,6 +187,8 @@
       <Column Name="Layers" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CuttingInstructionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Packaging" Type="Packaging" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionDetailRoll" Member="CuttingInstructionDetailRolls" ThisKey="Id" OtherKey="CuttingInstructionDetailId" Type="CuttingInstructionDetailRoll" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionItem" Member="CuttingInstructionItems" ThisKey="Id" OtherKey="CuttingInstructionDetailsId" Type="CuttingInstructionItem" />
       <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstruction" ThisKey="CuttingInstructionId" OtherKey="Id" Type="CuttingInstruction" IsForeignKey="true" />
@@ -170,6 +202,8 @@
       <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CuttingInstructionDetailsId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Packaging" Type="Packaging" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Item_CuttingInstructionItem" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
       <Association Name="CuttingInstructionDetail_CuttingInstructionItem" Member="CuttingInstructionDetail" ThisKey="CuttingInstructionDetailsId" OtherKey="Id" Type="CuttingInstructionDetail" IsForeignKey="true" />
     </Type>
@@ -178,6 +212,8 @@
     <Type Name="ProductionCatergory">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="ProductionCatergory_PlannedProduction" Member="PlannedProductions" ThisKey="Id" OtherKey="ProductionCatergoryId" Type="PlannedProduction" />
     </Type>
   </Table>
@@ -189,6 +225,8 @@
       <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="DefaltMarkerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="MarkerCategory_Marker" Member="Markers" ThisKey="Id" OtherKey="MarkerCatId" Type="Marker" />
       <Association Name="Marker_MarkerCategory" Member="Marker" ThisKey="DefaltMarkerId" OtherKey="Id" Type="Marker" IsForeignKey="true" />
       <Association Name="BodyStyle_MarkerCategory" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
@@ -205,6 +243,8 @@
       <Column Name="MarkerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="PlannedProductionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Completed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="CuttingInstruction_ReceivingItemsTransaction" Member="ReceivingItemsTransactions" ThisKey="Id" OtherKey="CuttingInstuctionId" Type="ReceivingItemsTransaction" />
       <Association Name="CuttingInstruction_CuttingInstructionSize" Member="CuttingInstructionSizes" ThisKey="Id" OtherKey="CuttingInstructId" Type="CuttingInstructionSize" />
       <Association Name="CuttingInstruction_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="CuttingInstructionId" Type="CuttingInstructionDetail" />
@@ -219,6 +259,8 @@
       <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ColorDescriptionName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Fabric_CuttingInstructionDetail" Member="CuttingInstructionDetails" ThisKey="Id" OtherKey="FabricId" Type="CuttingInstructionDetail" />
       <Association Name="Color_Fabric" Member="Color" ThisKey="ColorId" OtherKey="Id" Type="Color" IsForeignKey="true" />
       <Association Name="Material_Fabric" Member="Material" ThisKey="MaterialId" OtherKey="Id" Type="Material" IsForeignKey="true" />
@@ -231,6 +273,8 @@
       <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="PlannedProductionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Item_PlannedProductionDetail" Member="Item" ThisKey="ItemId" OtherKey="Id" Type="Item" IsForeignKey="true" />
       <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProduction" ThisKey="PlannedProductionId" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
     </Type>
@@ -241,9 +285,30 @@
       <Column Name="ProductionCatergoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ProductionCatYear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="PlannedProduction_CuttingInstruction" Member="CuttingInstructions" ThisKey="Id" OtherKey="PlannedProductionId" Type="CuttingInstruction" />
       <Association Name="PlannedProduction_PlannedProductionDetail" Member="PlannedProductionDetails" ThisKey="Id" OtherKey="PlannedProductionId" Type="PlannedProductionDetail" />
       <Association Name="ProductionCatergory_PlannedProduction" Member="ProductionCatergory" ThisKey="ProductionCatergoryId" OtherKey="Id" Type="ProductionCatergory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UpdateHistory" Member="UpdateHistories">
+    <Type Name="UpdateHistory">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PropertyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PropertyType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Action" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="OldObjectData" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="TimeStamp" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Settings" Member="Settings">
+    <Type Name="Setting">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LotNumberCounter" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
     </Type>
   </Table>
   <Function Name="dbo.ItemsForBarcodes2" Method="ItemsForBarcodes2">

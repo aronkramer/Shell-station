@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 using ProductionTracker.Data;
-using ProductionTracker.Web.Excel;
+using System;
+using System.Linq;
+
 
 namespace Testing
 {
@@ -12,7 +10,44 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            UpdateComleatedToMarkAsCompleate();
+            var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
+            var obj = repo.GetPlannedProductionDetail(1);
+
+            repo.AddNewUpdateHistory(obj);
+            //repo.AddNewUpdateHistory(new UpdateHistory
+            //{
+            //    Action = "updated",
+            //    PropertyId = obj.Id,
+            //    PropertyType = obj.GetType().Name,
+            //    OldObjectData = obj.GetBasePropertiesOnDbObject()
+            //});
+            var historys = repo.GetUpdateHistories();
+
+            historys.ToList().ForEach(h =>
+            {
+                Console.WriteLine($"{ h.PropertyType} - { h.Action} TimeStamp {h.CreatedOn} Old data --- {h.OldObjectData}");
+            
+            });
+            var decerlized = JsonConvert.DeserializeObject (historys.ToList()[5].OldObjectData);
+            Console.WriteLine("History of one item");
+            var histoyOfItem = historys.Where(h => h.PropertyType == obj.GetType().Name && h.PropertyId == obj.Id).Select(h => {
+                dynamic re = JsonConvert.DeserializeObject(h.OldObjectData,obj.GetType());
+                re.ModifiedOn = h.CreatedOn;
+                return re;
+            });
+            var i = 0;
+            foreach(dynamic h in histoyOfItem)
+            {
+                i++;
+                Console.WriteLine($"{i}) {h.Id} - {h.Name}");
+            }
+            //histoyOfItem.ToList().ForEach(h =>
+            //{
+            //    i++;
+            //    Console.WriteLine($"{i}) {h.Id} - {h.Name}");
+            //});
+
+            //UpdateComleatedToMarkAsCompleate();
             //var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
             //var prod = repo.GetProductionForExcel(42);
             //var prodexcel = ExcelActions.ProductionToFormatForExcel(prod);
@@ -187,7 +222,7 @@ namespace Testing
         //    return null;
         //}
 
-
+        
 
 
         static void UpdateComleatedToMarkAsCompleate()

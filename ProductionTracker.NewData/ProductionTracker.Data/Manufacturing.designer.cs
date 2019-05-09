@@ -99,6 +99,12 @@ namespace ProductionTracker.Data
     partial void InsertPlannedProduction(PlannedProduction instance);
     partial void UpdatePlannedProduction(PlannedProduction instance);
     partial void DeletePlannedProduction(PlannedProduction instance);
+    partial void InsertUpdateHistory(UpdateHistory instance);
+    partial void UpdateUpdateHistory(UpdateHistory instance);
+    partial void DeleteUpdateHistory(UpdateHistory instance);
+    partial void InsertSetting(Setting instance);
+    partial void UpdateSetting(Setting instance);
+    partial void DeleteSetting(Setting instance);
     #endregion
 		
 		public ManufacturingDataContext() : 
@@ -315,6 +321,22 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		public System.Data.Linq.Table<UpdateHistory> UpdateHistories
+		{
+			get
+			{
+				return this.GetTable<UpdateHistory>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Setting> Settings
+		{
+			get
+			{
+				return this.GetTable<Setting>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.ItemsForBarcodes2")]
 		public ISingleResult<ItemsForBarcodes2Result> ItemsForBarcodes2()
 		{
@@ -333,6 +355,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -345,6 +371,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public BodyStyle()
@@ -390,6 +420,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -475,6 +545,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -487,6 +561,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Sleeve()
@@ -532,6 +610,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -617,6 +735,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Color> _Color;
 		
     #region Extensibility Method Definitions
@@ -627,6 +749,10 @@ namespace ProductionTracker.Data
     partial void OnColorIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public ColorDetail()
@@ -675,6 +801,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -744,6 +910,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<ColorDetail> _ColorDetails;
 		
 		private EntitySet<Item> _Items;
@@ -758,6 +928,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Color()
@@ -804,6 +978,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -914,6 +1128,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -926,6 +1144,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Department()
@@ -971,6 +1193,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -1072,6 +1334,10 @@ namespace ProductionTracker.Data
 		
 		private string _BodyStyleAttributte;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
 		
 		private EntitySet<CuttingInstructionItem> _CuttingInstructionItems;
@@ -1114,6 +1380,10 @@ namespace ProductionTracker.Data
     partial void OnSizeDescriptionChanged();
     partial void OnBodyStyleAttributteChanging(string value);
     partial void OnBodyStyleAttributteChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Item()
@@ -1350,6 +1620,46 @@ namespace ProductionTracker.Data
 					this._BodyStyleAttributte = value;
 					this.SendPropertyChanged("BodyStyleAttributte");
 					this.OnBodyStyleAttributteChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -1666,6 +1976,10 @@ namespace ProductionTracker.Data
 		
 		private decimal _PricePerYard;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<Fabric> _Fabrics;
@@ -1680,6 +1994,10 @@ namespace ProductionTracker.Data
     partial void OnNameChanged();
     partial void OnPricePerYardChanging(decimal value);
     partial void OnPricePerYardChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Material()
@@ -1745,6 +2063,46 @@ namespace ProductionTracker.Data
 					this._PricePerYard = value;
 					this.SendPropertyChanged("PricePerYard");
 					this.OnPricePerYardChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -1830,6 +2188,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<CuttingInstructionSize> _CuttingInstructionSizes;
@@ -1844,6 +2206,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Size()
@@ -1890,6 +2256,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime NOT NULL")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -2000,6 +2406,10 @@ namespace ProductionTracker.Data
 		
 		private System.DateTime _Date;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<CuttingInstruction> _CuttingInstructions;
 		
     #region Extensibility Method Definitions
@@ -2010,6 +2420,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnDateChanging(System.DateTime value);
     partial void OnDateChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Production()
@@ -2054,6 +2468,46 @@ namespace ProductionTracker.Data
 					this._Date = value;
 					this.SendPropertyChanged("Date");
 					this.OnDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -2122,6 +2576,10 @@ namespace ProductionTracker.Data
 		
 		private System.DateTime _Date;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Item> _Item;
 		
 		private EntityRef<CuttingInstruction> _CuttingInstruction;
@@ -2142,6 +2600,10 @@ namespace ProductionTracker.Data
     partial void OnQuantityChanged();
     partial void OnDateChanging(System.DateTime value);
     partial void OnDateChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public ReceivingItemsTransaction()
@@ -2279,6 +2741,46 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ReceivingItemsTransaction", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
 		public Item Item
 		{
@@ -2380,6 +2882,10 @@ namespace ProductionTracker.Data
 		
 		private int _CuttingInstructId;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Size> _Size;
 		
 		private EntityRef<CuttingInstruction> _CuttingInstruction;
@@ -2394,6 +2900,10 @@ namespace ProductionTracker.Data
     partial void OnAmountPerLayerChanged();
     partial void OnCuttingInstructIdChanging(int value);
     partial void OnCuttingInstructIdChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public CuttingInstructionSize()
@@ -2467,6 +2977,46 @@ namespace ProductionTracker.Data
 					this._CuttingInstructId = value;
 					this.SendPropertyChanged("CuttingInstructId");
 					this.OnCuttingInstructIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -2574,6 +3124,10 @@ namespace ProductionTracker.Data
 		
 		private int _RollId;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Roll> _Roll;
 		
 		private EntityRef<CuttingInstructionDetail> _CuttingInstructionDetail;
@@ -2590,6 +3144,10 @@ namespace ProductionTracker.Data
     partial void OnCuttingInstructionDetailIdChanged();
     partial void OnRollIdChanging(int value);
     partial void OnRollIdChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public CuttingInstructionDetailRoll()
@@ -2683,6 +3241,46 @@ namespace ProductionTracker.Data
 					this._RollId = value;
 					this.SendPropertyChanged("RollId");
 					this.OnRollIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -2790,6 +3388,10 @@ namespace ProductionTracker.Data
 		
 		private bool _Used;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<CuttingInstructionDetailRoll> _CuttingInstructionDetailRolls;
 		
     #region Extensibility Method Definitions
@@ -2804,6 +3406,10 @@ namespace ProductionTracker.Data
     partial void OnLengthChanged();
     partial void OnUsedChanging(bool value);
     partial void OnUsedChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Roll()
@@ -2892,6 +3498,46 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Roll_CuttingInstructionDetailRoll", Storage="_CuttingInstructionDetailRolls", ThisKey="Id", OtherKey="RollId")]
 		public EntitySet<CuttingInstructionDetailRoll> CuttingInstructionDetailRolls
 		{
@@ -2952,6 +3598,10 @@ namespace ProductionTracker.Data
 		
 		private System.Nullable<decimal> _PercentWaste;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<MarkerDetail> _MarkerDetails;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -2972,6 +3622,10 @@ namespace ProductionTracker.Data
     partial void OnLengthChanged();
     partial void OnPercentWasteChanging(System.Nullable<decimal> value);
     partial void OnPercentWasteChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Marker()
@@ -3063,6 +3717,46 @@ namespace ProductionTracker.Data
 					this._PercentWaste = value;
 					this.SendPropertyChanged("PercentWaste");
 					this.OnPercentWasteChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -3211,6 +3905,10 @@ namespace ProductionTracker.Data
 		
 		private int _AmountPerLayer;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Size> _Size;
 		
 		private EntityRef<Marker> _Marker;
@@ -3227,6 +3925,10 @@ namespace ProductionTracker.Data
     partial void OnSizeIdChanged();
     partial void OnAmountPerLayerChanging(int value);
     partial void OnAmountPerLayerChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public MarkerDetail()
@@ -3320,6 +4022,46 @@ namespace ProductionTracker.Data
 					this._AmountPerLayer = value;
 					this.SendPropertyChanged("AmountPerLayer");
 					this.OnAmountPerLayerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -3429,6 +4171,10 @@ namespace ProductionTracker.Data
 		
 		private Packaging _Packaging;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<CuttingInstructionDetailRoll> _CuttingInstructionDetailRolls;
 		
 		private EntitySet<CuttingInstructionItem> _CuttingInstructionItems;
@@ -3451,6 +4197,10 @@ namespace ProductionTracker.Data
     partial void OnCuttingInstructionIdChanged();
     partial void OnPackagingChanging(Packaging value);
     partial void OnPackagingChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public CuttingInstructionDetail()
@@ -3566,6 +4316,46 @@ namespace ProductionTracker.Data
 					this._Packaging = value;
 					this.SendPropertyChanged("Packaging");
 					this.OnPackagingChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -3725,6 +4515,10 @@ namespace ProductionTracker.Data
 		
 		private Packaging _Packaging;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Item> _Item;
 		
 		private EntityRef<CuttingInstructionDetail> _CuttingInstructionDetail;
@@ -3743,6 +4537,10 @@ namespace ProductionTracker.Data
     partial void OnCuttingInstructionDetailsIdChanged();
     partial void OnPackagingChanging(Packaging value);
     partial void OnPackagingChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public CuttingInstructionItem()
@@ -3860,6 +4658,46 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_CuttingInstructionItem", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
 		public Item Item
 		{
@@ -3959,6 +4797,10 @@ namespace ProductionTracker.Data
 		
 		private string _Name;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<PlannedProduction> _PlannedProductions;
 		
     #region Extensibility Method Definitions
@@ -3969,6 +4811,10 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public ProductionCatergory()
@@ -4013,6 +4859,46 @@ namespace ProductionTracker.Data
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -4081,6 +4967,10 @@ namespace ProductionTracker.Data
 		
 		private System.Nullable<int> _DefaltMarkerId;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<Marker> _Markers;
 		
 		private EntityRef<Marker> _Marker;
@@ -4107,6 +4997,10 @@ namespace ProductionTracker.Data
     partial void OnSleeveIdChanged();
     partial void OnDefaltMarkerIdChanging(System.Nullable<int> value);
     partial void OnDefaltMarkerIdChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public MarkerCategory()
@@ -4251,6 +5145,46 @@ namespace ProductionTracker.Data
 					this._DefaltMarkerId = value;
 					this.SendPropertyChanged("DefaltMarkerId");
 					this.OnDefaltMarkerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -4457,6 +5391,10 @@ namespace ProductionTracker.Data
 		
 		private bool _Completed;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<ReceivingItemsTransaction> _ReceivingItemsTransactions;
 		
 		private EntitySet<CuttingInstructionSize> _CuttingInstructionSizes;
@@ -4487,6 +5425,10 @@ namespace ProductionTracker.Data
     partial void OnPlannedProductionIdChanged();
     partial void OnCompletedChanging(bool value);
     partial void OnCompletedChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public CuttingInstruction()
@@ -4648,6 +5590,46 @@ namespace ProductionTracker.Data
 					this._Completed = value;
 					this.SendPropertyChanged("Completed");
 					this.OnCompletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -4864,6 +5846,10 @@ namespace ProductionTracker.Data
 		
 		private string _ColorDescriptionName;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<CuttingInstructionDetail> _CuttingInstructionDetails;
 		
 		private EntityRef<Color> _Color;
@@ -4882,6 +5868,10 @@ namespace ProductionTracker.Data
     partial void OnMaterialIdChanged();
     partial void OnColorDescriptionNameChanging(string value);
     partial void OnColorDescriptionNameChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public Fabric()
@@ -4976,6 +5966,46 @@ namespace ProductionTracker.Data
 					this._ColorDescriptionName = value;
 					this.SendPropertyChanged("ColorDescriptionName");
 					this.OnColorDescriptionNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -5110,6 +6140,10 @@ namespace ProductionTracker.Data
 		
 		private bool _Deleted;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntityRef<Item> _Item;
 		
 		private EntityRef<PlannedProduction> _PlannedProduction;
@@ -5128,6 +6162,10 @@ namespace ProductionTracker.Data
     partial void OnPlannedProductionIdChanged();
     partial void OnDeletedChanging(bool value);
     partial void OnDeletedChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public PlannedProductionDetail()
@@ -5245,6 +6283,46 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_PlannedProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
 		public Item Item
 		{
@@ -5348,6 +6426,10 @@ namespace ProductionTracker.Data
 		
 		private bool _Deleted;
 		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
 		private EntitySet<CuttingInstruction> _CuttingInstructions;
 		
 		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
@@ -5366,6 +6448,10 @@ namespace ProductionTracker.Data
     partial void OnProductionCatYearChanged();
     partial void OnDeletedChanging(bool value);
     partial void OnDeletedChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
     #endregion
 		
 		public PlannedProduction()
@@ -5456,6 +6542,46 @@ namespace ProductionTracker.Data
 					this._Deleted = value;
 					this.SendPropertyChanged("Deleted");
 					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
 				}
 			}
 		}
@@ -5562,6 +6688,346 @@ namespace ProductionTracker.Data
 		{
 			this.SendPropertyChanging();
 			entity.PlannedProduction = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UpdateHistory")]
+	public partial class UpdateHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _PropertyId;
+		
+		private string _PropertyType;
+		
+		private string _Action;
+		
+		private string _OldObjectData;
+		
+		private System.Data.Linq.Binary _TimeStamp;
+		
+		private System.DateTime _CreatedOn;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnPropertyIdChanging(int value);
+    partial void OnPropertyIdChanged();
+    partial void OnPropertyTypeChanging(string value);
+    partial void OnPropertyTypeChanged();
+    partial void OnActionChanging(string value);
+    partial void OnActionChanged();
+    partial void OnOldObjectDataChanging(string value);
+    partial void OnOldObjectDataChanged();
+    partial void OnTimeStampChanging(System.Data.Linq.Binary value);
+    partial void OnTimeStampChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    #endregion
+		
+		public UpdateHistory()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyId", DbType="Int NOT NULL", UpdateCheck=UpdateCheck.Never)]
+		public int PropertyId
+		{
+			get
+			{
+				return this._PropertyId;
+			}
+			set
+			{
+				if ((this._PropertyId != value))
+				{
+					this.OnPropertyIdChanging(value);
+					this.SendPropertyChanging();
+					this._PropertyId = value;
+					this.SendPropertyChanged("PropertyId");
+					this.OnPropertyIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PropertyType", DbType="VarChar(50) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string PropertyType
+		{
+			get
+			{
+				return this._PropertyType;
+			}
+			set
+			{
+				if ((this._PropertyType != value))
+				{
+					this.OnPropertyTypeChanging(value);
+					this.SendPropertyChanging();
+					this._PropertyType = value;
+					this.SendPropertyChanged("PropertyType");
+					this.OnPropertyTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Action", DbType="VarChar(50) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string Action
+		{
+			get
+			{
+				return this._Action;
+			}
+			set
+			{
+				if ((this._Action != value))
+				{
+					this.OnActionChanging(value);
+					this.SendPropertyChanging();
+					this._Action = value;
+					this.SendPropertyChanged("Action");
+					this.OnActionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OldObjectData", DbType="VarChar(MAX) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string OldObjectData
+		{
+			get
+			{
+				return this._OldObjectData;
+			}
+			set
+			{
+				if ((this._OldObjectData != value))
+				{
+					this.OnOldObjectDataChanging(value);
+					this.SendPropertyChanging();
+					this._OldObjectData = value;
+					this.SendPropertyChanged("OldObjectData");
+					this.OnOldObjectDataChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TimeStamp", AutoSync=AutoSync.Always, DbType="rowversion NOT NULL", CanBeNull=false, IsDbGenerated=true, IsVersion=true, UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary TimeStamp
+		{
+			get
+			{
+				return this._TimeStamp;
+			}
+			set
+			{
+				if ((this._TimeStamp != value))
+				{
+					this.OnTimeStampChanging(value);
+					this.SendPropertyChanging();
+					this._TimeStamp = value;
+					this.SendPropertyChanged("TimeStamp");
+					this.OnTimeStampChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL", IsDbGenerated=true)]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Settings")]
+	public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _LotNumberCounter;
+		
+		private System.DateTime _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnLotNumberCounterChanging(int value);
+    partial void OnLotNumberCounterChanged();
+    partial void OnCreatedOnChanging(System.DateTime value);
+    partial void OnCreatedOnChanged();
+    partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedOnChanged();
+    #endregion
+		
+		public Setting()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LotNumberCounter", DbType="Int NOT NULL")]
+		public int LotNumberCounter
+		{
+			get
+			{
+				return this._LotNumberCounter;
+			}
+			set
+			{
+				if ((this._LotNumberCounter != value))
+				{
+					this.OnLotNumberCounterChanging(value);
+					this.SendPropertyChanging();
+					this._LotNumberCounter = value;
+					this.SendPropertyChanged("LotNumberCounter");
+					this.OnLotNumberCounterChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this.OnCreatedOnChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedOn = value;
+					this.SendPropertyChanged("CreatedOn");
+					this.OnCreatedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this.OnModifiedOnChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedOn = value;
+					this.SendPropertyChanged("ModifiedOn");
+					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	

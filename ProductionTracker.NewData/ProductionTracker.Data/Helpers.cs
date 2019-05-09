@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using Newtonsoft.Json;
 
 namespace ProductionTracker.Data
 {
@@ -35,5 +38,50 @@ namespace ProductionTracker.Data
         {
             return source.Where(x => !x.Deleted);
         }
+        public static bool IsEnumerableType<T>(this T obj)
+        {
+            
+            return obj.GetType().IsEnumerableType();
+        }
+
+        public static bool IsEnumerableType(this Type type)
+        {
+            return type != typeof(string) && type.GetInterface(nameof(IEnumerable)) != null;
+        }
+
+        public static bool IsOfGenericType(this Type source)
+        {
+            List<Type> types = new List<Type>
+            {
+                typeof(string),
+                typeof(int),
+                typeof(bool),
+                typeof(DateTime),
+                typeof(decimal),
+                typeof(double)
+            };
+            return types.Contains(source);
+        }
+        public static bool IsOfGenericType(this object source)
+        {
+            return source.GetType().IsOfGenericType();
+        }
+
+        public static string GetBasePropertiesOnDbObject<T>(this T obj)
+        {
+            var dict = new Dictionary<string, object>();
+            foreach (var propertyInfo in obj.GetType()
+                                .GetProperties(
+                                        BindingFlags.Public
+                                        | BindingFlags.Instance))
+            {
+                if (propertyInfo.PropertyType.IsOfGenericType())
+                {
+                    dict[propertyInfo.Name] = propertyInfo.GetValue(obj, null);
+                }
+            }
+            return JsonConvert.SerializeObject(dict);
+        }
+
     }
 }

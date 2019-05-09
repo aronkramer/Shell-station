@@ -4,6 +4,7 @@ using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ProductionTracker.Data.Models;
 
 namespace ProductionTracker.Data
@@ -495,6 +496,14 @@ namespace ProductionTracker.Data
             }
         }
 
+        public ReceivingItemsTransaction GetReceivingItemsTransaction(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.ReceivingItemsTransactions.FirstOrDefault(r => r.Id == id);
+            }
+        }
+
         //PLANNED PRODUCTIONS
 
         public void AddPlannedProduction(PlannedProduction plannedProduction)
@@ -576,7 +585,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                
+                plannedProductionDetail.ModifiedOn = DateTime.Now;
                 context.PlannedProductionDetails.Attach(plannedProductionDetail);
                 context.Refresh(RefreshMode.KeepCurrentValues, plannedProductionDetail);
                 context.SubmitChanges();
@@ -802,5 +811,50 @@ namespace ProductionTracker.Data
                 context.ExecuteCommand("UPDATE CuttingInstructionItems SET Quantity = {0} WHERE Id = {1}", quantity, Id);
             }
         }
+
+        //UPDATE HISTORY
+
+        public IEnumerable<UpdateHistory> GetUpdateHistories()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.UpdateHistories.ToList();
+            }
+        }
+
+        public void AddNewUpdateHistory (dynamic obj, string action = "updated")
+        {
+            var updateHistory = new UpdateHistory
+            {
+                Action = action,
+                PropertyId = obj.Id,
+                PropertyType = obj.GetType().Name,
+                OldObjectData = Helpers.GetBasePropertiesOnDbObject(obj)
+            };
+            AddNewUpdateHistory(updateHistory);
+        }
+        public void AddNewUpdateHistory (UpdateHistory updateHistory)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.UpdateHistories.InsertOnSubmit(updateHistory);
+                context.SubmitChanges();
+            }
+        }
+
+        public dynamic GetHistorysOfOneObject (dynamic obj)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var x = context.UpdateHistories.ToList().Where(h => h.PropertyType == obj.GetType().Name && h.PropertyId == obj.Id).Select(h => {
+                    dynamic re = JsonConvert.DeserializeObject(h.OldObjectData, obj.GetType());
+                    re.ModifiedOn = h.CreatedOn;
+                    return re;
+                });
+                return x;
+            }
+        }
+
+        
     }
 }
