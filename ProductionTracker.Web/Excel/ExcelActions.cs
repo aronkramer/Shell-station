@@ -373,6 +373,7 @@ namespace ProductionTracker.Web.Excel
                                         AddErrorMsg("item", $"with size:{size}, Material:{material},Color:{color},Department:{department},BodyStyle:{bodyStyle}, Sleeve:{sleeve}");
                                     }
                                 }
+                                if(detail.Items.Count > 0)
                                 details.Add(detail);
                             }
                             else
@@ -386,21 +387,23 @@ namespace ProductionTracker.Web.Excel
                         }
 
                     }
-                    finalProduction.CuttingInstructions.Add(new CuttingInstructionWithMarker
+                    if (details.Count > 0)
                     {
-                        LotNumber = marker.LotNumber,
-                        Details = details,
-                        Marker = new Finalmarker
+                        finalProduction.CuttingInstructions.Add(new CuttingInstructionWithMarker
                         {
-                            MarkerCatId = markerCat.Id,
-                            Name = markerCat.Name,
-                            AllSizes = marker.AllSizes,
-                            Sizes = marker.Sizes,
-                            PlannedProductionId = marker.PlannedProductionId
-                            
-                        }
+                            LotNumber = marker.LotNumber,
+                            Details = details,
+                            Marker = new Finalmarker
+                            {
+                                MarkerCatId = markerCat.Id,
+                                Name = markerCat.Name,
+                                AllSizes = marker.AllSizes,
+                                Sizes = marker.Sizes,
+                                PlannedProductionId = marker.PlannedProductionId
+
+                            }
+                        });
                     }
-                );
                 }
                 else
                 {

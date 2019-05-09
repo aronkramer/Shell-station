@@ -62,8 +62,8 @@
 
                     <label class="col-md-2 col-form-label" for="date">Date</label>
                     <input type="date" class=" col-md-4" name="Date" id="date" v-model="production.Date" />
-                    <label class="col-md-2 col-form-label" for="lot">Last Lot#</label>
-                    <input type="text" class=" col-md-3" name="Lot_" v-model="production.LastLotNumber" />
+                    @*<label class="col-md-2 col-form-label" for="lot">Last Lot#</label>*@
+                    @*<input type="text" class=" col-md-3" name="Lot_" v-model="production.LastLotNumber" />*@
                     
                 </div>
             </div>
@@ -112,105 +112,106 @@
                             </div>
                         </div>
                         @*<label class="error" v-if="this.production.Markers[markerIndex].errors && this.production.Markers[markerIndex].errors['marker']">{{marker.errors['marker']}}</label>*@
-                        <label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
-                        <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />
+                        @*<label class="col-md-2 col-form-label" for="Lot">Lot Number:</label>
+                        <input type="text" class="col-md-1" name="Lot" v-model="marker.LotNumber" />*@
+                        <div class="col-md-1"></div>
 
-                        <div>
-                            <div class="size-container col-md-1">
-                                <button v-if="marker.Sizes.length < 1 && !marker.AllSizes " :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
-                                <div class="" v-if="marker.Sizes.length >= 1 && !marker.AllSizes">
-                                    <button title="Add a size" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
-                                </div>
-                                <div class="size-element">
-                                    <div  class="clearfix">
-                                        <div v-bind:title="marker.AllSizes ? allSizes(MarkerIndex): ''" v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
-                                            <label v-bind:class="[marker.AllSizes ? 'active': '']" v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
-                                                <input  type="radio" class="toggle"> All Sizes
-                                            </label>
-                                            <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
-                                                <input type="radio" class="toggle"> Size/s:
-                                            </label>
-                                        </div>
+                            <div>
+                                <div class="size-container col-md-1">
+                                    <button v-if="marker.Sizes.length < 1 && !marker.AllSizes " :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                    <div class="" v-if="marker.Sizes.length >= 1 && !marker.AllSizes">
+                                        <button title="Add a size" :markerIndex="MarkerIndex" v-on:click="addSize($event, MarkerIndex)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
                                     </div>
-                                    @*<label class="col-md-1 col-form-label" for="Size">Size/s:</label>*@
-                                </div>
-                                <div class="size-element" v-if="marker.Sizes.length > 1 && !marker.AllSizes">
-                                    <label class="col-md-1 col-form-label" for="Size">Count:</label>
-                                </div>
-                            </div>
-                            <div v-if="!marker.AllSizes" class="col-md-5">
-                                <template v-for="(size, sizeIndex) in marker.Sizes">
-                                    <div class="size-container col-md-2">
-                                        <div class="size-element" title="Remove this size">
-                                            <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                    <div class="size-element">
+                                        <div class="clearfix">
+                                            <div v-bind:title="marker.AllSizes ? allSizes(MarkerIndex): ''" v-bind:class="[marker.AllSizes ? 'size-allsize-conainer-all': '']" class="btn-group btn-group-circle size-allsize-conainer" data-toggle="buttons">
+                                                <label v-bind:class="[marker.AllSizes ? 'active': '']" v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
+                                                    <input type="radio" class="toggle"> All Sizes
+                                                </label>
+                                                <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
+                                                    <input type="radio" class="toggle"> Size/s:
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="size-element">
-                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
-                                            <datalist id="sizes">
-                                                <option v-for="x in sizes">{{x.Name}}</option>
-                                            </datalist>
-                                        </div>
-                                        <div class="size-element" v-if="marker.Sizes.length > 1">
-                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
-                                        </div>
+                                        @*<label class="col-md-1 col-form-label" for="Size">Size/s:</label>*@
                                     </div>
-                                    @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
-                                        </div>*@
-                                </template>
-                            </div>
-                        </div>
-                        @*<div v-else>
-                                <div class="col-md-1">
-                                    <label>All sizes</label>
+                                    <div class="size-element" v-if="marker.Sizes.length > 1 && !marker.AllSizes">
+                                        <label class="col-md-1 col-form-label" for="Size">Count:</label>
+                                    </div>
                                 </div>
-                                <div class="col-md-1">
-                                    <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+                                <div v-if="!marker.AllSizes" class="col-md-7">
+                                    <template v-for="(size, sizeIndex) in marker.Sizes">
+                                        <div class="size-container col-md-2">
+                                            <div class="size-element" title="Remove this size">
+                                                <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                            </div>
+                                            <div class="size-element">
+                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                                <datalist id="sizes">
+                                                    <option v-for="x in sizes">{{x.Name}}</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="size-element" v-if="marker.Sizes.length > 1">
+                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
+                        </div>*@
+                                    </template>
                                 </div>
-                            </div>*@
-                        <div class="row" v-if="marker.ColorMaterials.length > 0">
-                            <table class="table table-bordered table-striped table-responsive">
-                                <tr>
-                                    <th style="text-align:left;"><button :markerIndex="MarkerIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-circle green btn-mini">+</button><label style="margin-left:35px;font-weight:bold;">Color</label></th>
-                                    <th>Material</th>
-                                    <th>Layers <br /><span class="total-layers">Total items: <span v-bind:style="{'color': getSumOfLayersPerMarker(marker)<600?'red':''}">{{getSumOfLayersPerMarker(marker)}}</span></span></th>
-                                    <th>Pakaging</th>
-                                </tr>
-                                <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
-                                    <tr>
-                                        <td>
-                                            <input type="text" list="colors" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[colors.includes(colMat.Color) ? '': 'hasError' ]" v-model="colMat.Color" />
-                                            <datalist id="colors">
-                                                <option v-for="x in colors">{{x}}</option>
-                                            </datalist>
-                                        </td>
-                                        <td>
-                                            <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials" v-model="colMat.Material" />
-                                            <datalist id="materials">
-                                                <option v-for="x in materials">{{x}}</option>
-                                            </datalist>
-                                        </td>
-                                        <td><input type="text" v-on:hange="vaidateMarker(MarkerIndex)" v-model="colMat.Layers" v-bind:class="[ colMat.Layers > 0 ? '': 'hasError' ]" /> </td>
-                                        <td>
-                                            <select v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ packagingOptions.some(i => i.value === colMat.Packaging) ? '': 'hasError' ]" v-model="colMat.Packaging">
-                                                <option disabled value="">Please select one</option>
-                                                <option v-for="option in packagingOptions" v-bind:value="option.value">
-                                                    {{ option.text }}
-                                                </option>
-                                            </select>
-                                        </td>
-                                        <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-circle red-sunglo btn-sm">X</button></td>
-                                    </tr>
-                                </template>
-                            </table>
-                        </div>
-                        <div class="row" v-else>
-                            <div class="col-md-4 col-md-offset-4">
-                                <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add The Color and Material</button>
                             </div>
-                        </div>
-
-                    </div>
+                            @*<div v-else>
+                <div class="col-md-1">
+                    <label>All sizes</label>
                 </div>
+                <div class="col-md-1">
+                    <button :markerIndex="MarkerIndex" v-on:click="editAllSizes($event, MarkerIndex)" class="btn btn-success">Edit</button>
+                </div>
+            </div>*@
+                            <div class="row" v-if="marker.ColorMaterials.length > 0">
+                                <table class="table table-bordered table-striped table-responsive">
+                                    <tr>
+                                        <th style="text-align:left;"><button :markerIndex="MarkerIndex" v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-circle green btn-mini">+</button><label style="margin-left:35px;font-weight:bold;">Color</label></th>
+                                        <th>Material</th>
+                                        <th>Layers <br /><span class="total-layers">Total items: <span v-bind:style="{'color': getSumOfLayersPerMarker(marker)<600?'red':''}">{{getSumOfLayersPerMarker(marker)}}</span></span></th>
+                                        <th>Pakaging</th>
+                                    </tr>
+                                    <template v-for="(colMat,cmIndex) in marker.ColorMaterials">
+                                        <tr>
+                                            <td>
+                                                <input type="text" list="colors" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[colors.includes(colMat.Color) ? '': 'hasError' ]" v-model="colMat.Color" />
+                                                <datalist id="colors">
+                                                    <option v-for="x in colors">{{x}}</option>
+                                                </datalist>
+                                            </td>
+                                            <td>
+                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[materials.includes(colMat.Material) ? '': 'hasError' ]" list="materials" v-model="colMat.Material" />
+                                                <datalist id="materials">
+                                                    <option v-for="x in materials">{{x}}</option>
+                                                </datalist>
+                                            </td>
+                                            <td><input type="text" v-on:hange="vaidateMarker(MarkerIndex)" v-model="colMat.Layers" v-bind:class="[ colMat.Layers > 0 ? '': 'hasError' ]" /> </td>
+                                            <td>
+                                                <select v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ packagingOptions.some(i => i.value === colMat.Packaging) ? '': 'hasError' ]" v-model="colMat.Packaging">
+                                                    <option disabled value="">Please select one</option>
+                                                    <option v-for="option in packagingOptions" v-bind:value="option.value">
+                                                        {{ option.text }}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td><button :markerIndex="MarkerIndex" :index="cmIndex" v-on:click="removeColorMat($event, MarkerIndex, cmIndex)" class="btn btn-circle red-sunglo btn-sm">X</button></td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                            <div class="row" v-else>
+                                <div class="col-md-4 col-md-offset-4">
+                                    <button v-on:click="addColorMatLine($event, MarkerIndex)" class="btn btn-circle green btn-sm">Add The Color and Material</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
             </div>
         </template>
         <div class="col-md-2">

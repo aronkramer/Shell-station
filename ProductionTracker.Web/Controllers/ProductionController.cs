@@ -42,45 +42,53 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public ActionResult ConvertCTToItems(ProductionForCT production)
         {
-            if(production.LastLotNumber < LastLotNumber())
+            if(production.LastLotNumber < LotNumberIndex())
             {
                 AddLotNumbers(production);
             }
             var prodItems = ExcelActions.ConvertProductoinToCTs(production);
-            Session["prodItems"] = prodItems;
-            prodItems.CuttingInstructions.ForEach(ct => GetMarkerText(ct.Marker));
-            var errors = ExcelActions.GetErrors();
-            return Json(new { prodItems = new {prodItems.Date, CuttingInstructions = prodItems.CuttingInstructions.Select(ct =>
-            {
-                return new
+            if(prodItems.CuttingInstructions.Count() > 0)
+            { 
+                Session["prodItems"] = prodItems;
+                prodItems.CuttingInstructions.ForEach(ct => GetMarkerText(ct.Marker));
+                var errors = ExcelActions.GetErrors();
+                return Json(new { prodItems = new {prodItems.Date, CuttingInstructions = prodItems.CuttingInstructions.Select(ct =>
                 {
-                    ct.Marker,                   
-                    ct.LotNumber,
-                    Details = ct.Details.Select(d=>
+                    return new
                     {
-                        return new
+                        ct.Marker,                   
+                        ct.LotNumber,
+                        Details = ct.Details.Select(d=>
                         {
-                            d.ColorMaterial,
-                            Items = d.Items.Select(i =>
+                            return new
                             {
-                                return new
+                                d.ColorMaterial,
+                                Items = d.Items.Select(i =>
                                 {
-                                    i.Id,
-                                    i.ItemId,
-                                    i.Quantity,
-                                    Item = new
+                                    return new
                                     {
-                                        i.Item.SKU
-                                    },
-                                    i.Packaging
-                                };
-                            })
-                        };
-                    }),
-                    
-                };
-            })
-            }, errors }, JsonRequestBehavior.AllowGet);
+                                        i.Id,
+                                        i.ItemId,
+                                        i.Quantity,
+                                        Item = new
+                                        {
+                                            i.Item.SKU
+                                        },
+                                        i.Packaging
+                                    };
+                                })
+                            };
+                        }),
+                        
+                    };
+                })
+                }, errors }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var errors = ExcelActions.GetErrors();
+                return Json(new { prodItems = 0 ,errors}, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
@@ -91,11 +99,16 @@ namespace ProductionTracker.Web.Controllers
             repo.AddProduction(prod);
             if(production.CuttingInstructions.Count() > 0)
             {
-                var lastLot = LastLotNumber();
-                if (lastLot >= production.CuttingInstructions[0].LotNumber)
+                var lastLot = LotNumberIndex();
+                //if (lastLot >= production.CuttingInstructions[0].LotNumber)
+                //{
+                //    production.CuttingInstructions = production.CuttingInstructions.Select((m, i) => { m.LotNumber = lastLot + 1 + i; return m; }).ToList();
+                //}
+                if (lastLot != production.CuttingInstructions[0].LotNumber)
                 {
-                    production.CuttingInstructions = production.CuttingInstructions.Select((m, i) => { m.LotNumber = lastLot + 1 + i; return m; }).ToList();
+                    production.CuttingInstructions = production.CuttingInstructions.Select((m, i) => { m.LotNumber = lastLot + i; return m; }).ToList();
                 }
+                repo.IncrementLotNumberCounter(production.CuttingInstructions.Count());
             }
             foreach (var cI in production.CuttingInstructions)
             {
@@ -163,7 +176,7 @@ namespace ProductionTracker.Web.Controllers
 
         public ActionResult GetLastLotNUmber()
         {
-            return Json(LastLotNumber(), JsonRequestBehavior.AllowGet);
+            return Json(LotNumberIndex(), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetDefaltSizesForAMarkerCat(string markerCatergoryName)
@@ -518,16 +531,23 @@ namespace ProductionTracker.Web.Controllers
             }
         }
 
-        private int LastLotNumber()
+        //private int LotNumberIndex()
+        //{
+        //    var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+        //    return repo.LastLotNumber();
+        //}
+
+        private int LotNumberIndex()
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            return repo.LastLotNumber();
+            return repo.LotNumberIndex();
         }
 
         private ProductionForCT AddLotNumbers(ProductionForCT production)
         {
-            production.LastLotNumber = LastLotNumber();
-            production.Markers = production.Markers.Select((m, i) => { m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
+            production.LastLotNumber = LotNumberIndex();
+            production.Markers = production.Markers.Select((m, i) => { m.LotNumber = production.LastLotNumber + i; return m; }).ToList();
+            //production.Markers = production.Markers.Select((m, i) => { m.LotNumber = production.LastLotNumber + 1 + i; return m; }).ToList();
             return production;
 
         }

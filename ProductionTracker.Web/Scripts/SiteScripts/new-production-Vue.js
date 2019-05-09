@@ -48,7 +48,7 @@
         },
         removeMarker: function (index) {
             this.production.Markers.splice(index, 1);
-            this.updateLotNumbers();
+            //this.updateLotNumbers();
             if (this.production.Markers.length > 0) {
                 this.vaidateMarker(0);
             }
@@ -107,20 +107,28 @@
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
             var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons });
-            this.updateLotNumbers();
+            //this.updateLotNumbers();
             //var lastMarkerIndex = production.Markers.length - 1;
             this.vaidateMarker(index - 1);
         },
         newProd: function () {
-            $.get('/production/GetLastLotNUmber', result => {
-                this.getTheDataTables();
-                this.production = { Date: "", LastLotNumber: result, Markers: [], Name: ""};
-                var date = new Date();
-                date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-                var datestr = date.toISOString().substring(0, 10);
-                this.production.Date = datestr;
-                this.addMarker();
-            });
+            //$.get('/production/GetLastLotNUmber', result => {
+            //    this.getTheDataTables();
+            //    this.production = { Date: "", LastLotNumber: result, Markers: [], Name: ""};
+            //    var date = new Date();
+            //    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            //    var datestr = date.toISOString().substring(0, 10);
+            //    this.production.Date = datestr;
+            //    this.addMarker();
+            //});
+
+            this.getTheDataTables();
+            this.production = { Date: "", Markers: [], Name: ""};
+            var date = new Date();
+            date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            var datestr = date.toISOString().substring(0, 10);
+            this.production.Date = datestr;
+            this.addMarker();
         },
         removeSize: function (event, marIndex, Index) {
             this.production.Markers[marIndex].Sizes.splice(Index, 1);
@@ -228,11 +236,16 @@
             //this.production.Date = date.toJSON();
             if (confirm('do you want to continue')) {
 
-            this.updateLotNumbers();
-            $.post('/production/ConvertCTToItems', { production: this.production }, result => {
-                this.finalProduction = result.prodItems;
-                this.finalProduction.Date = this.getDateInputFormat(result.prodItems.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
-                this.errors = result.errors;
+            //this.updateLotNumbers();
+                $.post('/production/ConvertCTToItems', { production: this.production }, result => {
+                    if (result.prodItems) {
+                        this.finalProduction = result.prodItems;
+                        this.finalProduction.Date = this.getDateInputFormat(result.prodItems.Date.replace(/\/Date\((-?\d+)\)\//, '$1'));
+                        this.errors = result.errors;
+                    }
+                    else {
+                        alert("NO ITEMS WERE FOUND!!! PLEASE ADD A VALID ITEM TO CONTINUE!!  " + result.errors);
+                    }
             });
             }
         },
@@ -282,11 +295,11 @@
             return marker.Sizes.map(function (c) { return c.AmountPerLayer; }).reduce((a, b) => parseInt(a) + parseInt(b), 0)
                 * marker.ColorMaterials.map(function (c) { return c.Layers; }).reduce((a, b) => parseInt(a) + parseInt(b), 0);
         },
-        updateLotNumbers: function () {
-            this.production.Markers.forEach((element, index) => {
-                element.LotNumber = parseInt(this.production.LastLotNumber) + index + 1;
-            });
-        },
+        //updateLotNumbers: function () {
+        //    this.production.Markers.forEach((element, index) => {
+        //        element.LotNumber = parseInt(this.production.LastLotNumber) + index + 1;
+        //    });
+        //},
         allSizeBtn: function (index) {
             this.production.Markers[index].AllSizes = true;
             var marker = this.production.Markers[index];

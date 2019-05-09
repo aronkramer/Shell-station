@@ -26,6 +26,25 @@ namespace ProductionTracker.Data
             }
         }
 
+        public int LotNumberIndex()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Settings.Select(s => s.LotNumberCounter).FirstOrDefault();
+            }
+        }
+
+        public void IncrementLotNumberCounter(int amount)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var setting = context.Settings.FirstOrDefault();
+                setting.LotNumberCounter += amount;
+                context.Refresh(RefreshMode.KeepCurrentValues, setting);
+                context.SubmitChanges();
+            }
+        }
+
         public Department GetDepartment(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
