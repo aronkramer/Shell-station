@@ -415,6 +415,8 @@ namespace ProductionTracker.Web.Controllers
         public void UpdatePlannedProductionDetails(PlannedProductionDetail plannedProductionDetail)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddNewUpdateHistory(repo.GetPlannedProductionDetail(plannedProductionDetail.Id));
+            
             repo.UpdatePlannedProductionDetail(plannedProductionDetail);
         }
 
