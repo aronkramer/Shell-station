@@ -69,7 +69,7 @@ namespace ProductionTracker.Data
                         return new ItemWithQuantity
                         {
                             Item = it,
-                            LastCuttingInstructionDate = it.CuttingInstructionItems.Where(p => p.ItemId == it.Id).OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).First().CuttingInstructionDetail.CuttingInstruction.Production.Date.ToShortDateString(),
+                            LastCuttingInstructionDatePretty = it.CuttingInstructionItems.Where(p => p.ItemId == it.Id).OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).First().CuttingInstructionDetail.CuttingInstruction.Production.Date.ToShortDateString(),
                             Quantitys = new ItemQuantity
                             {
                                 AmountOrdered = it.CuttingInstructionItems.Where(i => i.ItemId == it.Id).Sum(p => p.Quantity),
@@ -77,6 +77,132 @@ namespace ProductionTracker.Data
                             }
 
                     };
+                    }).ToList();
+            }
+        }
+
+        public IEnumerable<ItemWithQuantity> GetItemsInProduction()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadoptions = new DataLoadOptions();
+                loadoptions.LoadWith<CuttingInstructionItem>(c => c.Item);
+                context.LoadOptions = loadoptions;
+                return context.CuttingInstructionItems.GroupBy(i => i.ItemId).Where(ite =>
+                    ite.Sum(p => p.Quantity) - (ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Count() > 0 ? ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Sum(p => p.Quantity) : 0) > 0
+                )
+                    .ToList()
+                    .Select(ite =>
+                    {
+                        var it = ite.FirstOrDefault();
+                        return new ItemWithQuantity
+                        {
+                            Item = it.Item,
+                            LastCuttingInstructionDate = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault(),
+                            LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(),
+                            Quantitys = new ItemQuantity
+                            {
+                                AmountOrdered = ite.Sum(p => p.Quantity),
+                                AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Sum(p => p.Quantity) : 0
+                            }
+
+                        };
+                    }).ToList();
+            }
+        }
+
+        public int CurrentSeason()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Settings.FirstOrDefault().CurrentSeason;
+            }
+        }
+
+        public SeasonWithItems GetItemsFromaPlannedProduction(int plannedProdId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadoptions = new DataLoadOptions();
+                loadoptions.LoadWith<CuttingInstructionItem>(c => c.Item);
+                loadoptions.LoadWith<PlannedProductionDetail>(c => c.Item);
+                context.LoadOptions = loadoptions;
+                
+                var plannedProdsItems = context.CuttingInstructionItems.Where(ci => ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId == plannedProdId).GroupBy(i => i.ItemId)
+                    .ToList()
+                    .Select(ite =>
+                    {
+                        var it = ite.FirstOrDefault();
+                        var plannedAmount = it.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.PlannedProductionDetails.FirstOrDefault(i => i.ItemId == it.ItemId);
+                        return new ItemWithQuantity
+                        {
+                            Item = it.Item,
+                            LastCuttingInstructionDate = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault(),
+                            LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(),
+                            Quantitys = new ItemQuantity
+                            {
+                                PlannedAmount = plannedAmount != null? plannedAmount.Quantity : 0,
+                                AmountOrdered = ite.Sum(p => p.Quantity),
+                                AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.CuttingInstruction.PlannedProductionId == plannedProdId && i.ItemId == it.ItemId).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.CuttingInstruction.PlannedProductionId == plannedProdId && i.ItemId == it.ItemId).Sum(p => p.Quantity) : 0
+
+                            }
+
+                        };
+                    }).ToList();
+                var plannedProd = context.PlannedProductions.FirstOrDefault(pp => pp.Id == plannedProdId);
+                var plannedProdsItems2 = plannedProd.PlannedProductionDetails.Where(ppd => plannedProdsItems.Select(i => i.Item.Id).Contains(ppd.ItemId))
+                    .Select(ppd =>
+                    {
+                        return new ItemWithQuantity
+                        {
+                            Item = ppd.Item,
+                            Quantitys = new ItemQuantity
+                            {
+                                PlannedAmount = ppd.Quantity
+                            }
+                        };
+                    });
+                   
+
+            return new SeasonWithItems
+            {
+                ItemsWithQuantities = plannedProdsItems.Concat(plannedProdsItems2).OrderBy(i => i.Item.SKU).ToList(),
+                Season = new Season { PlannedProductionId = plannedProd.Id, Name = $"{plannedProd.ProductionCatergory.Name} {plannedProd.ProductionCatYear}" }
+            };
+        
+            }
+        }
+
+        public IEnumerable<ItemWithQuantity> GetItemsWithQuantitys(bool newway)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadoptions = new DataLoadOptions();
+                loadoptions.LoadWith<CuttingInstructionItem>(c => c.Item);
+                context.LoadOptions = loadoptions;
+                var seasons =  context.PlannedProductions.Where(pp => !pp.Archived).OrderByDescending(s => s.CreatedOn).Take(2).SelectMany( p=> p.CuttingInstructions.SelectMany(pd => pd.CuttingInstructionDetails.SelectMany(pdi => pdi.CuttingInstructionItems)));
+                //var random = context.CuttingInstructions.Where(ci => !ci.Completed && ci.PlannedProductionId == null).SelectMany(c => c.CuttingInstructionDetails.SelectMany(ci => ci.CuttingInstructionItems));
+                var random = context.CuttingInstructions.Where(i => (i.CuttingInstructionDetails
+                .Count() > 0 ? i.CuttingInstructionDetails
+                .Sum(co => co.CuttingInstructionItems.Sum(d => d.Quantity)) : 0)
+                != (i.ReceivingItemsTransactions
+                .Count() > 0 ? i.ReceivingItemsTransactions.Sum(d => d.Quantity) : 0) && i.PlannedProductionId == null).SelectMany(c => c.CuttingInstructionDetails.SelectMany(ci => ci.CuttingInstructionItems));
+                return seasons.Concat(random).GroupBy(i => i.ItemId)
+                    .ToList()
+                    .Select(ite =>
+                    {
+                        var it = ite.FirstOrDefault();
+                        return new ItemWithQuantity
+                        {
+                            Item =  it.Item,
+                            LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(), 
+                            Quantitys = new ItemQuantity
+                            {
+                                AmountOrdered = ite.Sum(p => p.Quantity),
+                                AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.Id).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.Id).Sum(p => p.Quantity) : 0
+                            }
+                            
+                        };
                     }).ToList();
             }
         }
@@ -233,6 +359,60 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<CuttingInstruction>(p => p.Production);
                 context.LoadOptions = loadOptions;
                 return context.Items.FirstOrDefault(i => i.Id == id);
+
+            }
+        }
+
+        public ItemWithActivity GetItemWithActivity(int id,int? months = null)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                
+               
+                var item = context.Items.FirstOrDefault(i => i.Id == id);
+                var ordered = item.CuttingInstructionItems.Where(ci => months != null ? ci.CuttingInstructionDetail.CuttingInstruction.Production.Date > DateTime.Now.AddMonths(-(int)months) : true)
+                //var ordered = item.CuttingInstructionItems.Where(ci => months != null ? ci.CreatedOn > DateTime.Now.AddMonths(-(int)months) : true)
+                    .Select(ci =>
+                    {
+                        return new ItemActivity
+                        {
+                            Id = ci.Id,
+                            Type = ActivityType.Ordered,
+                            Date = ci.CuttingInstructionDetail.CuttingInstruction.Production.Date,
+                            DatePretty = ci.CuttingInstructionDetail.CuttingInstruction.Production.Date.ToShortDateString(),
+                            Quantity = ci.Quantity,
+                            CuttingInstructionId = ci.CuttingInstructionDetail.CuttingInstructionId,
+                            Season = new Season
+                            {
+                                PlannedProductionId = ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId,
+                                Name = ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId != null ? $"{ci.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.ProductionCatergory.Name} {ci.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.ProductionCatYear}" : "Random"
+                            }
+                        };
+                    });
+                var recived = item.ReceivingItemsTransactions.Where(ci => months != null ? ci.Date > DateTime.Now.AddMonths(-(int)months) : true)
+                    .Select(ci =>
+                    {
+                        return new ItemActivity
+                        {
+                            Id = ci.Id,
+                            Type = ActivityType.Received,
+                            Date = ci.Date,
+                            DatePretty = ci.Date.ToShortDateString(),
+                            Quantity = ci.Quantity,
+                            CuttingInstructionId = ci.CuttingInstruction.Id,
+                            Season = new Season
+                            {
+                                PlannedProductionId = ci.CuttingInstruction.PlannedProductionId,
+                                Name = ci.CuttingInstruction.PlannedProductionId != null ? $"{ci.CuttingInstruction.PlannedProduction.ProductionCatergory.Name} {ci.CuttingInstruction.PlannedProduction.ProductionCatYear}" : "Random"
+                            }
+                        };
+                    });
+
+                return new ItemWithActivity
+                {
+                    Item = item,
+                    Activities = ordered.Concat(recived).OrderByDescending(a => a.Date).ToList()
+                };
 
             }
         }

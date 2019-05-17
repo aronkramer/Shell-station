@@ -17,18 +17,61 @@
                 this.loadSkus(true);
             }.bind(this));
 
-        } 
-        
-        
+        }
+
+
     },
     data: {
         detailHeaders: [],
         itemsInProduction: [],
+        productionItems: {
+
+            items: [],
+            filterLists:{
+            Departments: null,
+            Materials: null,
+            BodyStyles: null,
+            Sleeves: null,
+            Sizes: null,
+            Colors: null,
+            //markers: null
+            },
+            itemSearch: '',
+            sortKey: '',
+            descSortKey: true,
+            displayBody: {
+                expandTool: 'expand',
+                display: 'none'
+            }
+        },
+        seasonItems: {
+            season: {
+                PlannedProductionId: 0,
+                Name: ''
+            },
+            items: [],
+            filterLists: {
+                Departments: null,
+                Materials: null,
+                BodyStyles: null,
+                Sleeves: null,
+                Sizes: null,
+                Colors: null,
+                //markers: null
+            },
+            itemSearch: '',
+            sortKey: '',
+            descSortKey: true,
+            displayBody: {
+                expandTool: 'expand',
+                display: 'none'
+            }
+        },
         tableHeaders: [],
         pageHeader: 'Hi',
         itemActivty: [],
         currentItem: '',
-        currentProduction:'',
+        currentProduction: '',
         productions: [],
         isSkus: false,
         productionDetails: [],
@@ -40,7 +83,17 @@
         itemsInProductionSortKey: '',
         itemsInProductionDescSortKey: true,
         orderedUsers: [],
+        plannedProductions:[],
         filterLists: {
+            Departments: null,
+            Materials: null,
+            BodyStyles: null,
+            Sleeves: null,
+            Sizes: null,
+            Colors: null,
+            //markers: null
+        },
+        filterListsSeason: {
             Departments: null,
             Materials: null,
             BodyStyles: null,
@@ -54,10 +107,19 @@
         displayBody: {
             expandTool: 'expand',
             display: 'none'
+        },
+        detailMonths: {
+            selected: 3,
+            options: [
+                { value: 3, name: '3 months' },
+                { value: 6, name: '6 months' },
+                { value: 12, name: '12 months' },
+                { value: null, name: 'All' }
+            ]
         }
     },
     methods: {
-        loadSkus: function (isInCuttingTicket) {
+        loadSkus: function () {
             $('.byItems').block({
                 message: '<img src="/Metronic/theme/assets/global/img/loading-spinner-grey.gif" align="middle" style="width:150px;"/>',
                 
@@ -72,34 +134,97 @@
                     color: 'none'  }
             }); 
             this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
-            $.get("/home/GetAllItemsWithDetails", { isInCuttingTicket}, SKU => {
-                this.itemsInProduction = SKU;
-                this.orderArray();
+            $.get("/home/GetAllItemsWithDetails", SKU => {
+                this.productionItems.items = SKU;
+                //this.itemsInProduction = SKU;
                 $('.byItems').unblock();
                 this.getTheDataTables();
             });
         },
+        loadSeasonItems: function (plannedProdId,func) {
+            $('.bySeason').block({
+                message: '<img src="/Metronic/theme/assets/global/img/loading-spinner-grey.gif" align="middle" style="width:150px;"/>',
+
+                overlayCSS: { backgroundColor: '#dcd8d8' },
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: 'none',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: 'none'
+                }
+            });
+            $.get("/home/GetItemsofSeason", { plannedProdId }, result => {
+                this.seasonItems.items = result.Items;
+                this.seasonItems.season = result.Season;
+                if (func) func();
+                $('.bySeason').unblock();
+                console.log(result);
+            });
+        },
+        //detailsForItem: function (event) {
+        //    this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
+        //    this.currentProduction = '';
+        //    var id = event.target.id;
+        //    this.getActivitysByItem(id, function (result) {
+        //        this.itemActivty = result.activity;
+        //        this.currentItem = result.item;
+        //        console.log(this.itemActivty);
+        //        this.isSkus = true;
+        //        this.isProd = false;
+        //        $("#detail-modal").modal();
+        //    }.bind(this));
+            
+        //},
+        seasonTab: function () {
+            if (this.seasonItems.items.length < 1) {
+                this.loadSeasonItems(null, () => this.getPlannedProds());
+                
+            }
+        },
+        changedSeason: function () {
+            this.loadSeasonItems(this.seasonItems.season.PlannedProductionId);
+        },
         detailsForItem: function (event) {
-            this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
-            this.currentProduction = '';
+            //this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
+            //this.currentProduction = '';
             var id = event.target.id;
-            this.getActivitysByItem(id, function (result) {
+            var months = this.detailMonths.selected;
+            this.getItemActivity(id, months, function (result) {
                 this.itemActivty = result.activity;
                 this.currentItem = result.item;
                 console.log(this.itemActivty);
-                this.isSkus = true;
-                this.isProd = false;
-                $("#detail-modal").modal();
+                $("#item-detail-modal").modal();
             }.bind(this));
-            
+
+        },
+        monthsChange: function () {
+            $(".modal-content").block({
+                message: '<h4>Processing....</h4>',
+                css: { border: '3px solid #a00' }
+            });
+            var id = this.currentItem.Id;
+            var months = this.detailMonths.selected;
+            this.getItemActivity(id, months, function (result) {
+                this.itemActivty = result.activity;
+                $(".modal-content").unblock();
+            }.bind(this));
         },
         itemTab: function () {
-            if (this.itemsInProduction.length < 1) {
+            //if (this.itemsInProduction.length < 1) {
+            if (this.productionItems.items.length < 1) {
                 this.loadSkus(true);
             }
         },
         getActivitysByItem: function (id,func) {
-            $.get("/home/GetAllActivityOfAItem", { Id: id }, result => {
+            $.get("/home/GetAllActivityOfAItem", { Id: id}, result => {
+                func(result);
+            });
+        },
+        getItemActivity: function (id, months, func) {
+            $.get("/home/GetItemActivity", { Id: id, months }, result => {
                 func(result);
             });
         },
@@ -234,49 +359,85 @@
             //$.get("/home/BarcodesFromProduction", { id: productionId });
             window.open(`/home/BarcodesFromProduction?id=${id}`);
         },
-        orderArray: function () {
-            if (this.itemsInProduction.length && this.itemsInProductionSortKey ) {
-            var array = this.itemsInProduction;
-            var sortKey = this.itemsInProductionSortKey;
-                var minus = this.itemsInProductionDescSortKey;
+        //orderArray: function () {
+        //    if (this.itemsInProduction.length && this.itemsInProductionSortKey ) {
+        //    var array = this.itemsInProduction;
+        //    var sortKey = this.itemsInProductionSortKey;
+        //        var minus = this.itemsInProductionDescSortKey;
                 
-                this.orderedUsers = array.sort(function (a, b) {
-                if (minus)
-                    return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
-                else
-                    return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-            });
-            }
-            else
-                this.orderedUsers = this.itemsInProduction;
-        },
+        //        this.orderedUsers = array.sort(function (a, b) {
+        //        if (minus)
+        //            return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+        //        else
+        //            return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+        //    });
+        //    }
+        //    else
+        //        this.orderedUsers = this.itemsInProduction;
+        //},
+        //getTheDataTables: function (func) {
+        //    $.get('/production/GetAtributteListsForFilter', result => {
+        //        this.filterLists.Materials = result.material;
+        //        this.filterLists.Colors = result.colors;
+        //        this.filterLists.Sizes = result.sizes;
+        //        this.filterLists.BodyStyles = result.bodyStyles;
+        //        this.filterLists.Sleeves = result.sleeves;
+        //        this.filterLists.Departments = result.departments;
+
+        //        this.filterListsSeason.Materials = result.material;
+        //        this.filterListsSeason.Colors = result.colors;
+        //        this.filterListsSeason.Sizes = result.sizes;
+        //        this.filterListsSeason.BodyStyles = result.bodyStyles;
+        //        this.filterListsSeason.Sleeves = result.sleeves;
+        //        this.filterListsSeason.Departments = result.departments;
+        //        console.log(result);
+        //        if (func) func();
+
+        //    });
+        //},
         getTheDataTables: function (func) {
             $.get('/production/GetAtributteListsForFilter', result => {
-                this.filterLists.Materials =   result.material;
-                this.filterLists.Colors =      result.colors;
-                this.filterLists.Sizes =       result.sizes;
-                //this.filterListS.markers = result.markers;
-                this.filterLists.BodyStyles =  result.bodyStyles;
-                this.filterLists.Sleeves =     result.sleeves;
-                this.filterLists.Departments = result.departments;
+                this.productionItems.filterLists.Materials = result.material;
+                this.productionItems.filterLists.Colors = result.colors;
+                this.productionItems.filterLists.Sizes = result.sizes;
+                this.productionItems.filterLists.BodyStyles = result.bodyStyles;
+                this.productionItems.filterLists.Sleeves = result.sleeves;
+                this.productionItems.filterLists.Departments = result.departments;
+
+                this.seasonItems.filterLists.Materials = result.material;
+                this.seasonItems.filterLists.Colors = result.colors;
+                this.seasonItems.filterLists.Sizes = result.sizes;
+                this.seasonItems.filterLists.BodyStyles = result.bodyStyles;
+                this.seasonItems.filterLists.Sleeves = result.sleeves;
+                this.seasonItems.filterLists.Departments = result.departments;
                 console.log(result);
                 if (func) func();
 
             });
         },
+        getPlannedProds: function (func) {
+            $.get('/production/GetValidatoinLists', result => {
+                this.plannedProductions = result.plannedProductions;
+                if (func) func();
+            });
+        },
         clearFillAllFilter: function (fill) {
-            for (k in this.filterLists) {
+            for (k in this.productionItems.filterLists) {
                 this.checkClearBoxesAtribute(k, fill);
             }
         },
+        clearFillAllFilterSeasons: function (fill) {
+            for (k in this.seasonItems.filterLists) {
+                this.checkClearBoxesAtributeSeason(k, fill);
+            }
+        },
         checkClearBoxesAtribute: function (list, check) {
-            //this.filterLists[list].forEach((r,x) => {
-            //    r.Selected = check;
-            //});
-            //for (k of this.filterLists[list]) {
-            //    k.Selected = check;
-            //}
-            this.filterLists[list] = this.filterLists[list].map(r => {
+            this.productionItems.filterLists[list] = this.productionItems.filterLists[list].map(r => {
+                r.Selected = check; return r;
+            });
+        },
+        checkClearBoxesAtributeSeason: function (list, check) {
+            this.seasonItems.filterLists[list] = this.seasonItems.filterLists[list].map(r => {
                 r.Selected = check; return r;
             });
         },
@@ -309,12 +470,19 @@
         //    });
         //},
         resetFilters: function () {
-            this.filterApliedList = null;
             this.clearFillAllFilter(false);
         },
+        resetFiltersSeasons: function () {
+            this.clearFillAllFilterSeasons(false);
+        },
         openClosePortlet: function () {
-            this.displayBody.expandTool = this.displayBody.expandTool === 'expand' ? 'collapse' : 'expand';
-            this.displayBody.display = this.displayBody.display === 'none' ? 'block' : 'none';
+            this.productionItems.displayBody.expandTool = this.productionItems.displayBody.expandTool === 'expand' ? 'collapse' : 'expand';
+            this.productionItems.displayBody.display = this.productionItems.displayBody.display === 'none' ? 'block' : 'none';
+
+        },
+        openClosePortletSeason: function () {
+            this.seasonItems.displayBody.expandTool = this.seasonItems.displayBody.expandTool === 'expand' ? 'collapse' : 'expand';
+            this.seasonItems.displayBody.display = this.seasonItems.displayBody.display === 'none' ? 'block' : 'none';
 
         }
 
@@ -344,34 +512,35 @@
             //console.log('no values:' + !hasValues + 'too many items:' + tooMuch);
             return !hasValues;
         },
+        //Items Production
         filterdLists: function () {
             let ret = {};
-            
-            for (k in this.filterLists) {
-                ret[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected).length ? this.filterLists[k].filter(x => x.Selected) : this.filterLists[k] : [];
+
+            for (k in this.productionItems.filterLists) {
+                ret[k] = this.productionItems.filterLists[k] ? this.productionItems.filterLists[k].filter(x => x.Selected).length ? this.productionItems.filterLists[k].filter(x => x.Selected) : this.productionItems.filterLists[k] : [];
             }
             return ret;
-            },
+        },
         countMsg: function () {
             let filteredItems = {};
-            for (k in this.filterLists) {
-                filteredItems[k] = this.filterLists[k] ? this.filterLists[k].filter(x => x.Selected) : null;
+            for (k in this.productionItems.filterLists) {
+                filteredItems[k] = this.productionItems.filterLists[k] ? this.productionItems.filterLists[k].filter(x => x.Selected) : null;
             }
             let ret = {};
             for (k in filteredItems) {
                 ret[k] = filteredItems[k] ?
                     filteredItems[k].length === 0 ? "" :
-                        filteredItems[k].length === this.filterLists[k].length ? "All selected" : filteredItems[k].length <= 5 ? filteredItems[k].map(x => x.Name).join(', ') :
+                        filteredItems[k].length === this.productionItems.filterLists[k].length ? "All selected" : filteredItems[k].length <= 5 ? filteredItems[k].map(x => x.Name).join(', ') :
                             `${filteredItems[k].length} selected` : null;
             }
             return ret;
         },
         orderedArray: function () {
-            if (this.searchFileredItems.length && this.itemsInProductionSortKey) {
-                var sortKey = this.itemsInProductionSortKey;
-                var minus = this.itemsInProductionDescSortKey;
+            if (this.searchFileredItems.length && this.productionItems.sortKey) {
+                var sortKey = this.productionItems.sortKey;
+                var minus = this.productionItems.descSortKey;
 
-                return this.searchFileredItems.sort( (a, b) => {
+                return this.searchFileredItems.sort((a, b) => {
                     if (minus)
                         return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
                     else
@@ -390,13 +559,89 @@
                     : [];
                 
             }
-            else if (this.itemsInProduction.length) {
-                return this.itemsInProduction.filter(element => {
+            else if (this.productionItems.items.length) {
+                return this.productionItems.items.filter(element => {
                     return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
                 });
             } else {
                 return [];
             }
+        },
+        filterApliedList: function () {
+            return this.productionItems.items.filter(element => {
+                return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+                   this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId) &&
+                   this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+                   this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+                   this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
+                   this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
+           });
+        },
+        //items in season
+        filterdListsSeason: function () {
+            let ret = {};
+
+            for (k in this.seasonItems.filterLists) {
+                ret[k] = this.seasonItems.filterLists[k] ? this.seasonItems.filterLists[k].filter(x => x.Selected).length ? this.seasonItems.filterLists[k].filter(x => x.Selected) : this.seasonItems.filterLists[k] : [];
+            }
+            return ret;
+            },
+        countMsgSeason: function () {
+            let filteredItems = {};
+            for (k in this.seasonItems.filterLists) {
+                filteredItems[k] = this.seasonItems.filterLists[k] ? this.seasonItems.filterLists[k].filter(x => x.Selected) : null;
+            }
+            let ret = {};
+            for (k in filteredItems) {
+                ret[k] = filteredItems[k] ?
+                    filteredItems[k].length === 0 ? "" :
+                        filteredItems[k].length === this.seasonItems.filterLists[k].length ? "All selected" : filteredItems[k].length <= 5 ? filteredItems[k].map(x => x.Name).join(', ') :
+                            `${filteredItems[k].length} selected` : null;
+            }
+            return ret;
+        },
+        orderedArraySeason: function () {
+            if (this.searchFileredItemsSeason.length && this.seasonItems.sortKey) {
+                var sortKey = this.seasonItems.sortKey;
+                var minus = this.seasonItems.descSortKey;
+
+                return this.searchFileredItemsSeason.sort((a, b) => {
+                    if (minus)
+                        return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+                    else
+                        return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+                });
+            }
+            else
+                return this.searchFileredItemsSeason;
+        },
+        ////HAVE TO CHANGE THE SEARCH THING
+        searchFileredItemsSeason: function () {
+            if (this.filterApliedListSeason) {
+
+                return this.filterApliedListSeason.length ? this.filterApliedListSeason.filter(element => {
+                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                })
+                    : [];
+
+            }
+            else if (this.seasonItems.items.length) {
+                return this.seasonItems.items.filter(element => {
+                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                });
+            } else {
+                return [];
+            }
+        },
+        filterApliedListSeason: function () {
+            return this.seasonItems.items.filter(element => {
+                return this.filterdListsSeason.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+                    this.filterdListsSeason.Materials.map(x => x.Id).includes(element.MaterialId) &&
+                    this.filterdListsSeason.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+                    this.filterdListsSeason.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+                    this.filterdListsSeason.Sizes.map(x => x.Id).includes(element.SizeId) &&
+                    this.filterdListsSeason.Colors.map(x => x.Id).includes(element.ColorId);
+            });
         },
         applyBtnDisable: function () {
             if (this.filterdLists) {
@@ -404,16 +649,26 @@
             }
             else return false;
         },
-        filterApliedList: function () {
-            return this.itemsInProduction.filter(element => {
-               return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
-                   this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId) &&
-                   this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
-                   this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
-                   this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
-                   this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
-           });
+        selectedMonth: function () {
+            var detailMonths = jQuery.extend(true, {}, this.detailMonths);
+            return detailMonths.options.find(a => a.value === detailMonths.selected);
+            
         }
+        //orderedArray: function () {
+        //    if (this.searchFileredItems.length && this.itemsInProductionSortKey) {
+        //        var sortKey = this.itemsInProductionSortKey;
+        //        var minus = this.itemsInProductionDescSortKey;
+
+        //        return this.searchFileredItems.sort((a, b) => {
+        //            if (minus)
+        //                return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+        //            else
+        //                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+        //        });
+        //    }
+        //    else
+        //        return this.searchFileredItems;
+        //},
         
     },
     

@@ -339,6 +339,11 @@
                     str += ", ";
             }
             return str;
+        },
+        testingnload: function () {
+            $.get("/testing/ItemsInSeason?plannedProdId=3", result => {
+                console.log(result);
+            });
         }
     },
     computed: {

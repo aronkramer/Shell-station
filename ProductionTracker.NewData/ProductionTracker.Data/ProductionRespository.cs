@@ -669,6 +669,16 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<PlannedProduction> GetPlannedProductionsForItems()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var pp = context.PlannedProductions.FirstOrDefault();
+                //pp.CuttingInstructions.FirstOrDefault().ReceivingItemsTransactions CuttingInstructionDetails.FirstOrDefault().CuttingInstructionItems
+                return context.PlannedProductions.OrderByDescending(s => s.CreatedOn).Take(2).ToList();
+            }
+        }
+
 
         //public void DeletePlannedProduction(int plannedProductioId)
         //{

@@ -51,6 +51,7 @@
     <Compile Include="Manufacturing.cs">
       <DependentUpon>Manufacturing.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ItemActivity.cs" />
     <Compile Include="Models\Packaging.cs" />
     <Compile Include="Models\ItemQuantity.cs" />
     <Compile Include="ItemRepository.cs" />

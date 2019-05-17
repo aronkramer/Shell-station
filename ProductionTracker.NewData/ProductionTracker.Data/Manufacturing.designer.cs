@@ -6430,9 +6430,13 @@ namespace ProductionTracker.Data
 		
 		private System.Nullable<System.DateTime> _ModifiedOn;
 		
+		private bool _Archived;
+		
 		private EntitySet<CuttingInstruction> _CuttingInstructions;
 		
 		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
+		
+		private EntitySet<Setting> _Settings;
 		
 		private EntityRef<ProductionCatergory> _ProductionCatergory;
 		
@@ -6452,12 +6456,15 @@ namespace ProductionTracker.Data
     partial void OnCreatedOnChanged();
     partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedOnChanged();
+    partial void OnArchivedChanging(bool value);
+    partial void OnArchivedChanged();
     #endregion
 		
 		public PlannedProduction()
 		{
 			this._CuttingInstructions = new EntitySet<CuttingInstruction>(new Action<CuttingInstruction>(this.attach_CuttingInstructions), new Action<CuttingInstruction>(this.detach_CuttingInstructions));
 			this._PlannedProductionDetails = new EntitySet<PlannedProductionDetail>(new Action<PlannedProductionDetail>(this.attach_PlannedProductionDetails), new Action<PlannedProductionDetail>(this.detach_PlannedProductionDetails));
+			this._Settings = new EntitySet<Setting>(new Action<Setting>(this.attach_Settings), new Action<Setting>(this.detach_Settings));
 			this._ProductionCatergory = default(EntityRef<ProductionCatergory>);
 			OnCreated();
 		}
@@ -6586,6 +6593,26 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Archived", DbType="Bit NOT NULL")]
+		public bool Archived
+		{
+			get
+			{
+				return this._Archived;
+			}
+			set
+			{
+				if ((this._Archived != value))
+				{
+					this.OnArchivedChanging(value);
+					this.SendPropertyChanging();
+					this._Archived = value;
+					this.SendPropertyChanged("Archived");
+					this.OnArchivedChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_CuttingInstruction", Storage="_CuttingInstructions", ThisKey="Id", OtherKey="PlannedProductionId")]
 		public EntitySet<CuttingInstruction> CuttingInstructions
 		{
@@ -6609,6 +6636,19 @@ namespace ProductionTracker.Data
 			set
 			{
 				this._PlannedProductionDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_Setting", Storage="_Settings", ThisKey="Id", OtherKey="CurrentSeason")]
+		public EntitySet<Setting> Settings
+		{
+			get
+			{
+				return this._Settings;
+			}
+			set
+			{
+				this._Settings.Assign(value);
 			}
 		}
 		
@@ -6685,6 +6725,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_PlannedProductionDetails(PlannedProductionDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = null;
+		}
+		
+		private void attach_Settings(Setting entity)
+		{
+			this.SendPropertyChanging();
+			entity.PlannedProduction = this;
+		}
+		
+		private void detach_Settings(Setting entity)
 		{
 			this.SendPropertyChanging();
 			entity.PlannedProduction = null;
@@ -6907,9 +6959,13 @@ namespace ProductionTracker.Data
 		
 		private int _LotNumberCounter;
 		
+		private int _CurrentSeason;
+		
 		private System.DateTime _CreatedOn;
 		
 		private System.Nullable<System.DateTime> _ModifiedOn;
+		
+		private EntityRef<PlannedProduction> _PlannedProduction;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -6919,6 +6975,8 @@ namespace ProductionTracker.Data
     partial void OnIdChanged();
     partial void OnLotNumberCounterChanging(int value);
     partial void OnLotNumberCounterChanged();
+    partial void OnCurrentSeasonChanging(int value);
+    partial void OnCurrentSeasonChanged();
     partial void OnCreatedOnChanging(System.DateTime value);
     partial void OnCreatedOnChanged();
     partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
@@ -6927,6 +6985,7 @@ namespace ProductionTracker.Data
 		
 		public Setting()
 		{
+			this._PlannedProduction = default(EntityRef<PlannedProduction>);
 			OnCreated();
 		}
 		
@@ -6970,6 +7029,30 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CurrentSeason", DbType="Int NOT NULL")]
+		public int CurrentSeason
+		{
+			get
+			{
+				return this._CurrentSeason;
+			}
+			set
+			{
+				if ((this._CurrentSeason != value))
+				{
+					if (this._PlannedProduction.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCurrentSeasonChanging(value);
+					this.SendPropertyChanging();
+					this._CurrentSeason = value;
+					this.SendPropertyChanged("CurrentSeason");
+					this.OnCurrentSeasonChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime NOT NULL")]
 		public System.DateTime CreatedOn
 		{
@@ -7006,6 +7089,40 @@ namespace ProductionTracker.Data
 					this._ModifiedOn = value;
 					this.SendPropertyChanged("ModifiedOn");
 					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PlannedProduction_Setting", Storage="_PlannedProduction", ThisKey="CurrentSeason", OtherKey="Id", IsForeignKey=true)]
+		public PlannedProduction PlannedProduction
+		{
+			get
+			{
+				return this._PlannedProduction.Entity;
+			}
+			set
+			{
+				PlannedProduction previousValue = this._PlannedProduction.Entity;
+				if (((previousValue != value) 
+							|| (this._PlannedProduction.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PlannedProduction.Entity = null;
+						previousValue.Settings.Remove(this);
+					}
+					this._PlannedProduction.Entity = value;
+					if ((value != null))
+					{
+						value.Settings.Add(this);
+						this._CurrentSeason = value.Id;
+					}
+					else
+					{
+						this._CurrentSeason = default(int);
+					}
+					this.SendPropertyChanged("PlannedProduction");
 				}
 			}
 		}
