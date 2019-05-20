@@ -564,6 +564,15 @@ namespace ProductionTracker.Data
 
         }
 
+        public PlannedProduction GetPlannedProduction(int plannedProductionId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.PlannedProductions.Where(x => !x.Deleted).FirstOrDefault(p => p.Id == plannedProductionId);
+            }
+
+        }
+
         public PlannedProduction GetPlannedProductionWithDetails(PlannedProduction plannedProduction)
         {
             using (var context = new ManufacturingDataContext(_connectionString))

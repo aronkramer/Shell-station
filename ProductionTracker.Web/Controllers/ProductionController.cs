@@ -445,6 +445,7 @@ namespace ProductionTracker.Web.Controllers
             //    Quantity = pp.Quantity,
             //    Deleted = true
             //});
+            repo.AddNewUpdateHistory(repo.GetPlannedProductionDetail(plannedProductionDetailId));
             repo.DeletePlannedProductionDetail(plannedProductionDetailId);
         }
 
@@ -452,6 +453,7 @@ namespace ProductionTracker.Web.Controllers
         public void DeletePlannedProduction(int plannedProductionId)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddNewUpdateHistory(repo.GetPlannedProduction(plannedProductionId));
             repo.DeletePlannedProduction(plannedProductionId);
         }
 
