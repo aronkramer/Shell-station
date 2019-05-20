@@ -16,6 +16,17 @@ namespace ProductionTracker.Data.Models
         public IEnumerable<ItemActivity> Activities { get; set; }
     }
 
+    public class SeasonItemWithActivity
+    {
+        public SeasonItemWithActivity()
+        {
+            ItemWithActivity = new ItemWithActivity();
+        }
+        public ItemWithActivity ItemWithActivity { get; set; }
+        public Season Season { get; set; }
+        public ItemQuantity TotalQuantitys { get; set; }
+    }
+
     public class ItemActivity
     {
         public int Id { get; set; }

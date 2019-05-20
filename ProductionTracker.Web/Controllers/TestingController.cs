@@ -57,7 +57,7 @@ namespace ProductionTracker.Web.Controllers
         public ActionResult ItemsInSeason (int plannedProdId)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var seasonWithItems = repo.GetItemsFromaPlannedProduction(plannedProdId);
+            var seasonWithItems = repo.GetASeasonsItemsWithQuantitys(plannedProdId);
             return Json(new
             {
                 seasonWithItems.Season,

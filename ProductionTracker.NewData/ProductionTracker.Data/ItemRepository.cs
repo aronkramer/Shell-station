@@ -119,7 +119,7 @@ namespace ProductionTracker.Data
             }
         }
 
-        public SeasonWithItems GetItemsFromaPlannedProduction(int plannedProdId)
+        public SeasonWithItems GetASeasonsItemsWithQuantitys(int plannedProdId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
@@ -133,7 +133,7 @@ namespace ProductionTracker.Data
                     .Select(ite =>
                     {
                         var it = ite.FirstOrDefault();
-                        var plannedAmount = it.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.PlannedProductionDetails.FirstOrDefault(i => i.ItemId == it.ItemId);
+                        var plannedAmount = it.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(i => i.ItemId == it.ItemId);
                         return new ItemWithQuantity
                         {
                             Item = it.Item,
@@ -150,7 +150,7 @@ namespace ProductionTracker.Data
                         };
                     }).ToList();
                 var plannedProd = context.PlannedProductions.FirstOrDefault(pp => pp.Id == plannedProdId);
-                var plannedProdsItems2 = plannedProd.PlannedProductionDetails.Where(ppd => plannedProdsItems.Select(i => i.Item.Id).Contains(ppd.ItemId))
+                var plannedProdsItems2 = plannedProd.PlannedProductionDetails.Where(p => !p.Deleted).Where(ppd => !plannedProdsItems.Select(i => i.Item.Id).Contains(ppd.ItemId))
                     .Select(ppd =>
                     {
                         return new ItemWithQuantity
@@ -415,6 +415,65 @@ namespace ProductionTracker.Data
                 };
 
             }
+        }
+
+        public SeasonItemWithActivity GetSeasonItemWithActivity (int ppId, int itemId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var season = context.PlannedProductions.FirstOrDefault(pp => pp.Id == ppId);
+                var item = context.Items.FirstOrDefault(i => i.Id == itemId);
+                var ordered = item.CuttingInstructionItems.Where(ci => ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId == ppId)
+                    .Select(ci =>
+                    {
+                        return new ItemActivity
+                        {
+                            Id = ci.Id,
+                            Type = ActivityType.Ordered,
+                            Date = ci.CuttingInstructionDetail.CuttingInstruction.Production.Date,
+                            DatePretty = ci.CuttingInstructionDetail.CuttingInstruction.Production.Date.ToShortDateString(),
+                            Quantity = ci.Quantity,
+                            CuttingInstructionId = ci.CuttingInstructionDetail.CuttingInstructionId,
+                        };
+                    });
+                var recived = item.ReceivingItemsTransactions.Where(ci => ci.CuttingInstruction.PlannedProductionId == ppId)
+                    .Select(ci =>
+                    {
+                        return new ItemActivity
+                        {
+                            Id = ci.Id,
+                            Type = ActivityType.Received,
+                            Date = ci.Date,
+                            DatePretty = ci.Date.ToShortDateString(),
+                            Quantity = ci.Quantity,
+                            CuttingInstructionId = ci.CuttingInstruction.Id,
+                        };
+                    });
+
+                return new SeasonItemWithActivity
+                {
+                    ItemWithActivity = new ItemWithActivity
+                    {
+                        Item = item,
+                        Activities = ordered.Concat(recived).OrderByDescending(a => a.Date).ToList()
+                    },
+                    Season = new Season
+                    {
+                        PlannedProductionId = season.Id,
+                        Name = $"{season.ProductionCatergory.Name} {season.ProductionCatYear}"
+                    },
+                    TotalQuantitys = new ItemQuantity
+                    {
+                        PlannedAmount = season.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(p => p.ItemId == itemId) != null ? 
+                        season.PlannedProductionDetails.FirstOrDefault(p => p.ItemId == itemId).Quantity
+                        : 0,
+                        AmountReceived = recived.Sum(r => r.Quantity),
+                        AmountOrdered= ordered.Sum(r => r.Quantity)
+                    }
+                };
+
+            }
+
         }
 
         //public IEnumerable<Item> GetUniqueItemsAndUnquieSKU(List<Item> items)

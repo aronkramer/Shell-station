@@ -74,3 +74,9 @@ td.small-input {
 .all-season-select {
     font-size: 14px !important;
 }
+.recived-backround {
+    background-color: lightsalmon;
+}
+.ordered-backround {
+    background-color: lightblue;
+}

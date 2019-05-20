@@ -91,7 +91,7 @@ namespace ProductionTracker.Web.Controllers
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             plannedProdId = plannedProdId ?? repo.CurrentSeason();
-            var seasonWithItems = repo.GetItemsFromaPlannedProduction((int)plannedProdId);
+            var seasonWithItems = repo.GetASeasonsItemsWithQuantitys((int)plannedProdId);
             return Json(new
             {
                 seasonWithItems.Season,
@@ -139,6 +139,28 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetSeasonItemActivity(int ppId, int itemId)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var item = repo.GetSeasonItemWithActivity(ppId, itemId);
+            return Json(new
+            {
+                season = new
+                {
+                    item.Season.PlannedProductionId,
+                    item.Season.Name,
+                    item.TotalQuantitys
+                },
+                item = new
+                {
+                    Id = item.ItemWithActivity.Item.Id,
+                    SKU = item.ItemWithActivity.Item.SKU,
+                    Name = item.ItemWithActivity.Item.SKU
+                },
+                activity = item.ItemWithActivity.Activities
+
+            }, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult GetCuttingInstructionsWithInfo()
         {

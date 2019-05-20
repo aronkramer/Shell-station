@@ -23,9 +23,7 @@
     },
     data: {
         detailHeaders: [],
-        itemsInProduction: [],
         productionItems: {
-
             items: [],
             filterLists:{
             Departments: null,
@@ -33,8 +31,7 @@
             BodyStyles: null,
             Sleeves: null,
             Sizes: null,
-            Colors: null,
-            //markers: null
+            Colors: null
             },
             itemSearch: '',
             sortKey: '',
@@ -65,7 +62,8 @@
             displayBody: {
                 expandTool: 'expand',
                 display: 'none'
-            }
+            },
+            details: null
         },
         tableHeaders: [],
         pageHeader: 'Hi',
@@ -80,34 +78,7 @@
         recivedItems: [],
         recivedItemProduction: '',
         fillBtnText: '',
-        itemsInProductionSortKey: '',
-        itemsInProductionDescSortKey: true,
-        orderedUsers: [],
         plannedProductions:[],
-        filterLists: {
-            Departments: null,
-            Materials: null,
-            BodyStyles: null,
-            Sleeves: null,
-            Sizes: null,
-            Colors: null,
-            //markers: null
-        },
-        filterListsSeason: {
-            Departments: null,
-            Materials: null,
-            BodyStyles: null,
-            Sleeves: null,
-            Sizes: null,
-            Colors: null,
-            //markers: null
-        },
-        itemSearch: '',
-        //filterApliedList: null,
-        displayBody: {
-            expandTool: 'expand',
-            display: 'none'
-        },
         detailMonths: {
             selected: 3,
             options: [
@@ -116,7 +87,34 @@
                 { value: 12, name: '12 months' },
                 { value: null, name: 'All' }
             ]
-        }
+        },
+        //filterLists: {
+        //    Departments: null,
+        //    Materials: null,
+        //    BodyStyles: null,
+        //    Sleeves: null,
+        //    Sizes: null,
+        //    Colors: null,
+        //    //markers: null
+        //},
+        //filterListsSeason: {
+        //    Departments: null,
+        //    Materials: null,
+        //    BodyStyles: null,
+        //    Sleeves: null,
+        //    Sizes: null,
+        //    Colors: null,
+        //    //markers: null
+        //},
+        //itemsInProduction: [],
+        //itemSearch: '',
+        //displayBody: {
+        //    expandTool: 'expand',
+        //    display: 'none'
+        //},
+        //itemsInProductionSortKey: '',
+        //itemsInProductionDescSortKey: true,
+        //orderedUsers: [],
     },
     methods: {
         loadSkus: function () {
@@ -164,20 +162,6 @@
                 console.log(result);
             });
         },
-        //detailsForItem: function (event) {
-        //    this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
-        //    this.currentProduction = '';
-        //    var id = event.target.id;
-        //    this.getActivitysByItem(id, function (result) {
-        //        this.itemActivty = result.activity;
-        //        this.currentItem = result.item;
-        //        console.log(this.itemActivty);
-        //        this.isSkus = true;
-        //        this.isProd = false;
-        //        $("#detail-modal").modal();
-        //    }.bind(this));
-            
-        //},
         seasonTab: function () {
             if (this.seasonItems.items.length < 1) {
                 this.loadSeasonItems(null, () => this.getPlannedProds());
@@ -359,42 +343,6 @@
             //$.get("/home/BarcodesFromProduction", { id: productionId });
             window.open(`/home/BarcodesFromProduction?id=${id}`);
         },
-        //orderArray: function () {
-        //    if (this.itemsInProduction.length && this.itemsInProductionSortKey ) {
-        //    var array = this.itemsInProduction;
-        //    var sortKey = this.itemsInProductionSortKey;
-        //        var minus = this.itemsInProductionDescSortKey;
-                
-        //        this.orderedUsers = array.sort(function (a, b) {
-        //        if (minus)
-        //            return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
-        //        else
-        //            return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-        //    });
-        //    }
-        //    else
-        //        this.orderedUsers = this.itemsInProduction;
-        //},
-        //getTheDataTables: function (func) {
-        //    $.get('/production/GetAtributteListsForFilter', result => {
-        //        this.filterLists.Materials = result.material;
-        //        this.filterLists.Colors = result.colors;
-        //        this.filterLists.Sizes = result.sizes;
-        //        this.filterLists.BodyStyles = result.bodyStyles;
-        //        this.filterLists.Sleeves = result.sleeves;
-        //        this.filterLists.Departments = result.departments;
-
-        //        this.filterListsSeason.Materials = result.material;
-        //        this.filterListsSeason.Colors = result.colors;
-        //        this.filterListsSeason.Sizes = result.sizes;
-        //        this.filterListsSeason.BodyStyles = result.bodyStyles;
-        //        this.filterListsSeason.Sleeves = result.sleeves;
-        //        this.filterListsSeason.Departments = result.departments;
-        //        console.log(result);
-        //        if (func) func();
-
-        //    });
-        //},
         getTheDataTables: function (func) {
             $.get('/production/GetAtributteListsForFilter', result => {
                 this.productionItems.filterLists.Materials = result.material;
@@ -459,16 +407,6 @@
                 return null;
             }
         },
-        //applyFilter: function () {
-        //    this.filterApliedList = this.itemsInProduction.filter(element => {
-        //        return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
-        //            this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId)  &&
-        //            this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
-        //            this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
-        //            this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
-        //            this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
-        //    });
-        //},
         resetFilters: function () {
             this.clearFillAllFilter(false);
         },
@@ -484,9 +422,87 @@
             this.seasonItems.displayBody.expandTool = this.seasonItems.displayBody.expandTool === 'expand' ? 'collapse' : 'expand';
             this.seasonItems.displayBody.display = this.seasonItems.displayBody.display === 'none' ? 'block' : 'none';
 
+        },
+        detailsForSeasonItem: function (event) {
+            var itemId = event.target.id;
+            var ppId = this.seasonItems.season.PlannedProductionId;
+            this.getSeasonItemActivity(itemId, ppId, function (result) {
+                this.itemActivty = [];
+                this.currentItem = '';
+                this.seasonItems.details = result;
+                $("#item-detail-modal").modal();
+
+            }.bind(this));
+
+        },
+        getSeasonItemActivity: function (itemId,ppId,func) {
+            $.get("/home/GetSeasonItemActivity", { itemId, ppId }, result => {
+                func(result);
+            });
         }
 
 
+//old ways of doing thing
+        //detailsForItem: function (event) {
+        //    this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
+        //    this.currentProduction = '';
+        //    var id = event.target.id;
+        //    this.getActivitysByItem(id, function (result) {
+        //        this.itemActivty = result.activity;
+        //        this.currentItem = result.item;
+        //        console.log(this.itemActivty);
+        //        this.isSkus = true;
+        //        this.isProd = false;
+        //        $("#detail-modal").modal();
+        //    }.bind(this));
+            
+        //},
+        //orderArray: function () {
+        //    if (this.itemsInProduction.length && this.itemsInProductionSortKey ) {
+        //    var array = this.itemsInProduction;
+        //    var sortKey = this.itemsInProductionSortKey;
+        //        var minus = this.itemsInProductionDescSortKey;
+                
+        //        this.orderedUsers = array.sort(function (a, b) {
+        //        if (minus)
+        //            return a[sortKey] > b[sortKey] ? -1 : a[sortKey] < b[sortKey] ? 1 : 0;
+        //        else
+        //            return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+        //    });
+        //    }
+        //    else
+        //        this.orderedUsers = this.itemsInProduction;
+        //},
+        //getTheDataTables: function (func) {
+        //    $.get('/production/GetAtributteListsForFilter', result => {
+        //        this.filterLists.Materials = result.material;
+        //        this.filterLists.Colors = result.colors;
+        //        this.filterLists.Sizes = result.sizes;
+        //        this.filterLists.BodyStyles = result.bodyStyles;
+        //        this.filterLists.Sleeves = result.sleeves;
+        //        this.filterLists.Departments = result.departments;
+
+        //        this.filterListsSeason.Materials = result.material;
+        //        this.filterListsSeason.Colors = result.colors;
+        //        this.filterListsSeason.Sizes = result.sizes;
+        //        this.filterListsSeason.BodyStyles = result.bodyStyles;
+        //        this.filterListsSeason.Sleeves = result.sleeves;
+        //        this.filterListsSeason.Departments = result.departments;
+        //        console.log(result);
+        //        if (func) func();
+
+        //    });
+        //},
+        //applyFilter: function () {
+        //    this.filterApliedList = this.itemsInProduction.filter(element => {
+        //        return this.filterdLists.Departments.map(x => x.Id).includes(element.DepartmentId) &&
+        //            this.filterdLists.Materials.map(x => x.Id).includes(element.MaterialId)  &&
+        //            this.filterdLists.BodyStyles.map(x => x.Id).includes(element.BodyStyleId) &&
+        //            this.filterdLists.Sleeves.map(x => x.Id).includes(element.SleeveId) &&
+        //            this.filterdLists.Sizes.map(x => x.Id).includes(element.SizeId) &&
+        //            this.filterdLists.Colors.map(x => x.Id).includes(element.ColorId);
+        //    });
+        //},
         //checkVal: function () {
         //    var temp = this.recivedItems;
         //    //var isRight = $(temp).is(function (i) { return i.ItemsRecived > (i.Ordered - i.Received); });
@@ -554,14 +570,14 @@
             if (this.filterApliedList) {
                
                 return this.filterApliedList.length ? this.filterApliedList.filter(element => {
-                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase()); 
+                    return element.SKU.match(this.productionItems.itemSearch.toUpperCase()) || element.Id.toString().match(this.productionItems.itemSearch.toUpperCase()); 
                 })
                     : [];
                 
             }
             else if (this.productionItems.items.length) {
                 return this.productionItems.items.filter(element => {
-                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                    return element.SKU.match(this.productionItems.itemSearch.toUpperCase()) || element.Id.toString().match(this.productionItems.itemSearch.toUpperCase());
                 });
             } else {
                 return [];
@@ -615,19 +631,18 @@
             else
                 return this.searchFileredItemsSeason;
         },
-        ////HAVE TO CHANGE THE SEARCH THING
         searchFileredItemsSeason: function () {
             if (this.filterApliedListSeason) {
 
                 return this.filterApliedListSeason.length ? this.filterApliedListSeason.filter(element => {
-                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                    return element.SKU.match(this.seasonItems.itemSearch.toUpperCase()) || element.Id.toString().match(this.seasonItems.itemSearch.toUpperCase());
                 })
                     : [];
 
             }
             else if (this.seasonItems.items.length) {
                 return this.seasonItems.items.filter(element => {
-                    return element.SKU.match(this.itemSearch.toUpperCase()) || element.Id.toString().match(this.itemSearch.toUpperCase());
+                    return element.SKU.match(this.seasonItems.itemSearch.toUpperCase()) || element.Id.toString().match(this.seasonItems.itemSearch.toUpperCase());
                 });
             } else {
                 return [];
