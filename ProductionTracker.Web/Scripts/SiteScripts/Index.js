@@ -63,11 +63,18 @@
                 expandTool: 'expand',
                 display: 'none'
             },
-            details: null
+            details: [],
+            currentItem: null
+        },
+        details: {
+            typeOfDetails:'',
+            itemDefalt: {},
+            moreDetails:[]
         },
         tableHeaders: [],
         pageHeader: 'Hi',
         itemActivty: [],
+        itemActivtyActive: false,
         currentItem: '',
         currentProduction: '',
         productions: [],
@@ -177,8 +184,8 @@
             var id = event.target.id;
             var months = this.detailMonths.selected;
             this.getItemActivity(id, months, function (result) {
-                this.itemActivty = result.activity;
-                this.currentItem = result.item;
+                this.details.typeOfDetails = 'defaltItem';
+                this.details.itemDefalt = result;
                 console.log(this.itemActivty);
                 $("#item-detail-modal").modal();
             }.bind(this));
@@ -189,7 +196,7 @@
                 message: '<h4>Processing....</h4>',
                 css: { border: '3px solid #a00' }
             });
-            var id = this.currentItem.Id;
+            var id = this.details.itemDefalt.item.Id;
             var months = this.detailMonths.selected;
             this.getItemActivity(id, months, function (result) {
                 this.itemActivty = result.activity;
@@ -260,7 +267,7 @@
             }.bind(this));
         },
         backToProduction: function () {
-            this.detailHeaders = ['Sku', 'Quantity Ordered', 'Quantity Recived', 'Percent Filled'];
+            this.detailHeaders = ['Sku', 'Lot Number', 'Quantity Ordered', 'Quantity Recived', 'Percent Filled'];
             this.isSkus = false;
             this.isProd = true;
             this.backButton = false;
@@ -427,9 +434,9 @@
             var itemId = event.target.id;
             var ppId = this.seasonItems.season.PlannedProductionId;
             this.getSeasonItemActivity(itemId, ppId, function (result) {
-                this.itemActivty = [];
-                this.currentItem = '';
-                this.seasonItems.details = result;
+                this.seasonItems.details = [{ season: result.season, activity: result.activity }];
+                this.seasonItems.currentItem = result.item;
+                this.details.typeOfDetails = 'seasonDefalt';
                 $("#item-detail-modal").modal();
 
             }.bind(this));
@@ -439,6 +446,18 @@
             $.get("/home/GetSeasonItemActivity", { itemId, ppId }, result => {
                 func(result);
             });
+        },
+        getDetailforSeasonItem: function (itemId) {
+            var item = this.seasonItems.items.find(e => {
+                return e.Id === itemId;
+            });
+            item.DetailsOpened = !item.DetailsOpened;
+            if (item.DetailsOpened) {
+                var ppId = this.seasonItems.season.PlannedProductionId;
+                this.getSeasonItemActivity(itemId, ppId, function (result) {
+                    item.Details = result;
+                }.bind(this));
+            }
         }
 
 
@@ -668,6 +687,17 @@
             var detailMonths = jQuery.extend(true, {}, this.detailMonths);
             return detailMonths.options.find(a => a.value === detailMonths.selected);
             
+        },
+        detailsArray: function () {
+            if (this.details.typeOfDetails === 'seasonDefalt') {
+                return this.seasonItems.details;
+            }
+            else if (this.details.typeOfDetails === 'moreDetails') {
+                return this.details.moreDetails;
+            }
+            else {
+                return null;
+            }
         }
         //orderedArray: function () {
         //    if (this.searchFileredItems.length && this.itemsInProductionSortKey) {

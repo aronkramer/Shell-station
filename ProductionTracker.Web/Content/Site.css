@@ -80,3 +80,17 @@ td.small-input {
 .ordered-backround {
     background-color: lightblue;
 }
+.icon-btn-minus {
+    background-color: grey;
+    border: none;
+    color: white;
+    padding: 1px 1px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.details-well {
+    margin-bottom: 5px;
+    background-color: #bfcac8;
+    border-bottom-color:black;
+}

@@ -421,7 +421,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                var season = context.PlannedProductions.FirstOrDefault(pp => pp.Id == ppId);
+                var season = context.PlannedProductions.Where(p => !p.Deleted).FirstOrDefault(pp => pp.Id == ppId);
                 var item = context.Items.FirstOrDefault(i => i.Id == itemId);
                 var ordered = item.CuttingInstructionItems.Where(ci => ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId == ppId)
                     .Select(ci =>

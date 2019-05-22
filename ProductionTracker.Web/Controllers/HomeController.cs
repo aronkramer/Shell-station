@@ -114,7 +114,9 @@ namespace ProductionTracker.Web.Controllers
                         it.Quantitys.PlannedAmount,
                         ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
                         PercentageFilled = it.Quantitys.PlannedAmount != 0 /*&& it.Quantitys.AmountOrdered != 0*/ ? double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount : 0,
-                        PercentageFilledText = string.Format("{0:P}", double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount)
+                        PercentageFilledText = string.Format("{0:P}", double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount),
+                        Details = (object)null,
+                        DetailsOpened = false
                     };
                 })
             }, JsonRequestBehavior.AllowGet);

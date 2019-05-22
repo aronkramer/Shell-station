@@ -312,7 +312,7 @@
                             <template v-for="item in orderedArraySeason">
                                 <tr>
 
-                                    <td>{{item.Id}}</td>
+                                    <td><div style="position: relative !important;"><span style="position: absolute !important; top: 15px;" @*class="col-md-2"*@><button v-on:click="getDetailforSeasonItem(item.Id)" class="icon-btn-minus"><i  class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i></button></span><span style="margin-left: 25px;" @*class="col-md-8 col-md-offset-4"*@>{{item.Id}}</span></div>  </td>
                                     <td>{{item.SKU}}</td>
                                     <td>{{item.PercentageFilledText}}</td>
                                     <td>{{item.PlannedAmount}}</td>
@@ -321,6 +321,32 @@
                                     <td>{{item.LastCuttingInstructionDatePretty}}</td>
                                     @*<td>{{item.PercentageRecived}}</td>*@
                                     <td><button v-bind:id="item.Id" :seasonId="seasonItems.season.PlannedProductionId" class="btn btn-primary" v-on:click="detailsForSeasonItem($event)">Details</button></td>
+                                </tr>
+                                <tr v-if="item.Details && item.DetailsOpened">
+                                    <td colspan="8" class="details-well">
+                                        <div class="col-md-6 col-md-offset-3">
+                                            <table class="table table-bordered table-hover table-responsive">
+                                                <tr>
+                                                    <th>Transaction Type</th>
+                                                    <th>Date</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+
+                                                <template v-for="detailItem in item.Details.activity">
+                                                    <tr>
+                                                        @*<td hidden>{{detailItem.Type}}</td>*@
+                                                        <td class="col-md-4" :class="{'recived-backround' : detailItem.Type == 1, 'ordered-backround' : detailItem.Type == 0}">
+                                                            <span v-if="detailItem.Type == 1">Recived: </span>
+                                                            <span v-else>Ordered: </span>
+                                                        </td>
+                                                        @*<td style="background-color:lightblue" v-else>Ordered: ({{detailItem.Season.Name}}) {{detailItem.DatePretty}}</td>*@
+                                                        <td class="col-md-4" :class="{'recived-backround' : detailItem.Type == 1, 'ordered-backround' : detailItem.Type == 0}">{{detailItem.DatePretty}}</td>
+                                                        <td class="col-md-4" :class="{'recived-backround' : detailItem.Type == 1, 'ordered-backround' : detailItem.Type == 0}">{{detailItem.Quantity}}</td>
+                                                    </tr>
+                                                </template>
+                                            </table>
+                                        </div>
+                                    </td>
                                 </tr>
                             </template>
                             @*</div>*@
@@ -429,10 +455,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title"><span v-if="itemActivty.length">Viewing the activity for : {{currentItem.Name}}</span><span v-if="seasonItems.details">Viewing the activity for : {{seasonItems.details.item.Name}} from {{seasonItems.details.season.Name}}</span></h4>
+                    <h4 class="modal-title"><span v-if="details.typeOfDetails === 'defaltItem'">Viewing the activity for : {{details.itemDefalt.item.Name}}</span><span v-if="details.typeOfDetails === 'seasonDefalt'">Viewing the activity for : {{seasonItems.currentItem.Name}} from {{seasonItems.details[0].season.Name}}</span></h4>
                 </div>
                 <div class="modal-body">
-                    <div v-if="itemActivty.length">
+                    <div v-if="details.typeOfDetails === 'defaltItem'">
                         <span>Date Range:</span>
                         <select v-on:change="monthsChange" v-model="detailMonths.selected">
                             <option v-for="option in detailMonths.options" v-bind:value="option.value">
@@ -462,39 +488,41 @@
                             </template>
                         </table>
                     </div>
-                    <div v-if="seasonItems.details">
-                        <div class="row well season-detail-banner">
-                            <table>
-                                <tr>
-                                    <th class="col-md-4"><h4>{{seasonItems.details.season.Name}}</h4></th>
-                                    <th class="col-md-2 col-md-offset-2"><h5>Planned: {{seasonItems.details.season.TotalQuantitys.PlannedAmount}}</h5></th>
-                                    <th class="col-md-2"><h5>Ordered: {{seasonItems.details.season.TotalQuantitys.AmountOrdered}}</h5></th>
-                                    <th class="col-md-2"><h5>Recived: {{seasonItems.details.season.TotalQuantitys.AmountReceived}}</h5></th>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <table class="table table-bordered table-hover table-responsive">
-                                <tr>
-                                    <th>Transaction Type</th>
-                                    <th>Date</th>
-                                    <th>Quantity</th>
-                                </tr>
-
-                                <template v-for="item in seasonItems.details.activity">
+                    <div v-if="details.typeOfDetails === 'seasonDefalt' || details.typeOfDetails === 'moreDetails'">
+                        <template v-if="detailsArray" v-for="result in detailsArray">
+                            <div v-if="detailsArray.length > 1 && result.season" class="row well season-detail-banner">
+                                <table>
                                     <tr>
-                                        @*<td hidden>{{item.Type}}</td>*@
-                                        <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">
-                                            <span v-if="item.Type == 1">Recived: </span>
-                                            <span v-else>Ordered: </span>
-                                        </td>
-                                        @*<td style="background-color:lightblue" v-else>Ordered: ({{item.Season.Name}}) {{item.DatePretty}}</td>*@
-                                        <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">{{item.DatePretty}}</td>
-                                        <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">{{item.Quantity}}</td>
+                                        <th class="col-md-4"><h4>{{result.season.Name}}</h4></th>
+                                        <th class="col-md-2 col-md-offset-2"><h5>Planned: {{result.season.TotalQuantitys.PlannedAmount}}</h5></th>
+                                        <th class="col-md-2"><h5>Ordered: {{result.season.TotalQuantitys.AmountOrdered}}</h5></th>
+                                        <th class="col-md-2"><h5>Recived: {{result.season.TotalQuantitys.AmountReceived}}</h5></th>
                                     </tr>
-                                </template>
-                            </table>
-                        </div>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table class="table table-bordered table-hover table-responsive">
+                                    <tr>
+                                        <th>Transaction Type</th>
+                                        <th>Date</th>
+                                        <th>Quantity</th>
+                                    </tr>
+
+                                    <template v-for="item in result.activity">
+                                        <tr>
+                                            @*<td hidden>{{item.Type}}</td>*@
+                                            <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">
+                                                <span v-if="item.Type == 1">Recived: </span>
+                                                <span v-else>Ordered: </span>
+                                            </td>
+                                            @*<td style="background-color:lightblue" v-else>Ordered: ({{item.Season.Name}}) {{item.DatePretty}}</td>*@
+                                            <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">{{item.DatePretty}}</td>
+                                            <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">{{item.Quantity}}</td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                        </template>
                     </div>
 
                 </div>
