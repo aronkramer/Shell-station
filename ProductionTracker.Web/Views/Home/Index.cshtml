@@ -473,7 +473,7 @@
                                 <th>Quantity</th>
                             </tr>
 
-                            <template v-for="item in itemActivty">
+                            <template v-for="item in details.itemDefalt.activity">
                                 <tr>
                                     <td hidden>{{item.Type}}</td>
                                     <td :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">
@@ -487,14 +487,29 @@
                                 </tr>
                             </template>
                         </table>
+                        <a href="#" v-on:click="moreDetails(details.itemDefalt.item.Id)">More Details</a>
                     </div>
                     <div v-if="details.typeOfDetails === 'seasonDefalt' || details.typeOfDetails === 'moreDetails'">
-                        <template v-if="detailsArray" v-for="result in detailsArray">
+                        <template v-if="detailsArray" v-for="(result,index) in detailsArray">
                             <div v-if="detailsArray.length > 1 && result.season" class="row well season-detail-banner">
                                 <table>
                                     <tr>
-                                        <th class="col-md-4"><h4>{{result.season.Name}}</h4></th>
-                                        <th class="col-md-2 col-md-offset-2"><h5>Planned: {{result.season.TotalQuantitys.PlannedAmount}}</h5></th>
+                                        <th class="col-md-4">
+                                            <div v-if="result.season.PlannedProductionId">
+                                                <div class="s-input-group s-mb-5 all-season-select">
+
+                                                    <select class="s-custom-select" v-model="result.season.PlannedProductionId" v-on:change="changedDetailsSeason(index)" id="plannedProductions">
+                                                        <option value=null>Random</option>
+                                                        <template v-for="palnnedProd in plannedProductions">
+                                                            <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
+                                                        </template>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <h4 v-else>{{result.season.Name}}</h4>
+                                        </th>
+                                        <th v-if="result.season.PlannedProductionId" class="col-md-2 col-md-offset-2"><h5>Planned: {{result.season.TotalQuantitys.PlannedAmount}}</h5></th>
                                         <th class="col-md-2"><h5>Ordered: {{result.season.TotalQuantitys.AmountOrdered}}</h5></th>
                                         <th class="col-md-2"><h5>Recived: {{result.season.TotalQuantitys.AmountReceived}}</h5></th>
                                     </tr>
@@ -523,6 +538,7 @@
                                 </table>
                             </div>
                         </template>
+                        <a href="#" v-on:click="moreDetails(seasonItems.currentItem.Id)">More Details</a>
                     </div>
 
                 </div>

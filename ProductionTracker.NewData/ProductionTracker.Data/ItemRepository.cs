@@ -417,7 +417,7 @@ namespace ProductionTracker.Data
             }
         }
 
-        public SeasonItemWithActivity GetSeasonItemWithActivity (int ppId, int itemId)
+        public SeasonItemWithActivity GetSeasonItemWithActivity (int? ppId, int itemId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
@@ -457,16 +457,16 @@ namespace ProductionTracker.Data
                         Item = item,
                         Activities = ordered.Concat(recived).OrderByDescending(a => a.Date).ToList()
                     },
-                    Season = new Season
+                    Season = season.NotNull() ? new Season
                     {
                         PlannedProductionId = season.Id,
                         Name = $"{season.ProductionCatergory.Name} {season.ProductionCatYear}"
-                    },
+                    } : null,
                     TotalQuantitys = new ItemQuantity
                     {
-                        PlannedAmount = season.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(p => p.ItemId == itemId) != null ? 
+                        PlannedAmount = season.NotNull() ? season.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(p => p.ItemId == itemId) != null ? 
                         season.PlannedProductionDetails.FirstOrDefault(p => p.ItemId == itemId).Quantity
-                        : 0,
+                        : 0: 0,
                         AmountReceived = recived.Sum(r => r.Quantity),
                         AmountOrdered= ordered.Sum(r => r.Quantity)
                     }

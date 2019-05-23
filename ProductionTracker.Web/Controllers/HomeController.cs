@@ -9,6 +9,7 @@ using ProductionTracker.Web.Models;
 using ProductionTracker.Data;
 using ProductionTracker.Data.Models;
 using ProductionTracker.Web.Reports;
+using Newtonsoft.Json;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -87,7 +88,7 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetItemsofSeason (int? plannedProdId)
+        public ActionResult GetItemsofSeason(int? plannedProdId)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             plannedProdId = plannedProdId ?? repo.CurrentSeason();
@@ -141,7 +142,7 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetSeasonItemActivity(int ppId, int itemId)
+        public ActionResult GetSeasonItemActivity(int? ppId, int itemId)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             var item = repo.GetSeasonItemWithActivity(ppId, itemId);
@@ -149,8 +150,8 @@ namespace ProductionTracker.Web.Controllers
             {
                 season = new
                 {
-                    item.Season.PlannedProductionId,
-                    item.Season.Name,
+                    PlannedProductionId = item.Season.NotNull() ? item.Season.PlannedProductionId : null,
+                    Name = item.Season.NotNull() ? item.Season.Name : "Random",
                     item.TotalQuantitys
                 },
                 item = new
@@ -162,6 +163,35 @@ namespace ProductionTracker.Web.Controllers
                 activity = item.ItemWithActivity.Activities
 
             }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetMoreDetails(int id)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            var test = SeasonItemActivity(null, id);
+            var details = new List<SeasonItemWithActivity>
+            {
+                SeasonItemActivity(null, id),
+                SeasonItemActivity(repo.CurrentSeason(),id)
+            };
+            return Json(details.Select(item => {
+                return new
+                {
+                    season = new
+                    {
+                        PlannedProductionId = item.Season.NotNull() ? item.Season.PlannedProductionId : null,
+                        Name = item.Season.NotNull() ? item.Season.Name : "Random",
+                        item.TotalQuantitys
+                    },
+                    item = new
+                    {
+                        Id = item.ItemWithActivity.Item.Id,
+                        SKU = item.ItemWithActivity.Item.SKU,
+                        Name = item.ItemWithActivity.Item.SKU
+                    },
+                    activity = item.ItemWithActivity.Activities
+
+                };
+            }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetCuttingInstructionsWithInfo()
@@ -195,23 +225,23 @@ namespace ProductionTracker.Web.Controllers
             var details = new List<CutingIntructionDetailsVM>();
             result.CuttingInstructions.ToList().ForEach(c => c.CuttingInstructionDetails.ToList().ForEach(pd =>
         {
-            pd.CuttingInstructionItems.ToList().ForEach(pdi => 
+            pd.CuttingInstructionItems.ToList().ForEach(pdi =>
             {
 
-            var received = result.CuttingInstructions.Select(rt => rt.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == c.Id && ri.ItemId == pdi.ItemId).Sum(ri => ri.Quantity)).Sum();
+                var received = result.CuttingInstructions.Select(rt => rt.ReceivingItemsTransactions.Where(ri => ri.CuttingInstuctionId == c.Id && ri.ItemId == pdi.ItemId).Sum(ri => ri.Quantity)).Sum();
 
-            details.Add(new CutingIntructionDetailsVM
-            {
-                Id = pdi.ItemId,
-                SKU = pdi.Item.SKU,
-                OrderedId = pdi.Id,
-                Ordered = pdi.Quantity,
-                Received = received,
-                PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pdi.Quantity),
-                Lot = pd.CuttingInstruction.LotNumber,
-                CuttingInstructionId = pd.CuttingInstructionId
+                details.Add(new CutingIntructionDetailsVM
+                {
+                    Id = pdi.ItemId,
+                    SKU = pdi.Item.SKU,
+                    OrderedId = pdi.Id,
+                    Ordered = pdi.Quantity,
+                    Received = received,
+                    PercentageFilled = string.Format("{0:P}", double.Parse(received.ToString()) / pdi.Quantity),
+                    Lot = pd.CuttingInstruction.LotNumber,
+                    CuttingInstructionId = pd.CuttingInstructionId
 
-            });
+                });
 
             });
         }));
@@ -235,7 +265,7 @@ namespace ProductionTracker.Web.Controllers
             var itemsFromProduction = repo.GetItemsForBarcodes(id);
             var data = new ReportController().ConvertProductionIntoBarcodeItems(itemsFromProduction, 80);
             PrintBarcodes(data);
-          
+
         }
         public void PrintBarcodes(IEnumerable<object> data)
         {
@@ -243,7 +273,7 @@ namespace ProductionTracker.Web.Controllers
             CrystalReportGenerator.GenerateReportInPDF(dt, "RegularBarcodes.rpt");
             //return View();
         }
-            
+
 
         [HttpPost]
         public void AddRecivedItems(IEnumerable<RecivingItemWithOrdered> items)
@@ -309,6 +339,29 @@ namespace ProductionTracker.Web.Controllers
                 }
 
             }
+        }
+
+        private SeasonItemWithActivity SeasonItemActivity(int? ppId, int itemId)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            return repo.GetSeasonItemWithActivity(ppId, itemId);
+            //return JsonConvert.SerializeObject(new
+            //{
+            //    season = new
+            //    {
+            //        PlannedProductionId = item.Season.NotNull() ? item.Season.PlannedProductionId : null,
+            //        Name = item.Season.NotNull() ? item.Season.Name : "Random",
+            //        item.TotalQuantitys
+            //    },
+            //    item = new
+            //    {
+            //        Id = item.ItemWithActivity.Item.Id,
+            //        SKU = item.ItemWithActivity.Item.SKU,
+            //        Name = item.ItemWithActivity.Item.SKU
+            //    },
+            //    activity = item.ItemWithActivity.Activities
+
+            //});
         }
 
         #region OldWays

@@ -68,7 +68,7 @@
         },
         details: {
             typeOfDetails:'',
-            itemDefalt: {},
+            itemDefalt: '',
             moreDetails:[]
         },
         tableHeaders: [],
@@ -178,6 +178,26 @@
         changedSeason: function () {
             this.loadSeasonItems(this.seasonItems.season.PlannedProductionId);
         },
+        changedDetailsSeason: function (index) {
+            var itemId;
+            var currentList; 
+            var currentDetails;
+            var ppId;
+            
+            if (this.details.typeOfDetails === 'seasonDefalt') {
+                itemId = this.seasonItems.currentItem.Id;
+                currentList = this.seasonItems.details;
+            }
+            else if (this.details.typeOfDetails === 'moreDetails') {
+                itemId = this.details.itemDefalt.item.Id;
+                currentList = this.details.moreDetails;
+            }
+            currentDetails = currentList[index];
+            ppId = currentDetails.season.PlannedProductionId;
+            this.getSeasonItemActivity(itemId, ppId, function (result) {
+                currentList.splice(index, 1, { season: result.season, activity: result.activity });
+            }.bind(this));
+        },
         detailsForItem: function (event) {
             //this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
             //this.currentProduction = '';
@@ -199,7 +219,7 @@
             var id = this.details.itemDefalt.item.Id;
             var months = this.detailMonths.selected;
             this.getItemActivity(id, months, function (result) {
-                this.itemActivty = result.activity;
+                this.details.itemDefalt.activity = result.activity;
                 $(".modal-content").unblock();
             }.bind(this));
         },
@@ -457,6 +477,26 @@
                 this.getSeasonItemActivity(itemId, ppId, function (result) {
                     item.Details = result;
                 }.bind(this));
+            }
+        },
+        moreDetails: function (id) {
+            if (this.details.typeOfDetails === 'seasonDefalt') {
+                this.getPlannedProds(() => {
+                    $.get("/home/getmoredetails", { id }, result => {
+                        this.seasonItems.details = result;
+
+                    });
+                });
+            }
+            else if (this.details.typeOfDetails === 'defaltItem') {
+
+            this.getPlannedProds(() => { 
+                $.get("/home/getmoredetails", { id }, result => {
+                    this.details.moreDetails = result;
+                    this.details.typeOfDetails = 'moreDetails';
+
+                });
+            });
             }
         }
 
