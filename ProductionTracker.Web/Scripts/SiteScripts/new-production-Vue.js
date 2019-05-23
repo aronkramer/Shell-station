@@ -249,8 +249,8 @@
             });
             }
         },
-        submitProduction: function () {
-            
+        submitProduction: function (event) {
+            event.target.disabled = true;
             var finalprod = {
                 Date: this.finalProduction.Date,
                 CuttingInstructions: this.finalProduction.CuttingInstructions.map(function (ct) {

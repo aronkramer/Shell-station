@@ -255,7 +255,7 @@
     </div>
     <div class="row" style="margin-bottom:50px;" v-if="production">
         <div class="col-md-4 col-md-offset-4" v-if="finalProduction">
-            <button v-on:click="submitProduction" class="btn btn-primary btn-block">Submit</button>
+            <button  v-on:click="submitProduction($event)" class="btn btn-primary btn-block">Submit</button>
         </div>
         <div class="col-md-4 col-md-offset-4" v-else>
             <button v-on:click="saveProdToItems" :disabled="!formVaild" class="btn btn-info btn-block">Save</button>
