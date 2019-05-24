@@ -131,6 +131,11 @@ namespace ProductionTracker.Web.Controllers
             var item = repo.GetItemWithActivity(id, months);
             return Json(new
             {
+                season = new
+                {
+                    PlannedProductionId = (int?)null,
+                    Name = "Random",
+                },
                 item = new
                 {
                     Id = item.Item.Id,
@@ -142,10 +147,10 @@ namespace ProductionTracker.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetSeasonItemActivity(int? ppId, int itemId)
+        public ActionResult GetSeasonItemActivity(int? ppId, int itemId,int? months = null)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            var item = repo.GetSeasonItemWithActivity(ppId, itemId);
+            var item = repo.GetSeasonItemWithActivity(ppId, itemId,months);
             return Json(new
             {
                 season = new
@@ -164,13 +169,13 @@ namespace ProductionTracker.Web.Controllers
 
             }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult GetMoreDetails(int id)
+        public ActionResult GetMoreDetails(int id,int? months = null)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             var test = SeasonItemActivity(null, id);
             var details = new List<SeasonItemWithActivity>
             {
-                SeasonItemActivity(null, id),
+                SeasonItemActivity(null, id,months),
                 SeasonItemActivity(repo.CurrentSeason(),id)
             };
             return Json(details.Select(item => {
@@ -341,10 +346,10 @@ namespace ProductionTracker.Web.Controllers
             }
         }
 
-        private SeasonItemWithActivity SeasonItemActivity(int? ppId, int itemId)
+        private SeasonItemWithActivity SeasonItemActivity(int? ppId, int itemId,int? months = null)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
-            return repo.GetSeasonItemWithActivity(ppId, itemId);
+            return repo.GetSeasonItemWithActivity(ppId, itemId,months);
             //return JsonConvert.SerializeObject(new
             //{
             //    season = new

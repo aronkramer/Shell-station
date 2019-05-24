@@ -417,13 +417,15 @@ namespace ProductionTracker.Data
             }
         }
 
-        public SeasonItemWithActivity GetSeasonItemWithActivity (int? ppId, int itemId)
+        public SeasonItemWithActivity GetSeasonItemWithActivity (int? ppId, int itemId,int? months = null)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var season = context.PlannedProductions.Where(p => !p.Deleted).FirstOrDefault(pp => pp.Id == ppId);
                 var item = context.Items.FirstOrDefault(i => i.Id == itemId);
-                var ordered = item.CuttingInstructionItems.Where(ci => ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId == ppId)
+                
+                var ordered = item.CuttingInstructionItems.Where(ci => months != null ? ci.CuttingInstructionDetail.CuttingInstruction.Production.Date > DateTime.Now.AddMonths(-(int)months) : true)
+                    .Where(ci => ci.CuttingInstructionDetail.CuttingInstruction.PlannedProductionId == ppId)
                     .Select(ci =>
                     {
                         return new ItemActivity
@@ -436,7 +438,8 @@ namespace ProductionTracker.Data
                             CuttingInstructionId = ci.CuttingInstructionDetail.CuttingInstructionId,
                         };
                     });
-                var recived = item.ReceivingItemsTransactions.Where(ci => ci.CuttingInstruction.PlannedProductionId == ppId)
+                var recived = item.ReceivingItemsTransactions.Where(ci => months != null ? ci.Date > DateTime.Now.AddMonths(-(int)months) : true)
+                    .Where(ci => ci.CuttingInstruction.PlannedProductionId == ppId)
                     .Select(ci =>
                     {
                         return new ItemActivity

@@ -452,10 +452,10 @@
     </div><!-- /.modal -->
     <div class="modal fade" id="item-detail-modal">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" v-if="details.typeOfDetails">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title"><span v-if="details.typeOfDetails === 'defaltItem'">Viewing the activity for : {{details.itemDefalt.item.Name}}</span><span v-if="details.typeOfDetails === 'seasonDefalt'">Viewing the activity for : {{seasonItems.currentItem.Name}} from {{seasonItems.details[0].season.Name}}</span></h4>
+                    <h4 class="modal-title">Viewing <span v-if="details.data.length <= 1">the activity </span> <span v-if="details.data.length > 1">more details </span> <span>for : {{details.currentItem.Name}}</span><span v-if="details.typeOfDetails === 'season' && details.data.length <= 1"> from {{details.currentSeason.Name}}</span></h4>
                 </div>
                 <div class="modal-body">
                     <div v-if="details.typeOfDetails === 'defaltItem'">
@@ -478,7 +478,7 @@
                                     <td hidden>{{item.Type}}</td>
                                     <td :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">
                                         <span v-if="item.Type == 1">Recived: </span>
-                                        <span v-else>Ordered: </span>
+                                        <span v-if="">Ordered: </span>
                                         ({{item.Season.Name}}) {{item.DatePretty}}
                                     </td>
                                     @*<td style="background-color:lightblue" v-else>Ordered: ({{item.Season.Name}}) {{item.DatePretty}}</td>*@
@@ -489,17 +489,17 @@
                         </table>
                         <a href="#" v-on:click="moreDetails(details.itemDefalt.item.Id)">More Details</a>
                     </div>
-                    <div v-if="details.typeOfDetails === 'seasonDefalt' || details.typeOfDetails === 'moreDetails'">
-                        <template v-if="detailsArray" v-for="(result,index) in detailsArray">
-                            <div v-if="detailsArray.length > 1 && result.season" class="row well season-detail-banner">
+                    <div >
+                        <template v-if="details.data" v-for="(result,index) in details.data">
+                            <div v-if="details.data.length > 1 && result.season" class="row well season-detail-banner">
                                 <table>
                                     <tr>
                                         <th class="col-md-4">
-                                            <div v-if="result.season.PlannedProductionId">
+                                            <div v-if="index != 0">
                                                 <div class="s-input-group s-mb-5 all-season-select">
 
                                                     <select class="s-custom-select" v-model="result.season.PlannedProductionId" v-on:change="changedDetailsSeason(index)" id="plannedProductions">
-                                                        <option value=null>Random</option>
+                                                        <option value=null>Choose...</option>
                                                         <template v-for="palnnedProd in plannedProductions">
                                                             <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
                                                         </template>
@@ -507,15 +507,27 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <h4 v-else>{{result.season.Name}}</h4>
+                                            <div v-else>
+                                                    <h4>{{result.season.Name}}</h4>
+                                            </div>
                                         </th>
-                                        <th v-if="result.season.PlannedProductionId" class="col-md-2 col-md-offset-2"><h5>Planned: {{result.season.TotalQuantitys.PlannedAmount}}</h5></th>
-                                        <th class="col-md-2"><h5>Ordered: {{result.season.TotalQuantitys.AmountOrdered}}</h5></th>
-                                        <th class="col-md-2"><h5>Recived: {{result.season.TotalQuantitys.AmountReceived}}</h5></th>
+                                        <template v-if="result.season.TotalQuantitys">
+                                            <th v-if="result.season.PlannedProductionId" class="col-md-2 col-md-offset-2"><h5>Planned: {{result.season.TotalQuantitys.PlannedAmount}}</h5></th>
+                                            <th class="col-md-2"><h5>Ordered: {{result.season.TotalQuantitys.AmountOrdered}}</h5></th>
+                                            <th class="col-md-2"><h5>Recived: {{result.season.TotalQuantitys.AmountReceived}}</h5></th>
+                                        </template>
                                     </tr>
                                 </table>
                             </div>
                             <div class="row">
+                                <div v-if="result.season && !result.season.PlannedProductionId && result.season.Name">
+                                    <span>Date Range:</span>
+                                    <select v-on:change="monthsChange(index)" v-model="detailMonths.selected">
+                                        <option v-for="option in detailMonths.options" v-bind:value="option.value">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
                                 <table class="table table-bordered table-hover table-responsive">
                                     <tr>
                                         <th>Transaction Type</th>
@@ -529,6 +541,7 @@
                                             <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">
                                                 <span v-if="item.Type == 1">Recived: </span>
                                                 <span v-else>Ordered: </span>
+                                                <span v-if="details.typeOfDetails === 'item' && details.data.length <= 1">({{item.Season.Name}})</span>
                                             </td>
                                             @*<td style="background-color:lightblue" v-else>Ordered: ({{item.Season.Name}}) {{item.DatePretty}}</td>*@
                                             <td class="col-md-4" :class="{'recived-backround' : item.Type == 1, 'ordered-backround' : item.Type == 0}">{{item.DatePretty}}</td>
@@ -538,7 +551,7 @@
                                 </table>
                             </div>
                         </template>
-                        <a href="#" v-on:click="moreDetails(seasonItems.currentItem.Id)">More Details</a>
+                        <a href="#" v-on:click="moreDetails(details.currentItem.Id)">More Details</a>
                     </div>
 
                 </div>

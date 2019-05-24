@@ -63,11 +63,18 @@
                 expandTool: 'expand',
                 display: 'none'
             },
-            details: [],
-            currentItem: null
+            details: {
+                currentItem: null,
+                currentSeason: null,
+                data:[]
+            },
+            
         },
         details: {
-            typeOfDetails:'',
+            typeOfDetails: '',
+            currentItem: null,
+            currentSeason: null,
+            data: [],
             itemDefalt: '',
             moreDetails:[]
         },
@@ -179,22 +186,11 @@
             this.loadSeasonItems(this.seasonItems.season.PlannedProductionId);
         },
         changedDetailsSeason: function (index) {
-            var itemId;
-            var currentList; 
-            var currentDetails;
-            var ppId;
-            
-            if (this.details.typeOfDetails === 'seasonDefalt') {
-                itemId = this.seasonItems.currentItem.Id;
-                currentList = this.seasonItems.details;
-            }
-            else if (this.details.typeOfDetails === 'moreDetails') {
-                itemId = this.details.itemDefalt.item.Id;
-                currentList = this.details.moreDetails;
-            }
-            currentDetails = currentList[index];
-            ppId = currentDetails.season.PlannedProductionId;
-            this.getSeasonItemActivity(itemId, ppId, function (result) {
+            var itemId = this.details.currentItem.Id;
+            var currentList = this.details.data;
+            var currentDetails = currentList[index];
+            var ppId = currentDetails.season.PlannedProductionId;
+            this.getSeasonItemActivity(itemId, ppId, null,function (result) {
                 currentList.splice(index, 1, { season: result.season, activity: result.activity });
             }.bind(this));
         },
@@ -204,24 +200,33 @@
             var id = event.target.id;
             var months = this.detailMonths.selected;
             this.getItemActivity(id, months, function (result) {
-                this.details.typeOfDetails = 'defaltItem';
-                this.details.itemDefalt = result;
-                console.log(this.itemActivty);
+                this.details.typeOfDetails = 'item';
+                this.details.data = [{ season: result.season, activity: result.activity }];
+                this.details.currentItem = result.item;
                 $("#item-detail-modal").modal();
             }.bind(this));
 
         },
-        monthsChange: function () {
+        monthsChange: function (index) {
             $(".modal-content").block({
                 message: '<h4>Processing....</h4>',
                 css: { border: '3px solid #a00' }
             });
-            var id = this.details.itemDefalt.item.Id;
+            var itemId = this.details.currentItem.Id;
             var months = this.detailMonths.selected;
-            this.getItemActivity(id, months, function (result) {
-                this.details.itemDefalt.activity = result.activity;
-                $(".modal-content").unblock();
-            }.bind(this));
+            var ppdId = null;
+            if (this.details.data.length === 1) {
+                this.getItemActivity(itemId, months, function (result) {
+                    this.details.data[index].activity = result.activity;
+                    $(".modal-content").unblock();
+                }.bind(this));
+            }
+            else {
+                this.getSeasonItemActivity(itemId, ppdId, months, function (result) {
+                    this.details.data[index].activity = result.activity;
+                    $(".modal-content").unblock();
+                }.bind(this));
+            }
         },
         itemTab: function () {
             //if (this.itemsInProduction.length < 1) {
@@ -453,17 +458,18 @@
         detailsForSeasonItem: function (event) {
             var itemId = event.target.id;
             var ppId = this.seasonItems.season.PlannedProductionId;
-            this.getSeasonItemActivity(itemId, ppId, function (result) {
-                this.seasonItems.details = [{ season: result.season, activity: result.activity }];
-                this.seasonItems.currentItem = result.item;
-                this.details.typeOfDetails = 'seasonDefalt';
+            this.getSeasonItemActivity(itemId, ppId, null, function (result) {
+                this.details.data = [{ season: result.season, activity: result.activity }];
+                this.details.currentItem = result.item;
+                this.details.currentSeason = result.season;
+                this.details.typeOfDetails = 'season';
                 $("#item-detail-modal").modal();
 
             }.bind(this));
 
         },
-        getSeasonItemActivity: function (itemId,ppId,func) {
-            $.get("/home/GetSeasonItemActivity", { itemId, ppId }, result => {
+        getSeasonItemActivity: function (itemId,ppId, months,func) {
+            $.get("/home/GetSeasonItemActivity", { itemId, ppId, months }, result => {
                 func(result);
             });
         },
@@ -474,30 +480,19 @@
             item.DetailsOpened = !item.DetailsOpened;
             if (item.DetailsOpened) {
                 var ppId = this.seasonItems.season.PlannedProductionId;
-                this.getSeasonItemActivity(itemId, ppId, function (result) {
+                this.getSeasonItemActivity(itemId, ppId, null, function (result) {
                     item.Details = result;
                 }.bind(this));
             }
         },
         moreDetails: function (id) {
-            if (this.details.typeOfDetails === 'seasonDefalt') {
-                this.getPlannedProds(() => {
-                    $.get("/home/getmoredetails", { id }, result => {
-                        this.seasonItems.details = result;
-
-                    });
-                });
-            }
-            else if (this.details.typeOfDetails === 'defaltItem') {
-
-            this.getPlannedProds(() => { 
-                $.get("/home/getmoredetails", { id }, result => {
-                    this.details.moreDetails = result;
-                    this.details.typeOfDetails = 'moreDetails';
-
+            this.detailMonths.selected = 6;
+            var months = this.detailMonths.selected;
+            this.getPlannedProds(() => {
+                $.get("/home/getmoredetails", { id, months }, result => {
+                    this.details.data = result;
                 });
             });
-            }
         }
 
 
@@ -730,7 +725,7 @@
         },
         detailsArray: function () {
             if (this.details.typeOfDetails === 'seasonDefalt') {
-                return this.seasonItems.details;
+                return { details: this.seasonItems.details, currentItem: this.seasonItems.currentItem };
             }
             else if (this.details.typeOfDetails === 'moreDetails') {
                 return this.details.moreDetails;
