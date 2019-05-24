@@ -499,7 +499,7 @@
                                                 <div class="s-input-group s-mb-5 all-season-select">
 
                                                     <select class="s-custom-select" v-model="result.season.PlannedProductionId" v-on:change="changedDetailsSeason(index)" id="plannedProductions">
-                                                        <option value=null>Choose...</option>
+                                                        <option value="">Choose...</option>
                                                         <template v-for="palnnedProd in plannedProductions">
                                                             <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
                                                         </template>
@@ -551,7 +551,8 @@
                                 </table>
                             </div>
                         </template>
-                        <a href="#" v-on:click="moreDetails(details.currentItem.Id)">More Details</a>
+                        <a v-if="details.data.length <= 1" href="#" v-on:click="moreDetails(details.currentItem.Id)">More Details</a>
+                        <button v-on:click="addMoreDetailsSeason" v-else class="btn btn-success">Add Season</button>
                     </div>
 
                 </div>

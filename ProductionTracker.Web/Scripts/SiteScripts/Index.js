@@ -190,9 +190,14 @@
             var currentList = this.details.data;
             var currentDetails = currentList[index];
             var ppId = currentDetails.season.PlannedProductionId;
-            this.getSeasonItemActivity(itemId, ppId, null,function (result) {
-                currentList.splice(index, 1, { season: result.season, activity: result.activity });
-            }.bind(this));
+            if (ppId) {
+                this.getSeasonItemActivity(itemId, ppId, null, function (result) {
+                    currentList.splice(index, 1, { season: result.season, activity: result.activity });
+                }.bind(this));
+            }
+            else {
+                currentList.splice(index, 1, { season: { Name: "", PlannedProductionId: "", TotalQuantitys: null }, activity: [] });
+            }
         },
         detailsForItem: function (event) {
             //this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
@@ -215,6 +220,7 @@
             var itemId = this.details.currentItem.Id;
             var months = this.detailMonths.selected;
             var ppdId = null;
+
             if (this.details.data.length === 1) {
                 this.getItemActivity(itemId, months, function (result) {
                     this.details.data[index].activity = result.activity;
@@ -493,6 +499,9 @@
                     this.details.data = result;
                 });
             });
+        },
+        addMoreDetailsSeason: function () {
+            this.details.data.push({ season: { Name: "", PlannedProductionId: "", TotalQuantitys: null }, activity: [] });
         }
 
 
