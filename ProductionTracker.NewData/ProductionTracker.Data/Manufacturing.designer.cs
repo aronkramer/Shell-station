@@ -6144,6 +6144,8 @@ namespace ProductionTracker.Data
 		
 		private System.Nullable<System.DateTime> _ModifiedOn;
 		
+		private string _Notes;
+		
 		private EntityRef<Item> _Item;
 		
 		private EntityRef<PlannedProduction> _PlannedProduction;
@@ -6166,6 +6168,8 @@ namespace ProductionTracker.Data
     partial void OnCreatedOnChanged();
     partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedOnChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
     #endregion
 		
 		public PlannedProductionDetail()
@@ -6323,6 +6327,26 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="VarChar(MAX)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_PlannedProductionDetail", Storage="_Item", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
 		public Item Item
 		{
@@ -6432,6 +6456,8 @@ namespace ProductionTracker.Data
 		
 		private bool _Archived;
 		
+		private string _Notes;
+		
 		private EntitySet<CuttingInstruction> _CuttingInstructions;
 		
 		private EntitySet<PlannedProductionDetail> _PlannedProductionDetails;
@@ -6458,6 +6484,8 @@ namespace ProductionTracker.Data
     partial void OnModifiedOnChanged();
     partial void OnArchivedChanging(bool value);
     partial void OnArchivedChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
     #endregion
 		
 		public PlannedProduction()
@@ -6609,6 +6637,26 @@ namespace ProductionTracker.Data
 					this._Archived = value;
 					this.SendPropertyChanged("Archived");
 					this.OnArchivedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="VarChar(MAX)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
 				}
 			}
 		}

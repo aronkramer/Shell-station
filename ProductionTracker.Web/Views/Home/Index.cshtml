@@ -309,7 +309,7 @@
                             @*<template v-for="item in itemsInProduction">*@
                             @*<div  v-if="itemsInProduction.length">*@
 
-                            <template v-for="item in orderedArraySeason">
+                            <template v-for="(item,index) in orderedArraySeason">
                                 <tr>
 
                                     <td><div style="position: relative !important;"><span style="position: absolute !important; top: 15px;" @*class="col-md-2"*@><button v-on:click="getDetailforSeasonItem(item.Id)" class="icon-btn-minus"><i  class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i></button></span><span style="margin-left: 25px;" @*class="col-md-8 col-md-offset-4"*@>{{item.Id}}</span></div>  </td>
@@ -345,6 +345,10 @@
                                                     </tr>
                                                 </template>
                                             </table>
+                                        </div>
+                                        <div v-if="item.PlannedProdDetailsId" class="col-md-3">
+                                            <label>Notes</label>
+                                           <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
                                         </div>
                                     </td>
                                 </tr>

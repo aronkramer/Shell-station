@@ -45,6 +45,7 @@ namespace ProductionTracker.Data.Models
     public class Season
     {
         public int? PlannedProductionId { get; set; }
+        public string Notes { get; set; }
         public string Name { get; set; }
     }
 }

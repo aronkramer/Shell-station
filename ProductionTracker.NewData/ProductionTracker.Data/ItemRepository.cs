@@ -133,7 +133,7 @@ namespace ProductionTracker.Data
                     .Select(ite =>
                     {
                         var it = ite.FirstOrDefault();
-                        var plannedAmount = it.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(i => i.ItemId == it.ItemId);
+                        var planedProdDetail = it.CuttingInstructionDetail.CuttingInstruction.PlannedProduction.PlannedProductionDetails.Where(p => !p.Deleted).FirstOrDefault(i => i.ItemId == it.ItemId);
                         return new ItemWithQuantity
                         {
                             Item = it.Item,
@@ -141,11 +141,13 @@ namespace ProductionTracker.Data
                             LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(),
                             Quantitys = new ItemQuantity
                             {
-                                PlannedAmount = plannedAmount != null? plannedAmount.Quantity : 0,
+                                PlannedAmount = planedProdDetail != null? planedProdDetail.Quantity : 0,
                                 AmountOrdered = ite.Sum(p => p.Quantity),
                                 AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.CuttingInstruction.PlannedProductionId == plannedProdId && i.ItemId == it.ItemId).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.CuttingInstruction.PlannedProductionId == plannedProdId && i.ItemId == it.ItemId).Sum(p => p.Quantity) : 0
 
-                            }
+                            },
+                            PlannedProdDetailsId = planedProdDetail.NotNull() ? (int?)planedProdDetail.Id : null,
+                            Notes = planedProdDetail.NotNull() ? planedProdDetail.Notes: null
 
                         };
                     }).ToList();
@@ -159,7 +161,9 @@ namespace ProductionTracker.Data
                             Quantitys = new ItemQuantity
                             {
                                 PlannedAmount = ppd.Quantity
-                            }
+                            },
+                            PlannedProdDetailsId = ppd.Id,
+                            Notes = ppd.Notes
                         };
                     });
                    
@@ -167,7 +171,7 @@ namespace ProductionTracker.Data
             return new SeasonWithItems
             {
                 ItemsWithQuantities = plannedProdsItems.Concat(plannedProdsItems2).OrderBy(i => i.Item.SKU).ToList(),
-                Season = new Season { PlannedProductionId = plannedProd.Id, Name = $"{plannedProd.ProductionCatergory.Name} {plannedProd.ProductionCatYear}" }
+                Season = new Season { PlannedProductionId = plannedProd.Id, Name = $"{plannedProd.ProductionCatergory.Name} {plannedProd.ProductionCatYear}", Notes = plannedProd.Notes}
             };
         
             }
@@ -463,6 +467,7 @@ namespace ProductionTracker.Data
                     Season = season.NotNull() ? new Season
                     {
                         PlannedProductionId = season.Id,
+                        Notes = season.Notes,
                         Name = $"{season.ProductionCatergory.Name} {season.ProductionCatYear}"
                     } : null,
                     TotalQuantitys = new ItemQuantity

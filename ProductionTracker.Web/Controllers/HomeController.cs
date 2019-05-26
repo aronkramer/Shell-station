@@ -117,7 +117,8 @@ namespace ProductionTracker.Web.Controllers
                         PercentageFilled = it.Quantitys.PlannedAmount != 0 /*&& it.Quantitys.AmountOrdered != 0*/ ? double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount : 0,
                         PercentageFilledText = string.Format("{0:P}", double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount),
                         Details = (object)null,
-                        DetailsOpened = false
+                        it.PlannedProdDetailsId,
+                        it.Notes,
                     };
                 })
             }, JsonRequestBehavior.AllowGet);
@@ -156,6 +157,7 @@ namespace ProductionTracker.Web.Controllers
                 season = new
                 {
                     PlannedProductionId = item.Season.NotNull() ? item.Season.PlannedProductionId : null,
+                    Notes = item.Season.NotNull() ? item.Season.Notes : null,
                     Name = item.Season.NotNull() ? item.Season.Name : "Random",
                     item.TotalQuantitys
                 },
@@ -163,7 +165,7 @@ namespace ProductionTracker.Web.Controllers
                 {
                     Id = item.ItemWithActivity.Item.Id,
                     SKU = item.ItemWithActivity.Item.SKU,
-                    Name = item.ItemWithActivity.Item.SKU
+                    Name = item.ItemWithActivity.Item.SKU,
                 },
                 activity = item.ItemWithActivity.Activities
 
@@ -184,6 +186,7 @@ namespace ProductionTracker.Web.Controllers
                     season = new
                     {
                         PlannedProductionId = item.Season.NotNull() ? item.Season.PlannedProductionId : null,
+                        Notes = item.Season.NotNull() ? item.Season.Notes : null,
                         Name = item.Season.NotNull() ? item.Season.Name : "Random",
                         item.TotalQuantitys
                     },

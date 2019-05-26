@@ -169,7 +169,12 @@
                 }
             });
             $.get("/home/GetItemsofSeason", { plannedProdId }, result => {
-                this.seasonItems.items = result.Items;
+                this.seasonItems.items = result.Items.map(function (item) {
+                    item.notesDisabled = true;
+                    item.notesCopied = null;
+                    item.DetailsOpened = false;
+                    return item;
+                });
                 this.seasonItems.season = result.Season;
                 if (func) func();
                 $('.bySeason').unblock();
@@ -502,6 +507,17 @@
         },
         addMoreDetailsSeason: function () {
             this.details.data.push({ season: { Name: "", PlannedProductionId: "", TotalQuantitys: null }, activity: [] });
+        },
+        updatePpd: function (index) {
+            
+            var existingItem = this.orderedArraySeason[index];
+            if (existingItem.notesCopied !== existingItem.Notes) {
+                var theItem = this.seasonItems.items.find(i => i.PlannedProdDetailsId = existingItem.PlannedProdDetailsId);
+                $.post('/production/UpdatePlannedProductionDetails', { plannedProductionDetail: { Id: existingItem.PlannedProdDetailsId, Quantity: existingItem.PlannedAmount, ItemId: existingItem.Id, Notes: existingItem.Notes, PlannedProductionId: this.seasonItems.season.PlannedProductionId } }, () => {
+                    theItem.notesCopied = existingItem.Notes;
+                    console.log('worked');
+                });
+            }
         }
 
 

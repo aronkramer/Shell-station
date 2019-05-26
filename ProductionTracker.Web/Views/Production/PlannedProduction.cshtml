@@ -203,14 +203,14 @@
                                     </thead>
                                     <tbody>
                                         <template v-for="(item,index) in existingItems">
-                                            <tr  v-if="item.Edit "v-on:blur="item.Edit = false">
+                                            <tr  v-if="item.Edit"  tabindex="1">
                                                 <td>{{item.ItemId}}</td>
                                                 <td>
                                                     @*<input class="small-input" v-on:change="validatePlannedProd" type="text" v-bind:class="[validationLists.skus && validationLists.skus.some(i => i.SKU === item.SKU) ? '': 'hasError' ]" list="skus" v-model="item.SKU" />*@
                                                     {{item.SKU}}
                                                 </td>
-                                                <td>
-                                                    <input class="small-input" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
+                                                <td v-on:blur="item.Edit = false">
+                                                    <input class="small-input" v-on:blur="existingItems[index].Edit = !existingItems[index].Edit" v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
                                                 </td>
                                                 <td class="action-btn-td">
                                                     <span class="action-btn-span"><span class="save-btn"><i title="Save"  v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span><a title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class=" btn btn-circle red-sunglo btn-sm">X</a></span>
@@ -219,12 +219,12 @@
                                                     <button title="Cancel" class="btn btn-circle default" V-on:click="item.Edit = false; item.Quantity = item.QuanityCopy">Cancel</button>
                                                 </td>
                                             </tr>
-                                            <tr v-else v-on:focus="existingItems[index].Edit = true; item.QuanityCopy = item.Quantity" tabindex="1">
+                                            <tr v-else >
                                                 <td>{{item.ItemId}}</td>
                                                 <td>
                                                     {{item.SKU}}
                                                 </td>
-                                                <td>
+                                                <td v-on:focus="existingItems[index].Edit = !existingItems[index].Edit; item.QuanityCopy = item.Quantity" tabindex="1">
                                                     {{item.Quantity}}
                                                 </td>
                                             </tr>

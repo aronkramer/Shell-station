@@ -18,6 +18,8 @@ namespace ProductionTracker.Data.Models
         public ItemQuantity Quantitys { get; set; }
         public string LastCuttingInstructionDatePretty { get; set; }
         public DateTime LastCuttingInstructionDate { get; set; }
+        public string Notes { get; set; }
+        public int? PlannedProdDetailsId { get; set; }
     }
     public class SeasonWithItems
     {
