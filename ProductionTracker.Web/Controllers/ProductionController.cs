@@ -10,8 +10,7 @@ using System.Text;
 using ClosedXML.Excel;
 using System.IO;
 using ProductionTracker.Web.Models;
-
-
+using Newtonsoft.Json;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -428,6 +427,8 @@ namespace ProductionTracker.Web.Controllers
         public void UpdatePlannedProductionDetails(PlannedProductionDetail plannedProductionDetail)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var currentItem = repo.GetPlannedProductionDetail(plannedProductionDetail.Id);
+            plannedProductionDetail.CreatedOn = currentItem.CreatedOn;
             repo.AddNewUpdateHistory(repo.GetPlannedProductionDetail(plannedProductionDetail.Id));
             
             repo.UpdatePlannedProductionDetail(plannedProductionDetail);
@@ -447,6 +448,17 @@ namespace ProductionTracker.Web.Controllers
             //});
             repo.AddNewUpdateHistory(repo.GetPlannedProductionDetail(plannedProductionDetailId), "deleted");
             repo.DeletePlannedProductionDetail(plannedProductionDetailId);
+        }
+
+        [HttpPost]
+        public void UpdatePlannedProductionNotes(PlannedProduction plannedProduction)
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var currentItem = JsonConvert.DeserializeObject<PlannedProduction>(repo.GetPlannedProduction(plannedProduction.Id).GetBasePropertiesOnDbObject());
+            repo.AddNewUpdateHistory(currentItem);
+            currentItem.Notes = plannedProduction.Notes;
+
+            repo.UpdatePlannedProduction(currentItem);
         }
 
         [HttpPost]

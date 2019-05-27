@@ -177,97 +177,117 @@
                 </div>
                 <div class="tab-pane tab-div" id="bySeason">
                     <div class="col-md-10 col-md-offset-1 bySeason">
-                        <div class="col-md-6">
-                            <div class="portlet box green">
-                                <div class="tools portlet-title" v-on:click="openClosePortletSeason" style="cursor:pointer;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="portlet box green">
+                                    <div class="tools portlet-title" v-on:click="openClosePortletSeason" style="cursor:pointer;">
 
-                                    <div class="expand caption col-md-2">
-                                        <i class="fa fa-reorder"></i>
-                                        Filter
-                                    </div>
-
-                                    <div v-on:click.stop="" class="tools col-md-3" style="text-align:end;">
-                                        <a href="javascript:;" v-on:click="openClosePortletSeason" v-bind:class="seasonItems.displayBody.expandTool" data-original-title="" title=""> </a>
-                                        <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
-                                        <a href="javascript:;" v-on:click="resetFiltersSeasons" class="reload" data-original-title="" title=""> </a>
-                                        @*<a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body" v-bind:style="{display: seasonItems.displayBody.display}">
-                                    <div class="panel-group accordion">
-                                        @*all test*@
-                                        <div v-for="(key,k,index) in seasonItems.filterLists" class="panel panel-default">
-                                            <div :class="{'not-selected-greyed' : !countMsg[k]}" class="row row-no-margin panel-heading">
-                                                <div class="col-md-8">
-                                                    <h4 class="panel-title">
-                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" v-bind:href="'#season-collapse_' + index"> {{k}} </a>
-                                                        @*<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1"> {{k}} </a>*@
-                                                    </h4>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <h4 class="selected-count-text">
-                                                        {{countMsg[k]}}
-                                                    </h4>
-                                                </div>
-                                            </div>
-
-                                            @*<div id="collapse_1" class="panel-collapse collapse">*@
-                                            <div :id="'season-collapse_' + index" class="panel-collapse collapse">
-                                                <div class="panel-body">
-                                                    <div class="row">
-                                                        @*<div class="col-md-4 col-md-offset-1">
-                                            <h4 class="selected-count-text">
-                                                {{countMsg[k]}}
-                                            </h4>
-                                        </div>*@
-                                                        <div class="col-md-4">
-                                                            <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,true)">Fill All</button>
-                                                            <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,false)">Clear</button>
-                                                        </div>
-                                                    </div>
-                                                    <div v-for="item in seasonItems.filterLists[k]" class="pretty p-svg p-curve">
-                                                        <input type="checkbox" v-model="item.Selected" />
-                                                        <div class="state p-success">
-                                                            <!-- svg path -->
-                                                            <svg class="svg svg-icon" viewBox="0 0 20 20">
-                                                                <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
-                                                            </svg>
-                                                            <label>{{item.Name}}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="expand caption col-md-2">
+                                            <i class="fa fa-reorder"></i>
+                                            Filter
                                         </div>
 
+                                        <div v-on:click.stop="" class="tools col-md-3" style="text-align:end;">
+                                            <a href="javascript:;" v-on:click="openClosePortletSeason" v-bind:class="seasonItems.displayBody.expandTool" data-original-title="" title=""> </a>
+                                            <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
+                                            <a href="javascript:;" v-on:click="resetFiltersSeasons" class="reload" data-original-title="" title=""> </a>
+                                            @*<a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body" v-bind:style="{display: seasonItems.displayBody.display}">
+                                        <div class="panel-group accordion">
+                                            @*all test*@
+                                            <div v-for="(key,k,index) in seasonItems.filterLists" class="panel panel-default">
+                                                <div :class="{'not-selected-greyed' : !countMsg[k]}" class="row row-no-margin panel-heading">
+                                                    <div class="col-md-8">
+                                                        <h4 class="panel-title">
+                                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" v-bind:href="'#season-collapse_' + index"> {{k}} </a>
+                                                            @*<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1"> {{k}} </a>*@
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h4 class="selected-count-text">
+                                                            {{countMsg[k]}}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+
+                                                @*<div id="collapse_1" class="panel-collapse collapse">*@
+                                                <div :id="'season-collapse_' + index" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            @*<div class="col-md-4 col-md-offset-1">
+                                                <h4 class="selected-count-text">
+                                                    {{countMsg[k]}}
+                                                </h4>
+                                            </div>*@
+                                                            <div class="col-md-4">
+                                                                <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,true)">Fill All</button>
+                                                                <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,false)">Clear</button>
+                                                            </div>
+                                                        </div>
+                                                        <div v-for="item in seasonItems.filterLists[k]" class="pretty p-svg p-curve">
+                                                            <input type="checkbox" v-model="item.Selected" />
+                                                            <div class="state p-success">
+                                                                <!-- svg path -->
+                                                                <svg class="svg svg-icon" viewBox="0 0 20 20">
+                                                                    <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
+                                                                </svg>
+                                                                <label>{{item.Name}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" name="itemSearch" v-model="seasonItems.itemSearch" class="form-control" placeholder="Search for..." />
-                        </div>
-                        <div class="col-md-4">
-                            <div class="s-input-group s-mb-5 all-season-select">
-                                <div class="s-input-group-prepend">
-                                    <label style="font-weight:600;" class="s-input-group-text" for="plannedProductions">Seasons</label>
-                                </div>
-                                <select class="s-custom-select" v-model="seasonItems.season.PlannedProductionId" v-on:change="changedSeason" id="plannedProductions">
-                                    <template v-for="palnnedProd in plannedProductions">
-                                        <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
-                                    </template>
+                            <div class="col-md-2">
+                                <input type="text" name="itemSearch" v-model="seasonItems.itemSearch" class="form-control" placeholder="Search for..." />
+                            </div>
+                            <div class="col-md-2">
+                                <div class="s-input-group s-mb-5 all-season-select">
+                                    <div class="s-input-group-prepend">
+                                        <label style="font-weight:600;" class="s-input-group-text" for="plannedProductions">Seasons</label>
+                                    </div>
+                                    <select class="s-custom-select" v-model="seasonItems.season.PlannedProductionId" v-on:change="changedSeason" id="plannedProductions">
+                                        <template v-for="palnnedProd in plannedProductions">
+                                            <option v-bind:value="palnnedProd.Id">{{palnnedProd.Name}}</option>
+                                        </template>
 
-                                </select>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#planedProdNotes" aria-expanded="false" aria-controls="planedProdNotes">
+                                    Notes
+                                </button>
+
                             </div>
                         </div>
+
                         <br />
-                        <p><h4>Showing {{orderedArraySeason ? orderedArraySeason.length : 0}} items</h4></p>
+                        <div class="row">
+                            <div class="col-md-2 very-little-margin">
+                                <p><h4>Showing {{orderedArraySeason ? orderedArraySeason.length : 0}} items</h4></p>
+                            </div>
+                            <div class="collapse col-md-6 col-md-offset-4 very-little-margin" id="planedProdNotes">
+                                <div v-if="seasonItems.season.PlannedProductionId" class="card card-body">
+                                    <label>Notes</label>
+                                    <textarea v-on:blur="seasonItems.season.notesDisabled = true; updatePp()" v-on:focus="seasonItems.season.notesDisabled = false; seasonItems.season.notesCopied = seasonItems.season.Notes" class="form-control" :readonly="seasonItems.season.notesDisabled" rows="5" v-model="seasonItems.season.Notes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
                         <table class="table table-bordered table-responsive table-striped">
 
                             <tr>
                                 @*<template v-for="header in tableHeaders">
 
-        <th>{{header}}</th>
-        </template>*@
+                <th>{{header}}</th>
+                </template>*@
                                 <th class="th-sort" v-on:click="seasonItems.descSortKey = seasonItems.sortKey==='Id' ? !seasonItems.descSortKey : seasonItems.descSortKey; seasonItems.sortKey='Id'">
                                     <span>Id</span>
                                     <i v-if="(!seasonItems.descSortKey && seasonItems.sortKey==='Id') || seasonItems.sortKey!=='Id'" class="fa fa-sort-asc"></i>
@@ -278,7 +298,7 @@
                                     <i v-if="(seasonItems.descSortKey && seasonItems.sortKey==='SKU') || seasonItems.sortKey!=='SKU'" class="fa fa-sort-desc"></i>SKU
                                 </th>
 
-                                
+
                                 <th class="th-sort" v-on:click="seasonItems.descSortKey = seasonItems.sortKey==='PercentageFilled' ? !seasonItems.descSortKey : seasonItems.descSortKey; seasonItems.sortKey='PercentageFilled'; ">
                                     <i v-if="(!seasonItems.descSortKey && seasonItems.sortKey==='PercentageFilled') || seasonItems.sortKey!=='PercentageFilled'" class="fa fa-sort-asc"></i>
                                     <i v-if="(seasonItems.descSortKey && seasonItems.sortKey==='PercentageFilled') || seasonItems.sortKey!=='PercentageFilled'" class="fa fa-sort-desc"></i>Percent Filled (incluing ordered)
@@ -312,7 +332,7 @@
                             <template v-for="(item,index) in orderedArraySeason">
                                 <tr>
 
-                                    <td><div style="position: relative !important;"><span style="position: absolute !important; top: 15px;" @*class="col-md-2"*@><button v-on:click="getDetailforSeasonItem(item.Id)" class="icon-btn-minus"><i  class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i></button></span><span style="margin-left: 25px;" @*class="col-md-8 col-md-offset-4"*@>{{item.Id}}</span></div>  </td>
+                                    <td><div style="position: relative !important;"><span style="position: absolute !important; top: 15px;" @*class="col-md-2"*@><button v-on:click="getDetailforSeasonItem(item.Id)" class="icon-btn-minus"><i class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i></button></span><span style="margin-left: 25px;" @*class="col-md-8 col-md-offset-4"*@>{{item.Id}}</span></div>  </td>
                                     <td>{{item.SKU}}</td>
                                     <td>{{item.PercentageFilledText}}</td>
                                     <td>{{item.PlannedAmount}}</td>
@@ -348,7 +368,7 @@
                                         </div>
                                         <div v-if="item.PlannedProdDetailsId" class="col-md-3">
                                             <label>Notes</label>
-                                           <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
+                                            <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
                                         </div>
                                     </td>
                                 </tr>

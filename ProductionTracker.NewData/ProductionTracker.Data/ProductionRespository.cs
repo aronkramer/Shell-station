@@ -641,6 +641,16 @@ namespace ProductionTracker.Data
             }
         }
 
+        public void UpdatePlannedProduction(PlannedProduction plannedProduction)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                plannedProduction.ModifiedOn = DateTime.Now;
+                context.PlannedProductions.Attach(plannedProduction);
+                context.Refresh(RefreshMode.KeepCurrentValues, plannedProduction);
+                context.SubmitChanges();
+            }
+        }
         public void DeletePlannedProduction(PlannedProduction plannedProduction)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
