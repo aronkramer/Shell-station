@@ -5853,6 +5853,7 @@
     <Content Include="Metronic\_start\plugins\simple-line-icons\simple-line-icons.css" />
     <Content Include="Metronic\_start\plugins\simple-line-icons\simple-line-icons.min.css" />
     <Content Include="Metronic\_start\style.css" />
+    <Content Include="Pics\test-logo.png" />
     <Content Include="Scripts\bootstrap-multiselect-collapsible-groups.js" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Scripts\bootstrap-select.js" />

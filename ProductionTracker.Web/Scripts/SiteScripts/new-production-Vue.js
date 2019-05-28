@@ -106,7 +106,7 @@
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons });
+            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons, markerText:'' });
             //this.updateLotNumbers();
             //var lastMarkerIndex = production.Markers.length - 1;
             this.vaidateMarker(index - 1);
@@ -135,6 +135,7 @@
             if (this.production.Markers[marIndex].Sizes.length === 1) {
                 this.production.Markers[marIndex].Sizes[0].AmountPerLayer = 6;
             }
+            this.genrateMarkerText(marIndex);
         },
         addSize: function (event, marIndex) {
             //for (var i = 0; i < 10; i++)
@@ -147,7 +148,7 @@
             else
                 this.production.Markers[marIndex].Sizes.push({});
             this.vaidateMarker(marIndex);
-
+            this.genrateMarkerText(marIndex);
         },
         getDateInputFormat: function (date) {
             date = new Date(parseInt(date));
@@ -222,8 +223,8 @@
         markerNameChange: function (markerIndex) {
             var marker = this.production.Markers[markerIndex];
             if (marker.Sizes.length) {
-                marker.Sizes = [];
                 marker.AllSizes = false;
+                this.genrateMarkerText(markerIndex);
             }
             this.vaidateMarker(markerIndex);
         },
@@ -307,6 +308,7 @@
                 $.get('/production/getDefaltSizesForAMarkerCat', { markerCatergoryName: marker.Name }, result => {
                     marker.Sizes = result;
                     this.production.Markers[index] = marker;
+                    this.genrateMarkerText(index);
                 });
             }
             else {
@@ -322,6 +324,7 @@
             marker.AllSizes = false;
             this.production.Markers.splice(index,1, marker);
             this.vaidateMarker(index);
+            this.genrateMarkerText(index);
 
         },
         allSeasonsSelected: function () {
@@ -344,6 +347,28 @@
             $.get("/testing/ItemsInSeason?plannedProdId=3", result => {
                 console.log(result);
             });
+        },
+        genrateMarkerText: function (index) {
+            var marker = this.production.Markers[index];
+            if (marker.Name && marker.Sizes.length) {
+                marker.markerText = marker.Name;
+                if (!marker.AllSizes && marker.Sizes.length > 1) {
+                    marker.markerText += '-NEWMARKER';
+                    for (s of marker.Sizes) {
+                        if (s.Name && s.AmountPerLayer)
+                        marker.markerText += `-${s.Name}_${s.AmountPerLayer}`;
+                    }
+                }
+                else if (marker.Sizes.length === 1) {
+                    marker.markerText += `-${marker.Sizes[0].Name}`;
+                }
+                
+            }
+            else {
+                marker.markerText = "";
+            }
+            this.production.Markers.splice(index, 1, marker);
+            return marker.markerText;
         }
     },
     computed: {

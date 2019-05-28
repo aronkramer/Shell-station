@@ -146,13 +146,13 @@
                                                 <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                                             </div>
                                             <div class="size-element">
-                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex); genrateMarkerText(MarkerIndex);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
                                                 <datalist id="sizes">
                                                     <option v-for="x in sizes">{{x.Name}}</option>
                                                 </datalist>
                                             </div>
                                             <div class="size-element" v-if="marker.Sizes.length > 1">
-                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex)" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                                <input type="text" v-on:change="vaidateMarker(MarkerIndex); genrateMarkerText(MarkerIndex);" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
                                             </div>
                                         </div>
                                         @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
