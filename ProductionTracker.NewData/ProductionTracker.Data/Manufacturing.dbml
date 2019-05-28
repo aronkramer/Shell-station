@@ -48,6 +48,7 @@
       <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Department_Item" Member="Items" ThisKey="Id" OtherKey="DepartmentId" Type="Item" />
       <Association Name="Department_MarkerCategory" Member="MarkerCategories" ThisKey="Id" OtherKey="DepartmentId" Type="MarkerCategory" />
+      <Association Name="Department_SizeDepartment" Member="SizeDepartments" ThisKey="Id" OtherKey="DepartmentId" Type="SizeDepartment" />
     </Type>
   </Table>
   <Table Name="dbo.Items" Member="Items">
@@ -95,6 +96,7 @@
       <Association Name="Size_Item" Member="Items" ThisKey="Id" OtherKey="SizeId" Type="Item" />
       <Association Name="Size_CuttingInstructionSize" Member="CuttingInstructionSizes" ThisKey="Id" OtherKey="SizeId" Type="CuttingInstructionSize" />
       <Association Name="Size_MarkerDetail" Member="MarkerDetails" ThisKey="Id" OtherKey="SizeId" Type="MarkerDetail" />
+      <Association Name="Size_SizeDepartment" Member="SizeDepartments" ThisKey="Id" OtherKey="SizeId" Type="SizeDepartment" />
     </Type>
   </Table>
   <Table Name="dbo.Productions" Member="Productions">
@@ -315,6 +317,14 @@
       <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="PlannedProduction_Setting" Member="PlannedProduction" ThisKey="CurrentSeason" OtherKey="Id" Type="PlannedProduction" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SizeDepartments" Member="SizeDepartments">
+    <Type Name="SizeDepartment">
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Department_SizeDepartment" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Size_SizeDepartment" Member="Size" ThisKey="SizeId" OtherKey="Id" Type="Size" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.ItemsForBarcodes2" Method="ItemsForBarcodes2">

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Linq;
-using ProductionTracker.OldData;
+using ProductionTracker.Data;
 using ProductionTracker.Web.Models;
 
 namespace ProductionTracker.Web.Controllers
@@ -18,15 +18,14 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult ItemAdder()
         {
-            var colorRepo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
-            var repo = new OldProductionRepository(Properties.Settings.Default.ManufacturingConStr);
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var vm = new ItemAdderVM
             {
                 Departments = repo.GetDepartments(),
-                Materials = repo.GetAllMaterials(),
-                Colors = colorRepo.GetAllColors(),
-                Sleeves = repo.GetAllSleeves(),
-                Styles = repo.GetAllStyles(),
+                Materials = repo.GetMaterials(),
+                Colors = repo.GetColors(),
+                Sleeves = repo.GetSleeves(),
+                Styles = repo.GetBodyStyles(),
                 CheckedDepartments = (List<string>)Session["departments"] ?? null
             };
             return View(vm);
@@ -34,7 +33,7 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public ActionResult ItemAdder(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
-            if(departmentIds == null || styles == null || materialIds == null ||sleaves == null || colorIds == null)
+            if(!departmentIds.NotNull() || !styles.NotNull() || !materialIds.NotNull() || !sleaves.NotNull() || !colorIds.NotNull())
             {
                 return RedirectToAction("ItemAdder");
             }
@@ -52,7 +51,7 @@ namespace ProductionTracker.Web.Controllers
             return RedirectToAction("ItemAdder");
         }
         [HttpPost]
-        public ActionResult AddItems(List<OldData.Item> items)
+        public ActionResult AddItems(List<Item> items)
         {
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             items = items.Where(i => i.SKU != null).ToList();
@@ -62,22 +61,22 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult Colors()
         {
-            var repo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
 
-            return View(new ColorVM { Colors = repo.GetAllColors()});
+            return View(new ColorVM { Colors = repo.GetColors()});
         }
         [HttpPost]
         public ActionResult AddColors(List<Color> colors)
         {
             colors.RemoveAll(c => c.Id == 0 || c.Name == null);
-            var repo = new ColorRepository(Properties.Settings.Default.ManufacturingConStr);
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             repo.AddColors(colors);
             return RedirectToAction("Colors");
         }
 
-        private IEnumerable<OldData.Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
+        private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
-            var ItemList = new List<OldData.Item>();
+            var ItemList = new List<Item>();
             
             foreach (var dep in departmentIds)
             {
@@ -94,14 +93,14 @@ namespace ProductionTracker.Web.Controllers
                                     if (SleeveRuleChecker(dep, sleave))
                                     {
                                         //var sizeList = SizeList(dep, sleave);
-                                        var repo = new OldProductionRepository(Properties.Settings.Default.ManufacturingConStr);
+                                        var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
                                         var sizeList = repo.GetAllSizesByDepartment(dep);
                                         sizeList = sleave == 2 ? sizeList.Where(s => s.Id != 10 && s.Id != 11) : sizeList;
                                         foreach (var color in colorIds)
                                         {
                                             foreach(var size in sizeList)
                                             {
-                                                ItemList.Add(new OldData.Item
+                                                ItemList.Add(new Item
                                                 {
                                                     DepartmentId = dep,
                                                     BodyStyleId = style,
@@ -186,7 +185,7 @@ namespace ProductionTracker.Web.Controllers
         //    return null;
         //}
 
-        private string GetSku(OldData.Item item)
+        private string GetSku(Item item)
         {
             var material = Material(item.MaterialId);
             var size = Size(item.SizeId);

@@ -189,6 +189,14 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<Size> GetAllSizesByDepartment(int depId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.SizeDepartments.Where(sd => sd.DepartmentId == depId).Select(i => i.Size).ToList();
+            }
+        }
+
         public IEnumerable<Size> GetSizes()
         {
             using (var context = new ManufacturingDataContext(_connectionString))

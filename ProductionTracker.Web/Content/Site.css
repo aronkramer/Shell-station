@@ -97,3 +97,8 @@ td.small-input {
 .very-little-margin {
     margin-top: -38px;
 }
+.logo-murex {
+    margin-top: 0px !important;
+    width: 130px;
+    height:75px;
+}

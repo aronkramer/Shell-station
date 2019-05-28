@@ -105,6 +105,9 @@ namespace ProductionTracker.Data
     partial void InsertSetting(Setting instance);
     partial void UpdateSetting(Setting instance);
     partial void DeleteSetting(Setting instance);
+    partial void InsertSizeDepartment(SizeDepartment instance);
+    partial void UpdateSizeDepartment(SizeDepartment instance);
+    partial void DeleteSizeDepartment(SizeDepartment instance);
     #endregion
 		
 		public ManufacturingDataContext() : 
@@ -334,6 +337,14 @@ namespace ProductionTracker.Data
 			get
 			{
 				return this.GetTable<Setting>();
+			}
+		}
+		
+		public System.Data.Linq.Table<SizeDepartment> SizeDepartments
+		{
+			get
+			{
+				return this.GetTable<SizeDepartment>();
 			}
 		}
 		
@@ -1136,6 +1147,8 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
 		
+		private EntitySet<SizeDepartment> _SizeDepartments;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1154,6 +1167,7 @@ namespace ProductionTracker.Data
 		{
 			this._Items = new EntitySet<Item>(new Action<Item>(this.attach_Items), new Action<Item>(this.detach_Items));
 			this._MarkerCategories = new EntitySet<MarkerCategory>(new Action<MarkerCategory>(this.attach_MarkerCategories), new Action<MarkerCategory>(this.detach_MarkerCategories));
+			this._SizeDepartments = new EntitySet<SizeDepartment>(new Action<SizeDepartment>(this.attach_SizeDepartments), new Action<SizeDepartment>(this.detach_SizeDepartments));
 			OnCreated();
 		}
 		
@@ -1263,6 +1277,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_SizeDepartment", Storage="_SizeDepartments", ThisKey="Id", OtherKey="DepartmentId")]
+		public EntitySet<SizeDepartment> SizeDepartments
+		{
+			get
+			{
+				return this._SizeDepartments;
+			}
+			set
+			{
+				this._SizeDepartments.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1302,6 +1329,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_MarkerCategories(MarkerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = null;
+		}
+		
+		private void attach_SizeDepartments(SizeDepartment entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = this;
+		}
+		
+		private void detach_SizeDepartments(SizeDepartment entity)
 		{
 			this.SendPropertyChanging();
 			entity.Department = null;
@@ -2198,6 +2237,8 @@ namespace ProductionTracker.Data
 		
 		private EntitySet<MarkerDetail> _MarkerDetails;
 		
+		private EntitySet<SizeDepartment> _SizeDepartments;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2217,6 +2258,7 @@ namespace ProductionTracker.Data
 			this._Items = new EntitySet<Item>(new Action<Item>(this.attach_Items), new Action<Item>(this.detach_Items));
 			this._CuttingInstructionSizes = new EntitySet<CuttingInstructionSize>(new Action<CuttingInstructionSize>(this.attach_CuttingInstructionSizes), new Action<CuttingInstructionSize>(this.detach_CuttingInstructionSizes));
 			this._MarkerDetails = new EntitySet<MarkerDetail>(new Action<MarkerDetail>(this.attach_MarkerDetails), new Action<MarkerDetail>(this.detach_MarkerDetails));
+			this._SizeDepartments = new EntitySet<SizeDepartment>(new Action<SizeDepartment>(this.attach_SizeDepartments), new Action<SizeDepartment>(this.detach_SizeDepartments));
 			OnCreated();
 		}
 		
@@ -2339,6 +2381,19 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Size_SizeDepartment", Storage="_SizeDepartments", ThisKey="Id", OtherKey="SizeId")]
+		public EntitySet<SizeDepartment> SizeDepartments
+		{
+			get
+			{
+				return this._SizeDepartments;
+			}
+			set
+			{
+				this._SizeDepartments.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2390,6 +2445,18 @@ namespace ProductionTracker.Data
 		}
 		
 		private void detach_MarkerDetails(MarkerDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Size = null;
+		}
+		
+		private void attach_SizeDepartments(SizeDepartment entity)
+		{
+			this.SendPropertyChanging();
+			entity.Size = this;
+		}
+		
+		private void detach_SizeDepartments(SizeDepartment entity)
 		{
 			this.SendPropertyChanging();
 			entity.Size = null;
@@ -7171,6 +7238,174 @@ namespace ProductionTracker.Data
 						this._CurrentSeason = default(int);
 					}
 					this.SendPropertyChanged("PlannedProduction");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SizeDepartments")]
+	public partial class SizeDepartment : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _SizeId;
+		
+		private int _DepartmentId;
+		
+		private EntityRef<Department> _Department;
+		
+		private EntityRef<Size> _Size;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSizeIdChanging(int value);
+    partial void OnSizeIdChanged();
+    partial void OnDepartmentIdChanging(int value);
+    partial void OnDepartmentIdChanged();
+    #endregion
+		
+		public SizeDepartment()
+		{
+			this._Department = default(EntityRef<Department>);
+			this._Size = default(EntityRef<Size>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SizeId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int SizeId
+		{
+			get
+			{
+				return this._SizeId;
+			}
+			set
+			{
+				if ((this._SizeId != value))
+				{
+					if (this._Size.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnSizeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SizeId = value;
+					this.SendPropertyChanged("SizeId");
+					this.OnSizeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int DepartmentId
+		{
+			get
+			{
+				return this._DepartmentId;
+			}
+			set
+			{
+				if ((this._DepartmentId != value))
+				{
+					if (this._Department.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDepartmentIdChanging(value);
+					this.SendPropertyChanging();
+					this._DepartmentId = value;
+					this.SendPropertyChanged("DepartmentId");
+					this.OnDepartmentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_SizeDepartment", Storage="_Department", ThisKey="DepartmentId", OtherKey="Id", IsForeignKey=true)]
+		public Department Department
+		{
+			get
+			{
+				return this._Department.Entity;
+			}
+			set
+			{
+				Department previousValue = this._Department.Entity;
+				if (((previousValue != value) 
+							|| (this._Department.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Department.Entity = null;
+						previousValue.SizeDepartments.Remove(this);
+					}
+					this._Department.Entity = value;
+					if ((value != null))
+					{
+						value.SizeDepartments.Add(this);
+						this._DepartmentId = value.Id;
+					}
+					else
+					{
+						this._DepartmentId = default(int);
+					}
+					this.SendPropertyChanged("Department");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Size_SizeDepartment", Storage="_Size", ThisKey="SizeId", OtherKey="Id", IsForeignKey=true)]
+		public Size Size
+		{
+			get
+			{
+				return this._Size.Entity;
+			}
+			set
+			{
+				Size previousValue = this._Size.Entity;
+				if (((previousValue != value) 
+							|| (this._Size.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Size.Entity = null;
+						previousValue.SizeDepartments.Remove(this);
+					}
+					this._Size.Entity = value;
+					if ((value != null))
+					{
+						value.SizeDepartments.Add(this);
+						this._SizeId = value.Id;
+					}
+					else
+					{
+						this._SizeId = default(int);
+					}
+					this.SendPropertyChanged("Size");
 				}
 			}
 		}

@@ -538,5 +538,42 @@ namespace ProductionTracker.Data
                 return context.Items.ToList();
             }
         }
+
+        public IEnumerable<Item> GetUniqueItemsAndUnquieSKU(List<Item> items)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+
+            {
+                var uniqueItems = new List<Item>();
+                foreach (var item in items)
+                {
+                    var testItem = context.Items.FirstOrDefault(i => (i.DepartmentId == item.DepartmentId && i.MaterialId == item.MaterialId && i.BodyStyleId == item.BodyStyleId
+                     && i.ColorId == item.ColorId && i.SleeveId == item.SleeveId && i.SizeId == item.SizeId) || i.SKU == item.SKU);
+                    if (testItem == null)
+                    {
+                        uniqueItems.Add(item);
+                    }
+                }
+                return uniqueItems;
+            }
+        }
+
+        public void AddItems(IEnumerable<Item> items)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.Items.InsertAllOnSubmit(items);
+                context.SubmitChanges();
+            }
+        }
+        public void AddColors(IEnumerable<Color> colors)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                context.Colors.InsertAllOnSubmit(colors);
+                context.SubmitChanges();
+            }
+        }
+
     }
 }
