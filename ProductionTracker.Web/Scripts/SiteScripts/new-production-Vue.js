@@ -106,7 +106,7 @@
         },
         addMarker: function () {
             //this.production.Markers.push({ Name: "", Size: "", Sizes: [{ SizeId: 0, AmountPerLayer: 0 }], "ColorMaterials": [{ Color: "", Material: "", Layers: 0 }], LotNumber : 0 });
-            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons, markerText:'' });
+            var index = this.production.Markers.push({ Sizes: [], "ColorMaterials": [], "errors": [], PlannedProductionId: this.allSeasons,markerText: '',  markerTextEdit:false });
             //this.updateLotNumbers();
             //var lastMarkerIndex = production.Markers.length - 1;
             this.vaidateMarker(index - 1);
@@ -350,26 +350,43 @@
         },
         genrateMarkerText: function (index) {
             var marker = this.production.Markers[index];
-            if (marker.Name && marker.Sizes.length) {
-                marker.markerText = marker.Name;
-                if (!marker.AllSizes && marker.Sizes.length > 1) {
-                    marker.markerText += '-NEWMARKER';
-                    for (s of marker.Sizes) {
-                        if (s.Name && s.AmountPerLayer)
-                        marker.markerText += `-${s.Name}_${s.AmountPerLayer}`;
+            if (!marker.markerTextEdit) {
+                if (marker.Name && marker.Sizes.length) {
+                    marker.markerText = marker.Name;
+                    if (!marker.AllSizes && marker.Sizes.length > 1) {
+                        marker.markerText += '-NEWMARKER';
+                        for (s of marker.Sizes) {
+                            if (s.Name && s.AmountPerLayer)
+                                marker.markerText += `-${s.Name}_${s.AmountPerLayer}`;
+                        }
                     }
+                    else if (marker.Sizes.length === 1) {
+                        marker.markerText += `-${marker.Sizes[0].Name}`;
+                    }
+
                 }
-                else if (marker.Sizes.length === 1) {
-                    marker.markerText += `-${marker.Sizes[0].Name}`;
+                else {
+                    marker.markerText = "";
                 }
-                
+                this.production.Markers.splice(index, 1, marker);
+                return marker.markerText;
             }
-            else {
-                marker.markerText = "";
+        },
+        editMarkerText: function (index) {
+            var marker = this.production.Markers[index];
+            if (!marker.markerTextEdit) {
+                marker.markerTextEdit = true;
+                marker.markerTextCopy = marker.markerText;
+                this.production.Markers.splice(index, 1, marker);
             }
-            this.production.Markers.splice(index, 1, marker);
-            return marker.markerText;
-        }
+        },
+        leaveMarkerText: function (index) {
+            var marker = this.production.Markers[index];
+            if (marker.markerTextCopy === marker.markerText) {
+                marker.markerTextEdit = false;
+                this.production.Markers.splice(index, 1, marker);
+            }
+        },
     },
     computed: {
         productoinHide: function () {

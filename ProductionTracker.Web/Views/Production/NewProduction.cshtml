@@ -139,8 +139,8 @@
                                         <label class="col-md-1 col-form-label" for="Size">Count:</label>
                                     </div>
                                 </div>
-                                <div v-if="!marker.AllSizes" class="col-md-7">
-                                    <template v-for="(size, sizeIndex) in marker.Sizes">
+                                <div class="col-md-5">
+                                    <template v-if="!marker.AllSizes" v-for="(size, sizeIndex) in marker.Sizes">
                                         <div class="size-container col-md-2">
                                             <div class="size-element" title="Remove this size">
                                                 <button :markerIndex="MarkerIndex" v-on:click="removeSize($event, MarkerIndex,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
@@ -155,9 +155,13 @@
                                                 <input type="text" v-on:change="vaidateMarker(MarkerIndex); genrateMarkerText(MarkerIndex);" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
                                             </div>
                                         </div>
-                                        @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">
+                                        @*<div class="col-md-1" v-if="marker.Sizes.length-1==sizeIndex">jw
                         </div>*@
                                     </template>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" v-model="marker.markerText" :readonly="!marker.markerTextEdit" :title="marker.markerText" class="form-control no-padding-input"
+                                           v-on:dblclick="editMarkerText(MarkerIndex)" v-on:blur="leaveMarkerText(MarkerIndex)" />
                                 </div>
                             </div>
                             @*<div v-else>

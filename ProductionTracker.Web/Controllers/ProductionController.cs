@@ -49,7 +49,7 @@ namespace ProductionTracker.Web.Controllers
             if(prodItems.CuttingInstructions.Count() > 0)
             { 
                 Session["prodItems"] = prodItems;
-                prodItems.CuttingInstructions.ForEach(ct => GetMarkerText(ct.Marker));
+                prodItems.CuttingInstructions.ForEach(ct => { if (string.IsNullOrEmpty(ct.Marker.MarkerSizeText)) GetMarkerText(ct.Marker); });
                 var errors = ExcelActions.GetErrors();
                 return Json(new { prodItems = new {prodItems.Date, CuttingInstructions = prodItems.CuttingInstructions.Select(ct =>
                 {

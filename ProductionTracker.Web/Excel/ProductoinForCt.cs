@@ -19,6 +19,7 @@ namespace ProductionTracker.Web.Excel
         public List<ColorMaterial> ColorMaterials { get; set; }
         public int LotNumber { get; set; }
         public bool AllSizes { get; set; }
+        public string MarkerText { get; set; }
         public int? PlannedProductionId { get; set; }
     }
     public class ProductionForCT
