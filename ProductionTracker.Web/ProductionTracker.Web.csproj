@@ -6553,6 +6553,7 @@
     <Content Include="Metronic\theme\sass\pages\profile.scss" />
     <Content Include="Metronic\theme\sass\pages\search.scss" />
     <Content Include="Metronic\theme\sass\pages\tasks.scss" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -1,4 +1,7 @@
-﻿.hasError {
+﻿body{
+    zoom:.9;
+}
+.hasError {
     color: red;
     border: 2px solid red;
 }
@@ -27,6 +30,7 @@ td.small-input {
     -ms-flex-align: stretch;
     align-items: stretch;
     width: 100%;
+    font-size:13px;
 }
 
 .s-input-group-prepend {
@@ -72,7 +76,7 @@ td.small-input {
     /*appearance: none;*/
 }
 .all-season-select {
-    font-size: 14px !important;
+    font-size: 13px !important;
 }
 .recived-backround {
     background-color: lightsalmon;
