@@ -1,4 +1,8 @@
-﻿<div id="app" v-cloak>
+﻿@{
+    ViewBag.Title = "Dashbord";
+}
+
+<div id="app" v-cloak>
     <img src="~/Metronic/theme/assets/global/img/loading-spinner-grey.gif" align="middle" />
     <div class="row site-body">
         <h1 class="page-header text-center">{{pageHeader}}</h1>
@@ -21,10 +25,10 @@
                                         Filter
                                     </div>
                                     @*<div class="col-md-6">
-                                <button v-on:click="clearFillAllFilter(true)" class="btn btn-primary">Fill All</button>
-                                <button v-on:click="clearFillAllFilter(false)" class="btn btn-danger">Clear All</button>
-                                <button :disabled="applyBtnDisable" v-on:click="applyFilter" class="btn btn-default">Apply</button>
-                            </div>*@
+                                            <button v-on:click="clearFillAllFilter(true)" class="btn btn-primary">Fill All</button>
+                                            <button v-on:click="clearFillAllFilter(false)" class="btn btn-danger">Clear All</button>
+                                            <button :disabled="applyBtnDisable" v-on:click="applyFilter" class="btn btn-default">Apply</button>
+                                        </div>*@
                                     <div v-on:click.stop="" class="tools col-md-3" style="text-align:end;">
                                         <a href="javascript:;" v-on:click="openClosePortlet" v-bind:class="productionItems.displayBody.expandTool" data-original-title="" title=""> </a>
                                         <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
@@ -55,10 +59,10 @@
                                                 <div class="panel-body">
                                                     <div class="row">
                                                         @*<div class="col-md-4 col-md-offset-1">
-                                                    <h4 class="selected-count-text">
-                                                        {{countMsg[k]}}
-                                                    </h4>
-                                                </div>*@
+                                                                <h4 class="selected-count-text">
+                                                                    {{countMsg[k]}}
+                                                                </h4>
+                                                            </div>*@
                                                         <div class="col-md-4">
                                                             <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,true)">Fill All</button>
                                                             <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtribute(k,false)">Clear</button>
@@ -92,8 +96,8 @@
                             <tr>
                                 @*<template v-for="header in tableHeaders">
 
-                            <th>{{header}}</th>
-                        </template>*@
+                                        <th>{{header}}</th>
+                                    </template>*@
                                 <th class="th-sort" v-on:click="productionItems.descSortKey = productionItems.sortKey==='Id' ? !productionItems.descSortKey : productionItems.descSortKey; productionItems.sortKey='Id'">
                                     <span>Id</span>
                                     <i v-if="(!productionItems.descSortKey && productionItems.sortKey==='Id') || productionItems.sortKey!=='Id'" class="fa fa-sort-asc"></i>
@@ -217,10 +221,10 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             @*<div class="col-md-4 col-md-offset-1">
-                                                <h4 class="selected-count-text">
-                                                    {{countMsg[k]}}
-                                                </h4>
-                                            </div>*@
+                                                                    <h4 class="selected-count-text">
+                                                                        {{countMsg[k]}}
+                                                                    </h4>
+                                                                </div>*@
                                                             <div class="col-md-4">
                                                                 <button class="btn-success btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,true)">Fill All</button>
                                                                 <button class="btn-danger btn-circle filter-btns" v-on:click="checkClearBoxesAtributeSeason(k,false)">Clear</button>
@@ -286,8 +290,8 @@
                             <tr>
                                 @*<template v-for="header in tableHeaders">
 
-                <th>{{header}}</th>
-                </template>*@
+                                    <th>{{header}}</th>
+                                    </template>*@
                                 <th class="th-sort" v-on:click="seasonItems.descSortKey = seasonItems.sortKey==='Id' ? !seasonItems.descSortKey : seasonItems.descSortKey; seasonItems.sortKey='Id'">
                                     <span>Id</span>
                                     <i v-if="(!seasonItems.descSortKey && seasonItems.sortKey==='Id') || seasonItems.sortKey!=='Id'" class="fa fa-sort-asc"></i>
@@ -513,7 +517,7 @@
                         </table>
                         <a href="#" v-on:click="moreDetails(details.itemDefalt.item.Id)">More Details</a>
                     </div>
-                    <div >
+                    <div>
                         <template v-if="details.data" v-for="(result,index) in details.data">
                             <div v-if="details.data.length > 1 && result.season" class="row well season-detail-banner">
                                 <table>
@@ -532,7 +536,7 @@
                                                 </div>
                                             </div>
                                             <div v-else>
-                                                    <h4>{{result.season.Name}}</h4>
+                                                <h4>{{result.season.Name}}</h4>
                                             </div>
                                         </th>
                                         <template v-if="result.season.TotalQuantitys">
@@ -599,8 +603,8 @@
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Metronic/theme/assets/global/plugins/jquery-ui/jquery-ui.min.js"></script>
     <script src="~/Scripts/SiteScripts/Index.js"></script>
-    
-    }
+
+}
 
 @section css{
     <link rel="stylesheet" href="~/Content/Index.css">
