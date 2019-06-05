@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers.cs" />
+    <Compile Include="MarkerRespository.cs" />
     <Compile Include="Models\CuttingInstructionItemWithQuantityRecived.cs" />
     <Compile Include="Manufacturing.cs">
       <DependentUpon>Manufacturing.dbml</DependentUpon>
