@@ -12,6 +12,7 @@
         overflow: auto;
         max-height: 750px;
     }
+
     .color-table {
         overflow: auto;
         background-color: #7e98b3;
@@ -19,51 +20,54 @@
     }
 </style>
 
-
-<div class="row " style="margin-top:25px;">
-    
+<div id="app">
+    <div class="row" style="margin-top:25px;">
+        
         <div class="col-md-5 col-lg-offset-1 well color-form">
-            <form class="form" action="/Item/AddColors" method="post">
-                <h3 id="color-form-header" style="text-align:center; font-weight:bold;">Enter the colors you want to add </h3>
-                <br />
-                <button id="btn-row-adder" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
-                <table class="table table-bordered table-responsive" id="color-form-table">
-                    <tr>
-                        <th style="text-align:center;">Id</th>
-                        <th style="text-align:center;">Color</th>
-                    </tr>
+            <h3 id="color-form-header" style="text-align:center; font-weight:bold;">Enter the colors you want to add </h3>
+            <br />
+            <button @*id="btn-row-adder"*@ v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
+            <table class="table table-bordered table-responsive" id="color-form-table">
+                <tr>
+                    <th style="text-align:center;">Id</th>
+                    <th style="text-align:center;">Color</th>
+                </tr>
+                <template v-for="color in formColors">
                     <tr>
                         <td>
-                            <input type="text" placeholder="Id" name="colors[0].Id" class="form-control" />
+                            <input type="text" placeholder="Id" name="color.Id" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" placeholder="Color" name="colors[0].Name" class="form-control" />
+                            <input type="text" placeholder="Color" name="color.Name" class="form-control" />
                         </td>
                     </tr>
-                </table>
-                <button class="btn btn-primary btn-lg">Submit</button>
-            </form>
-</div>
-    <div class="col-md-5 col-lg-offset-1 color-table" >
-        <h3 style="text-align:center; font-weight:bold;">Colors </h3>
-        <table class="table table-bordered table-responsive table-striped table-hover">
-            <tr>
-                <th style="text-align:center;">Id</th>
-                <th style="text-align:center;">Color</th>
-            </tr>
-            @foreach (var color in Model.Colors)
-            {
-            <tr>
-                <td>@color.Id</td>
-                <td>@color.Name</td>
-            </tr>
-            }
-        </table>
+                </template>
+            </table>
+            <button class="btn btn-primary btn-lg">Submit</button>
+        </div>
+        <div class="col-md-5 col-lg-offset-1 color-table">
+            <h3 style="text-align:center; font-weight:bold;">Colors </h3>
+            <table class="table table-bordered table-responsive table-striped table-hover">
+                <tr>
+                    <th style="text-align:center;">Id</th>
+                    <th style="text-align:center;">Color</th>
+                </tr>
+                @foreach (var color in Model.Colors)
+                {
+                    <tr>
+                        <td>@color.Id</td>
+                        <td>@color.Name</td>
+                    </tr>
+                }
+            </table>
         </div>
 
     </div>
+</div>
 
 @section scripts{
     <script src="~/Scripts/SiteScripts/Colors.js"></script>
-    }
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/SiteScripts/color-vue.js"></script>
+}
 
