@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.Linq;
 using ProductionTracker.Data;
 using ProductionTracker.Web.Models;
+using Newtonsoft.Json;
 
 namespace ProductionTracker.Web.Controllers
 {
@@ -33,7 +34,7 @@ namespace ProductionTracker.Web.Controllers
         [HttpPost]
         public ActionResult ItemAdder(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
-            if(!departmentIds.NotNull() || !styles.NotNull() || !materialIds.NotNull() || !sleaves.NotNull() || !colorIds.NotNull())
+            if (!departmentIds.NotNull() || !styles.NotNull() || !materialIds.NotNull() || !sleaves.NotNull() || !colorIds.NotNull())
             {
                 return RedirectToAction("ItemAdder");
             }
@@ -44,9 +45,9 @@ namespace ProductionTracker.Web.Controllers
             {
                 item.SKU = GetSku(item);
             }
-            if(items != null && items.Count() >= 1)
+            if (items != null && items.Count() >= 1)
             {
-                return View("ConfirmationPage",items.OrderBy(i => i.SKU));
+                return View("ConfirmationPage", items.OrderBy(i => i.SKU));
             }
             return RedirectToAction("ItemAdder");
         }
@@ -63,7 +64,17 @@ namespace ProductionTracker.Web.Controllers
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
 
-            return View(new ColorVM { Colors = repo.GetColors()});
+            return View(new ColorVM { Colors = repo.GetColors() });
+        }
+        
+        [HttpGet]
+        public ActionResult GetColors()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetColors().Select(c =>
+            {
+                return JsonConvert.DeserializeObject<Color>(Helpers.GetBasePropertiesOnDbObject(c));
+            }), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult AddColors(List<Color> colors)
@@ -77,10 +88,10 @@ namespace ProductionTracker.Web.Controllers
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();
-            
+
             foreach (var dep in departmentIds)
             {
-                foreach(var style in styles)
+                foreach (var style in styles)
                 {
                     if (DepartmentRuleChecker(dep, style))
                     {
@@ -98,7 +109,7 @@ namespace ProductionTracker.Web.Controllers
                                         sizeList = sleave == 2 ? sizeList.Where(s => s.Id != 10 && s.Id != 11) : sizeList;
                                         foreach (var color in colorIds)
                                         {
-                                            foreach(var size in sizeList)
+                                            foreach (var size in sizeList)
                                             {
                                                 ItemList.Add(new Item
                                                 {
@@ -124,15 +135,15 @@ namespace ProductionTracker.Web.Controllers
         }
         private bool DepartmentRuleChecker(int department, int bodyStyle)
         {
-            if(department == 1 && (bodyStyle == 3 || bodyStyle == 5 || bodyStyle == 2))
+            if (department == 1 && (bodyStyle == 3 || bodyStyle == 5 || bodyStyle == 2))
             {
                 return false;
             }
-            else if(department == 3 && bodyStyle != 2)
+            else if (department == 3 && bodyStyle != 2)
             {
                 return false;
             }
-            else if(department == 4 && bodyStyle != 1)
+            else if (department == 4 && bodyStyle != 1)
             {
                 return false;
             }
@@ -144,7 +155,7 @@ namespace ProductionTracker.Web.Controllers
 
         private bool SleeveRuleChecker(int departemnt, int sleeve)
         {
-            if(sleeve == 2 && (departemnt == 2 || departemnt == 4))
+            if (sleeve == 2 && (departemnt == 2 || departemnt == 4))
             {
                 return false;
             }
@@ -168,7 +179,7 @@ namespace ProductionTracker.Web.Controllers
         //        {
         //            return kidSizes;
         //        }
-                
+
         //    }
         //    else if(depId == 2)
         //    {
@@ -227,7 +238,7 @@ namespace ProductionTracker.Web.Controllers
             {
                 return "b";
             }
-            else if(departmentId == 4)
+            else if (departmentId == 4)
             {
                 return "p";
             }
@@ -298,7 +309,6 @@ namespace ProductionTracker.Web.Controllers
             }
             return null;
         }
-
     }
     
 }

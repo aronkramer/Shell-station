@@ -35,15 +35,15 @@
                 <template v-for="color in formColors">
                     <tr>
                         <td>
-                            <input type="text" placeholder="Id" name="color.Id" class="form-control" />
+                            <input type="text" placeholder="Id" v-model="color.Id" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" placeholder="Color" name="color.Name" class="form-control" />
+                            <input type="text" placeholder="Color" v-model="color.Name" class="form-control" />
                         </td>
                     </tr>
                 </template>
             </table>
-            <button class="btn btn-primary btn-lg">Submit</button>
+            <button v-on:click="submitColors" class="btn btn-primary btn-lg">Submit</button>
         </div>
         <div class="col-md-5 col-lg-offset-1 color-table">
             <h3 style="text-align:center; font-weight:bold;">Colors </h3>
@@ -52,13 +52,21 @@
                     <th style="text-align:center;">Id</th>
                     <th style="text-align:center;">Color</th>
                 </tr>
-                @foreach (var color in Model.Colors)
+                @*@foreach (var color in Model.Colors)
                 {
                     <tr>
                         <td>@color.Id</td>
                         <td>@color.Name</td>
                     </tr>
-                }
+                }*@
+                <template v-for="color in listOfAllColors">
+                    <tr>
+                        <td>{{color.Id}}</td>
+                        <td>{{color.Name}}</td>
+
+                    </tr>
+                </template>
+
             </table>
         </div>
 
