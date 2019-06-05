@@ -82,6 +82,10 @@ namespace ProductionTracker.Data
             }
             return JsonConvert.SerializeObject(dict);
         }
+        public static T GetObjectBasePropertiesOnDbObject<T>(this T obj)
+        {
+            return JsonConvert.DeserializeObject<T>(obj.GetBasePropertiesOnDbObject());
+        }
 
     }
 }

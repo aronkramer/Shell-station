@@ -454,7 +454,8 @@ namespace ProductionTracker.Web.Controllers
         public void UpdatePlannedProductionNotes(PlannedProduction plannedProduction)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var currentItem = JsonConvert.DeserializeObject<PlannedProduction>(repo.GetPlannedProduction(plannedProduction.Id).GetBasePropertiesOnDbObject());
+            var currentItem = repo.GetPlannedProduction(plannedProduction.Id).GetObjectBasePropertiesOnDbObject();
+            
             repo.AddNewUpdateHistory(currentItem);
             currentItem.Notes = plannedProduction.Notes;
 

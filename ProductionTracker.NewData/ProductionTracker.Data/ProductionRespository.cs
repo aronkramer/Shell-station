@@ -739,8 +739,6 @@ namespace ProductionTracker.Data
         }
         
 
-
-
         public IEnumerable<CuttingInstruction> GetOpenedInstructions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -889,6 +887,7 @@ namespace ProductionTracker.Data
             };
             AddNewUpdateHistory(updateHistory);
         }
+
         public void AddNewUpdateHistory (UpdateHistory updateHistory)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
