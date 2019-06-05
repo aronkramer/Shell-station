@@ -2,7 +2,6 @@
     el: '#app',
     data: {
         formColors: [{ Id: null, Name: null }],
-        test:'hello'
     },
     methods: {
         addRowtoColorForm: function () {
