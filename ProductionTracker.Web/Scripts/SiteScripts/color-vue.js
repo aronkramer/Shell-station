@@ -23,10 +23,14 @@
 
         },
         getColors: function (func) {
-            $.get("/item/GetColors", result => {
-                this.listOfAllColors = result
+             var x = $.get("/item/GetColors", result => {
+                 this.listOfAllColors = result.map(r => {
+                     r.Edit = false;
+                     return r;
+                 });
             })
-
+            console.log('kgjh');
+            console.log(x.responseJSON);
         }
     }
 })

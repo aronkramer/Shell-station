@@ -887,6 +887,7 @@ namespace ProductionTracker.Data
                 PropertyType = obj.GetType().Name,
                 OldObjectData = Helpers.GetBasePropertiesOnDbObject(obj)
             };
+            
             AddNewUpdateHistory(updateHistory);
         }
         public void AddNewUpdateHistory (UpdateHistory updateHistory)
