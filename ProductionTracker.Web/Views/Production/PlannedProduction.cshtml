@@ -3,15 +3,8 @@
     ViewBag.Title = "Planned Production";
 }
 <style>
-    .action-btn-td {
-        padding-top: 0px !important;
-        padding-left: 0px !important;
-    }
-    .action-btn-span{
-        
-        font-size:2em;
-    }
-    .save-btn {
+    
+    /*.save-btn {
         padding-left: 5px;
         padding-right: 5px;
         margin-right: 5px;
@@ -20,9 +13,8 @@
     }
     .save-btn:hover {
         cursor: pointer;
-        /*background-color: #b7b4b4;*/
         color:black;
-    }
+    }*/
     .medium-input {
         width: 125px;
     }
@@ -213,10 +205,15 @@
                                                     <input class="small-input" @*v-on:blur="existingItems[index].Edit = !existingItems[index].Edit"*@ v-on:change="validatePlannedProd" type="number" v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]" v-model="item.Quantity" />
                                                 </td>
                                                 <td class="action-btn-td">
-                                                    <span class="action-btn-span"><span class="save-btn"><i title="Save"  v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span><a title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class=" btn btn-circle red-sunglo btn-sm"><i class="fa fa-trash"></i></a></span>
-                                                    @*<a v-on:click="deleteAExistingItem(index)" class="btn btn-circle red-sunglo btn-sm" data-title="Do you agree to the Terms and Conditions?" data-type="warning" data-allow-outside-click="true" data-show-confirm-button="true" data-show-cancel-button="true" data-cancel-button-class="btn-danger" data-cancel-button-text="No, I do not agree" data-confirm-button-text="Yes, I agree" data-confirm-button-class="btn-info">X</a>*@
-                                                    <br />
-                                                    <button title="Cancel" class="btn btn-circle default" V-on:click="item.Edit = false; item.Quantity = item.QuanityCopy;">Cancel</button>
+                                                    <span class="action-btn-span">
+                                                        <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span>
+                                                        <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                                        <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="item.Edit = false; item.Quantity = item.QuanityCopy;">Cancel</button>
+
+                                                        @*<a v-on:click="deleteAExistingItem(index)" class="btn btn-circle red-sunglo btn-sm"
+                                                            data-title="Do you agree to the Terms and Conditions?" data-type="warning" data-allow-outside-click="true" data-show-confirm-button="true" data-show-cancel-button="true" data-cancel-button-class="btn-danger" data-cancel-button-text="No, I do not agree" data-confirm-button-text="Yes, I agree" data-confirm-button-class="btn-info">X</a>*@
+
+                                                    </span>
                                                 </td>
                                             </tr>
                                             <tr v-else >

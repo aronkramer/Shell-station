@@ -147,7 +147,11 @@
             }); 
             this.tableHeaders = ['Id', 'SKU', 'Last Production Date', 'Items In Production', 'actions'];
             $.get("/home/GetAllItemsWithDetails", SKU => {
-                this.productionItems.items = SKU;
+                this.productionItems.items = SKU.map(function (r) {
+                    r.ItemsNotReceived = +r.ItemsNotReceived;
+                    return r;
+                    });
+
                 //this.itemsInProduction = SKU;
                 $('.byItems').unblock();
                 this.getTheDataTables();
