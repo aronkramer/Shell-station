@@ -106,3 +106,35 @@ td.small-input {
     width: 130px;
     height:75px;
 }
+
+.font-awsome-span {
+    margin-right: -5px;
+    height: 5px;
+    width: 2px;
+    font-size: 23px;
+}
+    .font-awsome-span:hover {
+        cursor: pointer;
+        color: dodgerblue !important;
+    }
+    .font-awsome-span.save-btn {
+        color: #14141599;
+    }
+    .font-awsome-span.delete-btn {
+        color: #ec1616;
+    }
+.cancel-btn {
+    padding: 1px 2px;
+    font-size: 12px;
+}
+.action-btn-td {
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+}
+
+.action-btn-span {
+    font-size: 2em;
+}
+.modal-dialog .row {
+    margin: 0px;
+}
