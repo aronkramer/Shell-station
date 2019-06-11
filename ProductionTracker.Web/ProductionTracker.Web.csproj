@@ -171,6 +171,7 @@
     <Compile Include="Controllers\FabricController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\MarkerController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\TestingController.cs" />
     <Compile Include="Excel\ExcelActions.cs" />
@@ -6693,6 +6694,7 @@
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
     <Content Include="Views\Production\PlannedProduction.cshtml" />
     <Content Include="Views\Production\ReciveItems.cshtml" />
+    <Content Include="Views\Marker\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

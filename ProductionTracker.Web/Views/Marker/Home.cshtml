@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Marker";
+}
+<style>
+    .defalt-tr {
+        background-color: #e2d3a8;
+    }
+    .defalt-td {
+        background-color: #e0d339;
+        color: #fdfdfd;
+        text-align: center;
+        font-weight: 800;
+        vertical-align:middle;
+    }
+    .mDefalt-btn {
+        width: 117.97916599999999px;
+    }
+</style>
+
+<div id="app" class="row">
+    <!--The marker table-->
+    <div class="col-md-10 col-md-offset-1">
+        @*<div class="row">
+                <div class="col-md-2 very-little-margin">
+                    <p><h4>Showing {{orderedArraySeason ? orderedArraySeason.length : 0}} items</h4></p>
+                </div>
+            </div>*@
+        <div>
+            <table class="table table-bordered table-responsive table-striped">
+
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Department
+                    </th>
+                    <th>
+                        Sleeve
+                    </th>
+                    <th>
+                        BodyStyle
+                    </th>
+                    <th>
+                        Defalt Size Breakdown
+                    </th>
+                </tr>
+                <template v-for="(item,index) in markerCatergories">
+                    <tr>
+                        <td>
+                            <div style="position: relative !important;">
+                                <span style="position: absolute !important; top: 3px;left:-9px;">
+                                    <button v-on:click="item.DetailsOpened = !item.DetailsOpened;" class="icon-btn-minus">
+                                        <i class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i>
+                                    </button>
+                                </span><span style="margin-left: 25px;">{{item.Name}}</span>
+                            </div>
+                        </td>
+                        <td>{{item.Department.Name}}</td>
+                        <td>{{item.Sleeve.Name}}</td>
+                        <td>{{item.BodyStyle.Name}}</td>
+                        <td>{{item.DefaltMarker.SizeText}}</td>
+                    </tr>
+                    <tr v-if="item.Markers && item.DetailsOpened">
+                        <td colspan="8" class="details-well">
+                            <div class="col-md-6 col-md-offset-3">
+                                <table class="table table-bordered table-hover table-responsive">
+                                    <tr>
+                                        <th></th>
+                                        <th>Date Created</th>
+                                        <th>Sizes breakdown</th>
+                                    </tr>
+                                    <tr class="defalt-tr">
+                                        <td class="defalt-td">Defalt</td>
+                                        <td>{{item.DefaltMarker.CreatedOn}}</td>
+                                        <td>{{item.DefaltMarker.SizeText}}</td>
+                                    </tr>
+                                    <template v-for="marker in item.Markers">
+                                        <tr v-if="marker.Id !== item.DefaltMarkerId">
+                                            <td class="mDefalt-btn"><button v-if="marker.MarkerDetails.length > 1" class="btn default red-stripe">Make Defalt</button></td>
+                                            <td>{{marker.CreatedOn}}</td>
+                                            <td>{{marker.SizeText}}</td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                            <div v-if="item.PlannedProdDetailsId" class="col-md-3">
+                                <label>Notes</label>
+                                <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+
+
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/SiteScripts/marker-vue.js"></script>
+}
