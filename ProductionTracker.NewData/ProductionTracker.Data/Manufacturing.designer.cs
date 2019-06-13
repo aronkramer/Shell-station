@@ -3669,6 +3669,8 @@ namespace ProductionTracker.Data
 		
 		private System.Nullable<System.DateTime> _ModifiedOn;
 		
+		private bool _Deleted;
+		
 		private EntitySet<MarkerDetail> _MarkerDetails;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -3693,6 +3695,8 @@ namespace ProductionTracker.Data
     partial void OnCreatedOnChanged();
     partial void OnModifiedOnChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedOnChanged();
+    partial void OnDeletedChanging(bool value);
+    partial void OnDeletedChanged();
     #endregion
 		
 		public Marker()
@@ -3824,6 +3828,26 @@ namespace ProductionTracker.Data
 					this._ModifiedOn = value;
 					this.SendPropertyChanged("ModifiedOn");
 					this.OnModifiedOnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deleted", DbType="Bit NOT NULL")]
+		public bool Deleted
+		{
+			get
+			{
+				return this._Deleted;
+			}
+			set
+			{
+				if ((this._Deleted != value))
+				{
+					this.OnDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._Deleted = value;
+					this.SendPropertyChanged("Deleted");
+					this.OnDeletedChanged();
 				}
 			}
 		}
