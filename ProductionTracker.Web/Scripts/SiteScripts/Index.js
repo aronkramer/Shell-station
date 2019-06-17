@@ -535,7 +535,7 @@
         }
 
 
-//old ways of doing thing
+    //#region old ways of doing thing
         //detailsForItem: function (event) {
         //    this.detailHeaders = ['Transaction Type', 'Date', 'Quantity'];
         //    this.currentProduction = '';
@@ -606,7 +606,7 @@
         //    console.log(isRight);
         //    return $(isRight).size() > 0;
         //},
-
+//#endregion
 
     },
     computed: {
