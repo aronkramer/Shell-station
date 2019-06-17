@@ -878,6 +878,7 @@ namespace ProductionTracker.Data
 
         public void AddNewUpdateHistory (dynamic obj, string action = "updated")
         {
+            action = action ?? "updated";
             var updateHistory = new UpdateHistory
             {
                 Action = action,
