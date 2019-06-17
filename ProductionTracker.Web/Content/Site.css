@@ -130,6 +130,7 @@ td.small-input {
 .action-btn-td {
     padding-top: 0px !important;
     padding-left: 0px !important;
+    white-space: nowrap;
 }
 
 .action-btn-span {
@@ -138,6 +139,6 @@ td.small-input {
 .modal-dialog .row {
     margin: 0px;
 }
-.defalt-tr {
-    background-color: #e2d3a8;
+.editing-background {
+    background-color: #e4e089;
 }

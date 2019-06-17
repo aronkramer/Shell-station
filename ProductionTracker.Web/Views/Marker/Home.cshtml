@@ -63,25 +63,55 @@
                         <td>{{item.DefaltMarker.SizeText}}</td>
                     </tr>
                     <tr v-if="item.Markers && item.DetailsOpened">
-                        <td colspan="8" class="details-well">
-                            <div class="col-md-6 col-md-offset-3">
+                        <td colspan="5" class="details-well">
+                            <div class="col-md-8 col-md-offset-2">
                                 <table class="table table-bordered table-hover table-responsive">
                                     <tr>
                                         <th></th>
                                         <th>Date Created</th>
                                         <th>Sizes breakdown</th>
+                                        <th>Length</th>
+                                        <th colspan="2">Waste percentage</th>
                                     </tr>
-                                    <tr class="defalt-tr">
+                                    @*<tr class="defalt-tr">
                                         <td class="defalt-td">Defalt</td>
-                                        <td>{{item.DefaltMarker.CreatedOn}}</td>
+                                        <td>{{item.DefaltMarker.CreatedOn | toShortDateString}}</td>
                                         <td>{{item.DefaltMarker.SizeText}}</td>
-                                    </tr>
-                                    <template v-for="marker in item.Markers">
-                                        <tr v-if="marker.Id !== item.DefaltMarkerId">
-                                            <td class="mDefalt-btn"><button v-if="marker.MarkerDetails.length > 1" class="btn default red-stripe">Make Defalt</button></td>
-                                            <td>{{marker.CreatedOn}}</td>
+                                        <td>{{item.DefaltMarker.Length}}</td>
+                                        <td>{{item.DefaltMarker.PercentWaste}}</td>
+                                    </tr>*@
+                                    <template v-for="(marker, markerIndex) in item.Markers">
+                                        <tr v-on:dblclick="edit(index,markerIndex)" :class="{'defalt-tr' : marker.Id === item.DefaltMarkerId, 'editing-background' : marker.Edit}">
+                                            <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}"><span v-if="marker.Id === item.DefaltMarkerId">Defalt</span><button v-if="marker.MarkerDetails.length > 1 && marker.Id !== item.DefaltMarkerId" class="btn default red-stripe">Make Defalt</button></td>
+                                            <td>{{marker.CreatedOn | toShortDateString}}</td>
                                             <td>{{marker.SizeText}}</td>
+                                            <template v-if="!marker.Edit">
+                                                <td>{{marker.Length}}</td>
+                                                <td colspan="2">{{marker.PercentWaste | percentage}}</td>
+                                            </template>
+                                            <template v-if="marker.Edit">
+                                                <td>
+                                                    <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.Length" />
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.PercentWaste" />
+                                                </td>
+                                                <td class="action-btn-td">
+                                                    <span class="action-btn-span">
+                                                        <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateMarker(index,markerIndex)" class="fa fa-save"></i></span>
+                                                        <span title="Delete" v-on:click="deleteMarker(index,markerIndex)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                                        <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(index,markerIndex)">Cancel</button>
+                                                    </span>
+                                                </td>
+                                            </template>
                                         </tr>
+                                        @*<div v-if="marker.Edit" class="action-btn-td">
+                                            <span class="action-btn-span">
+                                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span>
+                                                <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(index,markerIndex)">Cancel</button>
+                                            </span>
+                                        </div>*@
                                     </template>
                                 </table>
                             </div>
