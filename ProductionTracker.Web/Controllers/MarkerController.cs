@@ -68,8 +68,9 @@ namespace ProductionTracker.Web.Controllers
 
                             };
 
-                        })
-
+                        }),
+                        mc.Marker.Length,
+                        mc.Marker.PercentWaste
 
                     },
                     Markers = mc.Markers.Select(m =>
@@ -79,6 +80,8 @@ namespace ProductionTracker.Web.Controllers
                             m.Id,
                             m.CreatedOn,
                             m.ModifiedOn,
+                            m.Length,
+                            m.PercentWaste,
                             MarkerDetails = m.MarkerDetails.Select(mmd =>
                             {
                                 return new
@@ -100,6 +103,7 @@ namespace ProductionTracker.Web.Controllers
                         };
                     })
                 };
+                
                 //markerCat.Marker = mc.Marker.GetObjectBasePropertiesOnDbObject();
                 //markerCat.Marker.MarkerCategories = null;
                 //markerCat.Markers = mc.Markers.Select(m =>
@@ -119,10 +123,28 @@ namespace ProductionTracker.Web.Controllers
                 //return markerCat;
 
             }).ToList();
-
             var x = item;
             return Json(item,JsonRequestBehavior.AllowGet);
 
+        }
+
+        [HttpPost]
+        public void UpdateMarker(Marker marker)
+        {
+            var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
+            var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var originalMarker = repo.GetMarker(marker.Id);
+            prodRepo.AddNewUpdateHistory(originalMarker, marker.Deleted ? "deleted": null );
+            repo.UpdateMarker(originalMarker.SetOrginalDbObjToUpdated(marker));
+        }
+        [HttpPost]
+        public void UpdateMarkerCat(MarkerCategory markerCategory)
+        {
+            var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
+            var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            var originalMarker = repo.GetMarkerCategory(markerCategory.Id);
+            prodRepo.AddNewUpdateHistory(originalMarker);
+            repo.UpdateMarkerCat(originalMarker.SetOrginalDbObjToUpdated(markerCategory));
         }
     }
 }
