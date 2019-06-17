@@ -29,7 +29,10 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<Marker>(m => m.MarkerDetails);
                 loadOptions.LoadWith<MarkerDetail>(m => m.Size);
                 context.LoadOptions = loadOptions;
-                return context.MarkerCategories.ToList();
+                return context.MarkerCategories.ToList().Select(m => {
+                    m.Markers = m.Markers.Where(ma => !ma.Deleted).ToEntitySet();
+                    return m;
+                });
             }
         }
 
@@ -72,5 +75,32 @@ namespace ProductionTracker.Data
 
         }
 
+        public void UpdateMarker(Marker marker)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                marker.ModifiedOn = DateTime.Now;
+                context.Markers.Attach(marker);
+                context.Refresh(RefreshMode.KeepCurrentValues, marker);
+                context.SubmitChanges();
+            }
+
+        }
+
+        public Marker GetMarker (int Id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Markers.FirstOrDefault(m => m.Id == Id);
+            }
+        }
+
+        public MarkerCategory GetMarkerCategory(int Id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.MarkerCategories.FirstOrDefault(m => m.Id == Id);
+            }
+        }
     }
 }
