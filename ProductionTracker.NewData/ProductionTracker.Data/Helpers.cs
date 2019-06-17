@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace ProductionTracker.Data
 {
@@ -58,7 +59,12 @@ namespace ProductionTracker.Data
                 typeof(bool),
                 typeof(DateTime),
                 typeof(decimal),
-                typeof(double)
+                typeof(double),
+                typeof(int?),
+                typeof(bool?),
+                typeof(DateTime?),
+                typeof(decimal?),
+                typeof(double?)
             };
             return types.Contains(source);
         }
@@ -82,10 +88,48 @@ namespace ProductionTracker.Data
             }
             return JsonConvert.SerializeObject(dict);
         }
+
+
         public static T GetObjectBasePropertiesOnDbObject<T>(this T obj)
         {
             return JsonConvert.DeserializeObject<T>(obj.GetBasePropertiesOnDbObject());
         }
 
+        public static bool DefaltOrNull<T>(this T obj)
+        {
+            //T x = obj;
+            //var def = default(T);
+            //var result = EqualityComparer<T>.Default.Equals(obj, default(T));
+            //return result;
+            //return EqualityComparer<T>.Default.Equals(obj, default(T));
+            if (obj == null) return true;
+            var x = typeof(EqualityComparer<>).MakeGenericType(obj.GetType());
+            var t = x.GetProperties(BindingFlags.Static | BindingFlags.Public);
+            var defaultEquality = t[0];
+            var method = x.GetMethods().First(m => m.Name == "Equals");
+            return (bool)method.Invoke(defaultEquality.GetValue(null), new object[] { obj, default(T) });
+        }
+
+
+        public static T SetOrginalDbObjToUpdated<T>(this T original, T updated)
+        {
+            original = original.GetObjectBasePropertiesOnDbObject();            
+            foreach (var propertyInfo in updated.GetType()
+                                .GetProperties(
+                                        BindingFlags.Public
+                                        | BindingFlags.Instance))
+            {
+                if (propertyInfo.PropertyType.IsOfGenericType())
+                {
+                    var value = propertyInfo.GetValue(updated,null);
+                    if (!value.DefaltOrNull())
+                    {
+                        propertyInfo.SetValue(original, value, null);
+                        
+                    }
+                }
+            }
+            return original;
+        }
     }
 }
