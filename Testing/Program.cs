@@ -10,42 +10,48 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
-            var obj = repo.GetPlannedProductionDetail(1);
+            string r = null;
+            Console.WriteLine(r.DefaltOrNull());
 
-            repo.AddNewUpdateHistory(obj);
-            //repo.AddNewUpdateHistory(new UpdateHistory
+
+            #region Historys
+            //var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
+            //var obj = repo.GetPlannedProductionDetail(1);
+
+            //repo.AddNewUpdateHistory(obj);
+            ////repo.AddNewUpdateHistory(new UpdateHistory
+            ////{
+            ////    Action = "updated",
+            ////    PropertyId = obj.Id,
+            ////    PropertyType = obj.GetType().Name,
+            ////    OldObjectData = obj.GetBasePropertiesOnDbObject()
+            ////});
+            //var historys = repo.GetUpdateHistories();
+
+            //historys.ToList().ForEach(h =>
             //{
-            //    Action = "updated",
-            //    PropertyId = obj.Id,
-            //    PropertyType = obj.GetType().Name,
-            //    OldObjectData = obj.GetBasePropertiesOnDbObject()
-            //});
-            var historys = repo.GetUpdateHistories();
-
-            historys.ToList().ForEach(h =>
-            {
-                Console.WriteLine($"{ h.PropertyType} - { h.Action} TimeStamp {h.CreatedOn} Old data --- {h.OldObjectData}");
+            //    Console.WriteLine($"{ h.PropertyType} - { h.Action} TimeStamp {h.CreatedOn} Old data --- {h.OldObjectData}");
             
-            });
-            var decerlized = JsonConvert.DeserializeObject (historys.ToList()[5].OldObjectData);
-            Console.WriteLine("History of one item");
-            var histoyOfItem = historys.Where(h => h.PropertyType == obj.GetType().Name && h.PropertyId == obj.Id).Select(h => {
-                dynamic re = JsonConvert.DeserializeObject(h.OldObjectData,obj.GetType());
-                re.ModifiedOn = h.CreatedOn;
-                return re;
-            });
-            var i = 0;
-            foreach(dynamic h in histoyOfItem)
-            {
-                i++;
-                Console.WriteLine($"{i}) {h.Id} - {h.Name}");
-            }
-            //histoyOfItem.ToList().ForEach(h =>
+            //});
+            //var decerlized = JsonConvert.DeserializeObject (historys.ToList()[5].OldObjectData);
+            //Console.WriteLine("History of one item");
+            //var histoyOfItem = historys.Where(h => h.PropertyType == obj.GetType().Name && h.PropertyId == obj.Id).Select(h => {
+            //    dynamic re = JsonConvert.DeserializeObject(h.OldObjectData,obj.GetType());
+            //    re.ModifiedOn = h.CreatedOn;
+            //    return re;
+            //});
+            //var i = 0;
+            //foreach(dynamic h in histoyOfItem)
             //{
             //    i++;
             //    Console.WriteLine($"{i}) {h.Id} - {h.Name}");
-            //});
+            //}
+            ////histoyOfItem.ToList().ForEach(h =>
+            ////{
+            ////    i++;
+            ////    Console.WriteLine($"{i}) {h.Id} - {h.Name}");
+            ////});
+            #endregion
 
             //UpdateComleatedToMarkAsCompleate();
             //var repo = new ProductionRespository(Properties.Settings.Default.ManuConst);
