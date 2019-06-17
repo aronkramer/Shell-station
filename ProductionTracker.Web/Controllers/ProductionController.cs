@@ -454,12 +454,13 @@ namespace ProductionTracker.Web.Controllers
         public void UpdatePlannedProductionNotes(PlannedProduction plannedProduction)
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-            var currentItem = repo.GetPlannedProduction(plannedProduction.Id).GetObjectBasePropertiesOnDbObject();
-            
-            repo.AddNewUpdateHistory(currentItem);
-            currentItem.Notes = plannedProduction.Notes;
+            //var currentItem = repo.GetPlannedProduction(plannedProduction.Id).GetObjectBasePropertiesOnDbObject();
 
-            repo.UpdatePlannedProduction(currentItem);
+            //repo.AddNewUpdateHistory(currentItem);
+            //currentItem.Notes = plannedProduction.Notes;
+            var currentItem = repo.GetPlannedProduction(plannedProduction.Id);
+            repo.AddNewUpdateHistory(currentItem);
+            repo.UpdatePlannedProduction(currentItem.SetOrginalDbObjToUpdated(plannedProduction));
         }
 
         [HttpPost]
@@ -591,6 +592,7 @@ namespace ProductionTracker.Web.Controllers
             //return markerSize.ToString();
 
         }
+
 
         private int GetFabricId(int matId, int colId)
         {
