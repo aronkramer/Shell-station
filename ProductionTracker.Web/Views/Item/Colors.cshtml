@@ -19,7 +19,7 @@
         max-height: 750px;
     }
     .being-edited-background {
-        background-color: #f4eb42;
+        background-color: #f4eb42 !important;
     }
 </style>
 
@@ -54,7 +54,7 @@
             <table class="table table-bordered table-responsive table-striped table-hover">
                 <tr>
                     <th style="text-align:center;">Id</th>
-                    <th style="text-align:center;">Color</th>
+                    <th colspan="2" style="text-align:center;">Color</th>
 
                 </tr>
                 @*@foreach (var color in Model.Colors)
@@ -65,11 +65,17 @@
                         </tr>
                     }*@
                 <template v-for="(color,index) in listOfAllColors">
-                    <tr>
+                    <tr :class="{'being-edited-background': color.Edit}">
                         <td>{{color.Id}}</td>
-                        <td :class="{'being-edited-background': color.Edit}" v-on:dblclick="color.Edit = !color.Edit;" tabindex="1">
+                        <td :colspan="!color.Edit ? 2 : 1"  v-on:dblclick="color.Edit = !color.Edit;" tabindex="1">
                             <span v-if="!color.Edit">{{color.Name}}</span>
-                            <input v-else @*style="background-color:#78a4bd;"*@  v-model="color.Name"/>
+                            <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
+                        <td v-if="color.Edit" class="action-btn-td">
+                            <span class="action-btn-span">
+                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="savetest(index)" class="fa fa-save"></i></span>
+                                <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; item.Edit = false; item.Quantity = item.QuanityCopy;">Cancel</button>
+                            </span>
                         </td>
 
                     </tr>
