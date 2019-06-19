@@ -209,11 +209,12 @@
                                                         <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span>
                                                         <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
                                                         <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="item.Edit = false; item.Quantity = item.QuanityCopy;">Cancel</button>
-
-                                                        @*<a v-on:click="deleteAExistingItem(index)" class="btn btn-circle red-sunglo btn-sm"
-                                                            data-title="Do you agree to the Terms and Conditions?" data-type="warning" data-allow-outside-click="true" data-show-confirm-button="true" data-show-cancel-button="true" data-cancel-button-class="btn-danger" data-cancel-button-text="No, I do not agree" data-confirm-button-text="Yes, I agree" data-confirm-button-class="btn-info">X</a>*@
-
                                                     </span>
+                                                        <!--#region hide  -->
+                                                        @*<a v-on:click="deleteAExistingItem(index)" class="btn btn-circle red-sunglo btn-sm"
+                                                        data-title="Do you agree to the Terms and Conditions?" data-type="warning" data-allow-outside-click="true" data-show-confirm-button="true" data-show-cancel-button="true" data-cancel-button-class="btn-danger" data-cancel-button-text="No, I do not agree" data-confirm-button-text="Yes, I agree" data-confirm-button-class="btn-info">X</a>*@
+                                                        <!--#endregion -->
+                                                    
                                                 </td>
                                             </tr>
                                             <tr v-else >

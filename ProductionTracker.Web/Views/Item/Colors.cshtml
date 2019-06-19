@@ -60,21 +60,21 @@
                 @*@foreach (var color in Model.Colors)
                     {
                         <tr>
-                            <td>@color.Id</td>
-                            <td>@color.Name</td>
+                                    <td>@color.Id</td>
+                                    <td>@color.Name</td>
                         </tr>
                     }*@
                 <template v-for="(color,index) in listOfAllColors">
                     <tr :class="{'being-edited-background': color.Edit}">
                         <td>{{color.Id}}</td>
-                        <td :colspan="!color.Edit ? 2 : 1"  v-on:dblclick="color.Edit = !color.Edit;" tabindex="1">
+                        <td :colspan="!color.Edit ? 2 : 1"  v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
                             <span v-if="!color.Edit">{{color.Name}}</span>
                             <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
                         <td v-if="color.Edit" class="action-btn-td">
                             <span class="action-btn-span">
-                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="savetest(index)" class="fa fa-save"></i></span>
-                                <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; item.Edit = false; item.Quantity = item.QuanityCopy;">Cancel</button>
+                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>
+                                <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
                             </span>
                         </td>
 

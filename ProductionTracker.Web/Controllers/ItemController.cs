@@ -85,6 +85,14 @@ namespace ProductionTracker.Web.Controllers
             return RedirectToAction("Colors");
         }
 
+        
+        [HttpPost]
+        public void EditColors(int ColorId, string ColorName)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditColor(ColorId, ColorName);
+        }
+
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();
