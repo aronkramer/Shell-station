@@ -2,9 +2,15 @@
     el: '#app',
     mounted: function () {
         this.getMarkerCats();
+        this.getTheDataTables();
     },
     data: {
-        markerCatergories:[]
+        markerCatergories: [],
+        bodyStyles: [],
+        sleeves: [],
+        departments: [],
+        sizes: []
+        
     },
     methods: {
         markerSizeText: function (markerDetails) {
@@ -21,10 +27,14 @@
                     r.DefaltMarker.SizeText = this.markerSizeText(r.DefaltMarker.MarkerDetails);
                     //r.DefaltMarker.CreatedOn = moment(r.DefaltMarker.CreatedOn).format('MM/DD/YYYY');
                     r.Markers = r.Markers.map(m => {
+                        //made the size text based on the defalt marker
                         m.SizeText = this.markerSizeText(m.MarkerDetails);
-                        //m.CreatedOn = moment(m.CreatedOn).format('MM/DD/YYYY');
+                        //for editing a place to copy and a place to have a editing
                         m.Copy = null;
                         m.Edit = false;
+                        //new marker object set to null will check if its null before opening the form
+                        m.NewMarker = null;
+
                         return m;
                     });
                     r.DetailsOpened = false;
@@ -76,7 +86,44 @@
         },
         updateMarkerInDb: function (marker, func) {
             $.post('/marker/UpdateMarker', { marker }, () => { if (func) func(); });
-        }
+        },
+        delteMarkerCat: function (index) {
+            if (confirm("Your sure you want to delete this?!")) {
+                var markerCat = this.markerCatergories[index];
+                this.updateMarkerCat({ Id: markerCat.Id, Deleted: true }, () => {
+                    this.markerCatergories.splice(index, 1);
+
+                });
+            }
+        },
+        makeMarkerDefalt: function (index,markerId) {
+            var markerCat = this.markerCatergories[index];
+            this.updateMarkerCat({ Id: markerCat.Id, DefaltMarkerId: markerId }, () => {
+                markerCat.DefaltMarkerId = markerId;
+                markerCat.Marker = this.markerCatergories[index].Markers.find(m => m.Id === markerId);
+                this.markerCatergories.splice(index, 1, markerCat);
+
+            });
+        },
+        updateMarkerCat: function (markerCategory, func) {
+            $.post('/marker/UpdateMarkerCat', { markerCategory }, () => { if (func) func(); });
+        },
+        openMarkerForm: function (index) {
+            var markerCat = this.markerCatergories[index];
+            markerCat.NewMarker = { Id: null, Length: null, PercentWaste: null, MarkerDetails: [{ SizeId: null, AmountPerLayer: null, Name: null }] };
+            this.markerCatergories.splice(index, 1, markerCat);
+        },
+        getTheDataTables: function (func) {
+            $.get('/production/GetAtributteListsForFilter', result => {
+
+                this.bodyStyles  = result.bodyStyles;
+                this.sleeves     = result.sleeves;
+                this.departments = result.departments;
+                this.sizes       = result.sizes;
+                console.log(result);
+                if (func) func();
+            });
+        },
         
 
 

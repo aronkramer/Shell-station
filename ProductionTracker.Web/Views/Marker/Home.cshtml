@@ -19,6 +19,10 @@
 </style>
 
 <div id="app" class="row">
+    <!--Data lists-->
+    <datalist id="sizes">
+        <option v-for="x in sizes">{{x.Name}}</option>
+    </datalist>
     <!--The marker table-->
     <div class="col-md-10 col-md-offset-1">
         @*<div class="row">
@@ -61,10 +65,47 @@
                         <td>{{item.Sleeve.Name}}</td>
                         <td>{{item.BodyStyle.Name}}</td>
                         <td>{{item.DefaltMarker.SizeText}}</td>
+                        <td>
+                            <span title="Delete" v-on:click="delteMarkerCat(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                        </td>
                     </tr>
                     <tr v-if="item.Markers && item.DetailsOpened">
                         <td colspan="5" class="details-well">
                             <div class="col-md-8 col-md-offset-2">
+                                <button class="btn btn-success" v-if="!item.NewMarker" v-on:click="openMarkerForm(index)">Add New Marker</button>
+                                <div class="well" v-if="item.NewMarker">
+                                    <div class="row">
+                                        <p class="text-center">New Marker</p>
+                                        <div class="size-container col-md-1">
+                                            <button v-if="!item.NewMarker.MarkerDetails.length" v-on:click="addSize(index)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                            <div class="" v-if="item.NewMarker.MarkerDetails.length >= 1">
+                                                <button title="Add a size" v-on:click="addSize(index)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
+                                            </div>
+                                            <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
+                                                <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                                            </div>
+                                            <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
+                                                <label class="col-md-1 col-form-label" for="Size">Count:</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <template v-for="(size, sizeIndex) in item.NewMarker.MarkerDetails">
+                                                <div class="size-container col-md-2">
+                                                    <div class="size-element" title="Remove this size">
+                                                        <button v-on:click="removeSize(index,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                                    </div>
+                                                    <div class="size-element">
+                                                        <input type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name).Id" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                                       
+                                                    </div>
+                                                    <div class="size-element">
+                                                        <input type="text" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
                                 <table class="table table-bordered table-hover table-responsive">
                                     <tr>
                                         <th></th>
@@ -82,7 +123,10 @@
                                     </tr>*@
                                     <template v-for="(marker, markerIndex) in item.Markers">
                                         <tr v-on:dblclick="edit(index,markerIndex)" :class="{'defalt-tr' : marker.Id === item.DefaltMarkerId, 'editing-background' : marker.Edit}">
-                                            <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}"><span v-if="marker.Id === item.DefaltMarkerId">Defalt</span><button v-if="marker.MarkerDetails.length > 1 && marker.Id !== item.DefaltMarkerId" class="btn default red-stripe">Make Defalt</button></td>
+                                            <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}">
+                                            <span v-if="marker.Id === item.DefaltMarkerId">Defalt</span>
+                                            <button v-if="marker.MarkerDetails.length > 1 && marker.Id !== item.DefaltMarkerId" v-on:click="makeMarkerDefalt(index,marker.Id)" class="btn default red-stripe">Make Defalt</button>
+                                            </td>
                                             <td>{{marker.CreatedOn | toShortDateString}}</td>
                                             <td>{{marker.SizeText}}</td>
                                             <template v-if="!marker.Edit">
