@@ -574,6 +574,16 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+        public void EditColor(int id, string color)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.Colors.Where(i => i.Id == id).FirstOrDefault();
+                original.Name = color;
+                original.ModifiedOn = DateTime.Now;
 
+                context.SubmitChanges();
+            }
+        }
     }
 }
