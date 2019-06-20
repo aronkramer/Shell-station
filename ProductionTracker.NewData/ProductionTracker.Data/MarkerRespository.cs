@@ -29,7 +29,7 @@ namespace ProductionTracker.Data
                 loadOptions.LoadWith<Marker>(m => m.MarkerDetails);
                 loadOptions.LoadWith<MarkerDetail>(m => m.Size);
                 context.LoadOptions = loadOptions;
-                return context.MarkerCategories.ToList().Select(m => {
+                return context.MarkerCategories.Where(x => !x.Deleted).ToList().Select(m => {
                     m.Markers = m.Markers.Where(ma => !ma.Deleted).ToEntitySet();
                     return m;
                 });
@@ -102,5 +102,7 @@ namespace ProductionTracker.Data
                 return context.MarkerCategories.FirstOrDefault(m => m.Id == Id);
             }
         }
+
+        
     }
 }

@@ -230,6 +230,7 @@
       <Column Name="DefaltMarkerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="CreatedOn" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="MarkerCategory_Marker" Member="Markers" ThisKey="Id" OtherKey="MarkerCatId" Type="Marker" />
       <Association Name="Marker_MarkerCategory" Member="Marker" ThisKey="DefaltMarkerId" OtherKey="Id" Type="Marker" IsForeignKey="true" />
       <Association Name="BodyStyle_MarkerCategory" Member="BodyStyle" ThisKey="BodyStyleId" OtherKey="Id" Type="BodyStyle" IsForeignKey="true" />
