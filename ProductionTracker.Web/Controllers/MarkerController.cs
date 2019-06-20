@@ -143,8 +143,21 @@ namespace ProductionTracker.Web.Controllers
             var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
             var prodRepo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             var originalMarker = repo.GetMarkerCategory(markerCategory.Id);
-            prodRepo.AddNewUpdateHistory(originalMarker);
+            prodRepo.AddNewUpdateHistory(originalMarker,markerCategory.Deleted ? "deleted" : null);
             repo.UpdateMarkerCat(originalMarker.SetOrginalDbObjToUpdated(markerCategory));
         }
+        [HttpPost]
+        public void AddNewMarkerCat(MarkerCategory markerCategory ,Marker defaltMarker)
+        {
+            var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddMarkerCat(markerCategory);
+            if (defaltMarker.NotNull())
+            {
+                defaltMarker.MarkerCatId = markerCategory.Id;
+                repo.AddMarker(defaltMarker);
+                markerCategory.DefaltMarkerId = defaltMarker.Id;
+                repo.UpdateMarkerCat(markerCategory.GetObjectBasePropertiesOnDbObject());
+            }
+        }   
     }
 }

@@ -286,10 +286,6 @@
                 this.plannedProductions = result.plannedProductions;
                 console.log(result);
                 if(func)func();
-                //Vue.nextTick(function () {
-                //    console.log(app.$el.textContent);
-                //}
-                //);
             });
         },
         getSumOfLayersPerMarker: function (marker) {
