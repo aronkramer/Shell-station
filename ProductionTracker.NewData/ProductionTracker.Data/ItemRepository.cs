@@ -585,5 +585,14 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+        public void DeleteColor(int ColorId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var v = context.Colors.Where(i => i.Id == ColorId).FirstOrDefault();
+                context.Colors.DeleteOnSubmit(v);
+                context.SubmitChanges();
+            }
+        }
     }
 }

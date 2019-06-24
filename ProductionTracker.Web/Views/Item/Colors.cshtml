@@ -18,6 +18,7 @@
         background-color: #7e98b3;
         max-height: 750px;
     }
+
     .being-edited-background {
         background-color: #f4eb42 !important;
     }
@@ -60,14 +61,14 @@
                 @*@foreach (var color in Model.Colors)
                     {
                         <tr>
-                                    <td>@color.Id</td>
-                                    <td>@color.Name</td>
+                            <td>@color.Id</td>
+                            <td>@color.Name</td>
                         </tr>
                     }*@
                 <template v-for="(color,index) in listOfAllColors">
                     <tr :class="{'being-edited-background': color.Edit}">
                         <td>{{color.Id}}</td>
-                        <td :colspan="!color.Edit ? 2 : 1"  v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
+                        <td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
                             <span v-if="!color.Edit">{{color.Name}}</span>
                             <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
                         <td v-if="color.Edit" class="action-btn-td">
@@ -88,6 +89,8 @@
 </div>
 
 @section scripts{
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.js"></script>
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js"></script>
     <script src="~/Scripts/SiteScripts/Colors.js"></script>
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/color-vue.js"></script>
