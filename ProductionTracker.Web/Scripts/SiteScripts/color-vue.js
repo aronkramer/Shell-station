@@ -13,9 +13,9 @@
         },
         submitColors: function () {
             $.post("/item/AddColors", { colors: this.formColors }, () => {
-                if (func) {
-                    func()
-                }
+                console.log(this.formColors);
+                this.listOfAllColors = this.listOfAllColors.concat(this.formColors);
+                this.formColors = [{ Id: null, Name: null }];
             })
         },
         getColors: function (func) {
@@ -33,9 +33,9 @@
             var color = this.listOfAllColors[index];
             //{ color: { Id: color.Id, Name: color.Name } }
             $.post('/item/EditColors', { ColorId: color.Id, ColorName: color.Name }, () => {
-                this.listOfAllColors[index].NameCopy = listOfAllColors.Name;
+                //this.listOfAllColors[index].NameCopy = this.listOfAllColors[index].Name;
             });
-
+            
         },
         deleteAnExistingItem: function (index) {
             swal({
