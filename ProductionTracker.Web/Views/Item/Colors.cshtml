@@ -18,6 +18,7 @@
         background-color: #7e98b3;
         max-height: 750px;
     }
+
     .being-edited-background {
         background-color: #f4eb42 !important;
     }
@@ -25,18 +26,19 @@
 
 
 <div id="app">
-    <div class="row" style="margin-top:25px;">
+    <div class="col-md-5 col-lg-offset-3 well">
 
-        <div class="col-md-5 col-lg-offset-1 well color-form">
+        <div class="color-form">
             <h3 id="color-form-header" style="text-align:center; font-weight:bold;">Enter the colors you want to add </h3>
             <br />
             <button @*id="btn-row-adder"*@ v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
+            <button v-on:click="submitColors" style="float:right; background-color: limegreen;" class="btn btn-info">Submit</button>
             <table class="table table-bordered table-responsive" id="color-form-table">
                 <tr>
                     <th style="text-align:center;">Id</th>
-                    <th style="text-align:center;">Color</th>
+                    <th colspan="2" style="text-align:center;">Color</th>
                 </tr>
-                <template v-for="color in formColors">
+                <template v-for="(color,index) in formColors">
                     <tr>
                         <td>
                             <input type="text" placeholder="Id" v-model="color.Id" class="form-control" />
@@ -44,12 +46,17 @@
                         <td>
                             <input type="text" placeholder="Color" v-model="color.Name" class="form-control" />
                         </td>
+                        <td>
+                            <button v-on:click="formColors.splice(index,1)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                        </td>
                     </tr>
                 </template>
             </table>
-            <button v-on:click="submitColors" class="btn btn-primary btn-lg">Submit</button>
+            
         </div>
-        <div class="col-md-5 col-lg-offset-1 color-table">
+        
+        <hr />
+        <div class="color-table">
             <h3 style="text-align:center; font-weight:bold;">Colors </h3>
             <table class="table table-bordered table-responsive table-striped table-hover">
                 <tr>
@@ -57,17 +64,11 @@
                     <th colspan="2" style="text-align:center;">Color</th>
 
                 </tr>
-                @*@foreach (var color in Model.Colors)
-                    {
-                        <tr>
-                                    <td>@color.Id</td>
-                                    <td>@color.Name</td>
-                        </tr>
-                    }*@
+                
                 <template v-for="(color,index) in listOfAllColors">
                     <tr :class="{'being-edited-background': color.Edit}">
                         <td>{{color.Id}}</td>
-                        <td :colspan="!color.Edit ? 2 : 1"  v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
+                        <td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
                             <span v-if="!color.Edit">{{color.Name}}</span>
                             <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
                         <td v-if="color.Edit" class="action-btn-td">
@@ -88,6 +89,8 @@
 </div>
 
 @section scripts{
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.js"></script>
+    <script src="~/Metronic/theme/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js"></script>
     <script src="~/Scripts/SiteScripts/Colors.js"></script>
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/color-vue.js"></script>
