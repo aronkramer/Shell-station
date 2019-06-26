@@ -36,6 +36,25 @@ namespace ProductionTracker.Data
             }
         }
 
+        public MarkerCategory GetMarkerCategoryWithMarkers(int id)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var loadOptions = new DataLoadOptions();
+                loadOptions.LoadWith<MarkerCategory>(m => m.Marker);
+                loadOptions.LoadWith<MarkerCategory>(m => m.Department);
+                loadOptions.LoadWith<MarkerCategory>(m => m.BodyStyle);
+                loadOptions.LoadWith<MarkerCategory>(m => m.Sleeve);
+                loadOptions.LoadWith<MarkerCategory>(m => m.Markers);
+                loadOptions.LoadWith<Marker>(m => m.MarkerDetails);
+                loadOptions.LoadWith<MarkerDetail>(m => m.Size);
+                context.LoadOptions = loadOptions;
+                var marCat = context.MarkerCategories.Where(x => !x.Deleted).FirstOrDefault(m => m.Id == id);
+                marCat.Markers = marCat.Markers.Where(ma => !ma.Deleted).ToEntitySet();
+                return marCat;
+            }
+        }
+
         public void AddMarkerCat(MarkerCategory marker)
         {
             using (var context = new ManufacturingDataContext(_connectionString))

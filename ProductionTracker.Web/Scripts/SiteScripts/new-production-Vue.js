@@ -285,7 +285,8 @@
                 this.markers = result.markers;
                 this.plannedProductions = result.plannedProductions;
                 console.log(result);
-                if(func)func();
+                if (func) func();
+                
             });
         },
         getSumOfLayersPerMarker: function (marker) {

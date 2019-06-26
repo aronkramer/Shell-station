@@ -46,7 +46,7 @@ namespace ProductionTracker.Web.Controllers
                     },
                     mc.ModifiedOn,
                     mc.DefaltMarkerId,
-                    DefaltMarker = new
+                    DefaltMarker = mc.Marker != null ? new
                     {
                         mc.Marker.Id,
                         mc.Marker.CreatedOn,
@@ -72,8 +72,8 @@ namespace ProductionTracker.Web.Controllers
                         mc.Marker.Length,
                         mc.Marker.PercentWaste
 
-                    },
-                    Markers = mc.Markers.Select(m =>
+                    } : null,
+                    Markers = mc.Markers != null ?  mc.Markers.Select(m =>
                     {
                         return new
                         {
@@ -101,8 +101,8 @@ namespace ProductionTracker.Web.Controllers
 
                             })
                         };
-                    })
-                };
+                    }) : null
+                } ;
                 
                 //markerCat.Marker = mc.Marker.GetObjectBasePropertiesOnDbObject();
                 //markerCat.Marker.MarkerCategories = null;
@@ -147,6 +147,12 @@ namespace ProductionTracker.Web.Controllers
             repo.UpdateMarkerCat(originalMarker.SetOrginalDbObjToUpdated(markerCategory));
         }
         [HttpPost]
+        public ActionResult AddNewMarkerCatGetMarker(MarkerCategory markerCategory, Marker defaltMarker)
+        {
+            AddNewMarkerCat(markerCategory, defaltMarker);
+            return GetMarkerCategory(markerCategory.Id);
+        }
+        [HttpPost]
         public void AddNewMarkerCat(MarkerCategory markerCategory ,Marker defaltMarker)
         {
             var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
@@ -154,10 +160,116 @@ namespace ProductionTracker.Web.Controllers
             if (defaltMarker.NotNull())
             {
                 defaltMarker.MarkerCatId = markerCategory.Id;
-                repo.AddMarker(defaltMarker);
-                markerCategory.DefaltMarkerId = defaltMarker.Id;
-                repo.UpdateMarkerCat(markerCategory.GetObjectBasePropertiesOnDbObject());
+                AddNewMarker(defaltMarker, true);
             }
-        }   
+        }
+        [HttpPost]
+        public void AddNewMarker(Marker marker,bool makeDefalt)
+        {
+            var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
+            repo.AddMarker(marker);
+            if (makeDefalt)
+            {
+                UpdateMarkerCat(new MarkerCategory
+                {
+                    Id = marker.MarkerCatId,
+                    DefaltMarkerId = marker.Id
+                });
+            }
+        }
+        [HttpPost]
+        public ActionResult AddNewMarkerGetResult(Marker marker, bool makeDefalt)
+        {
+            AddNewMarker(marker, makeDefalt);
+            return GetMarkerCategory(marker.MarkerCatId);
+        }
+
+        public ActionResult GetMarkerCategory(int id)
+        {
+            var repo = new MarkerRespository(Properties.Settings.Default.ManufacturingConStr);
+            var mc = repo.GetMarkerCategoryWithMarkers(id);
+            return Json(new
+            {
+                mc.Id,
+                mc.Name,
+                mc.CreatedOn,
+                mc.BodyStyleId,
+                BodyStyle = new
+                {
+                    mc.BodyStyle.Id,
+                    mc.BodyStyle.Name
+                },
+                mc.DepartmentId,
+                Department = new
+                {
+                    mc.Department.Id,
+                    mc.Department.Name
+                },
+                mc.SleeveId,
+                Sleeve = new
+                {
+                    mc.Sleeve.Id,
+                    mc.Sleeve.Name
+                },
+                mc.ModifiedOn,
+                mc.DefaltMarkerId,
+                DefaltMarker = mc.Marker != null ? new
+                {
+                    mc.Marker.Id,
+                    mc.Marker.CreatedOn,
+                    mc.Marker.ModifiedOn,
+                    MarkerDetails = mc.Marker.MarkerDetails.Select(mmd =>
+                    {
+                        return new
+                        {
+                            mmd.Id,
+                            mmd.SizeId,
+                            mmd.AmountPerLayer,
+                            Size = new
+                            {
+                                mmd.Size.Id,
+                                mmd.Size.Name
+
+                            },
+
+
+                        };
+
+                    }),
+                    mc.Marker.Length,
+                    mc.Marker.PercentWaste
+
+                } :null,
+                Markers = mc.Markers != null ? mc.Markers.Select(m =>
+                {
+                    return new
+                    {
+                        m.Id,
+                        m.CreatedOn,
+                        m.ModifiedOn,
+                        m.Length,
+                        m.PercentWaste,
+                        MarkerDetails = m.MarkerDetails.Select(mmd =>
+                        {
+                            return new
+                            {
+                                mmd.Id,
+                                mmd.SizeId,
+                                mmd.AmountPerLayer,
+                                Size = new
+                                {
+                                    mmd.Size.Id,
+                                    mmd.Size.Name
+
+                                },
+
+
+                            };
+
+                        })
+                    };
+                }):null
+            }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

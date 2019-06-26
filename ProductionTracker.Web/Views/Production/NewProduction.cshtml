@@ -84,8 +84,10 @@
         </div>
 
         <template v-for="(marker, MarkerIndex) in production.Markers">
-            <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey;">
-                <div class="col-md-1" style="height:100%">
+            <div class="row" style="margin:25px; padding:15px; border:1px solid lightgrey; display:flex;">
+                <div class="col-md-1"
+                     style="border-right: 1px solid #bfbfb8;
+                     margin-right: 15px;">
                     <button title="Remove this marker" :index="MarkerIndex" v-on:click="removeMarker(MarkerIndex)" class="btn btn-circle red-sunglo btn-sm">Remove</button>
                     <h2 class="markerNumber">{{MarkerIndex + 1}}</h2>
                 </div>
@@ -128,7 +130,7 @@
                                                 <label v-bind:class="[marker.AllSizes ? 'active': '']" v-on:click="allSizeBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
                                                     <input type="radio" class="toggle"> All Sizes
                                                 </label>
-                                                <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm size-btn">
+                                                <label v-bind:class="[!marker.AllSizes ? 'active': '']" v-on:click="sizeTogBtn(MarkerIndex)" class="btn blue btn-sm allsize-btn">
                                                     <input type="radio" class="toggle"> Size/s:
                                                 </label>
                                             </div>

@@ -6,169 +6,398 @@
     .defalt-tr {
         background-color: #e2d3a8;
     }
+
     .defalt-td {
         background-color: #e0d339;
         color: #fdfdfd;
         text-align: center;
         font-weight: 800;
-        vertical-align:middle;
+        vertical-align: middle;
     }
+
     .mDefalt-btn {
         width: 117.97916599999999px;
     }
+
+    .size-container-marker {
+        position: relative;
+        height: 100%;
+        margin-bottom: 15px;
+        float: left;
+        max-width: 150px;
+        margin-top: 5px;
+    }
+
+    .size-container-header {
+        position: relative;
+        height: 100%;
+        margin-bottom: 15px;
+        float: left;
+        max-width: 100px;
+        text-align: center;
+    }
+
+    .sizes-main-container {
+        border: 1px solid #cca9a9;
+        padding: 10px;
+    }
+
+    .sizes-header {
+        margin-right: 15px;
+        padding: 30px 5px;
+    }
+
+        .sizes-header label {
+            font-weight: bold;
+            font-size: 19px;
+        }
+
+    .new-marker-header {
+        margin: 0px;
+        text-align: center;
+        padding-bottom: 10px;
+        font-weight: bold;
+        text-decoration: underline;
+    }
 </style>
 
-<div id="app" class="row">
+<div id="app" class="row" v-cloak>
     <!--Data lists-->
     <datalist id="sizes">
         <option v-for="x in sizes">{{x.Name}}</option>
     </datalist>
-    <!--The marker table-->
-    <div class="col-md-10 col-md-offset-1">
-        @*<div class="row">
-                <div class="col-md-2 very-little-margin">
-                    <p><h4>Showing {{orderedArraySeason ? orderedArraySeason.length : 0}} items</h4></p>
+    <datalist id="bodyStyles">
+        <option v-for="x in bodyStyles">{{x.Name}}</option>
+    </datalist>
+    <datalist id="sleeves">
+        <option v-for="x in sleeves">{{x.Name}}</option>
+    </datalist>
+    <datalist id="departments">
+        <option v-for="x in departments">{{x.Name}}</option>
+    </datalist>
+    <!--New Marker Cat-->
+    <div class="row">
+        <div class="col-md-1" v-if="!newMarkerCat">
+            <button v-on:click="newMrkerCatForm" class="btn btn-circle btn-primary">Add  New Marker Catergory</button>
+        </div>
+        <!--New Marker Cat Form-->
+        <div v-else class="col-md-8 col-md-offset-2" style="background-color:lightblue; padding:20px; border:1px solid grey;">
+            <!--New Marker Cat Form Header-->
+            <div class="row">
+                <h3 class="new-marker-header">New Marker Catergory</h3>
+            </div>
+            <!--New Marker Cat Form Name-->
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-6 col-md-offset-3">
+                    <input type="text" placeholder="Name" title="Name" class="form-control" v-model="newMarkerCat.Name" />
                 </div>
-            </div>*@
-        <div>
-            <table class="table table-bordered table-responsive table-striped">
-
-                <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Department
-                    </th>
-                    <th>
-                        Sleeve
-                    </th>
-                    <th>
-                        BodyStyle
-                    </th>
-                    <th>
-                        Defalt Size Breakdown
-                    </th>
-                </tr>
-                <template v-for="(item,index) in markerCatergories">
-                    <tr>
-                        <td>
-                            <div style="position: relative !important;">
-                                <span style="position: absolute !important; top: 3px;left:-9px;">
-                                    <button v-on:click="item.DetailsOpened = !item.DetailsOpened;" class="icon-btn-minus">
-                                        <i class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i>
-                                    </button>
-                                </span><span style="margin-left: 25px;">{{item.Name}}</span>
+            </div>
+            <!--New Marker Cat Form Atributes-->
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-4">
+                    <input v-on:change="onChangeDataList('Department',departments)" type="text" placeholder="Department" title="Department" class="form-control" list="departments" id="departments" v-model="newMarkerCat.Department.Name" />
+                </div>
+                <div class="col-md-4">
+                    <input v-on:change="onChangeDataList('BodyStyle',bodyStyles)" type="text" placeholder="Body Style" title="Body Style" class="form-control" list="bodyStyles" id="bodyStyles" v-model="newMarkerCat.BodyStyle.Name" />
+                </div>
+                <div class="col-md-4">
+                    <input v-on:change="onChangeDataList('Sleeve',sleeves)" type="text" placeholder="Sleeve" title="Sleeve" class="form-control" list="sleeves" id="sleeves" v-model="newMarkerCat.Sleeve.Name" />
+                </div>
+                @*<label class="col-md-2 col-form-label" for="departments">Department</label>
+            <label class="col-md-2 col-form-label" for="bodyStyles">Body Style</label>
+            <label class="col-md-2 col-form-label" for="sleeves">Sleeve</label>*@
+                <!--New Marker Cat Form Atributes-->
+            </div>
+            <!--New Marker Cat Form Defalt Marker-->
+            <div class="well" v-if="newMarkerCat.NewMarker" style="margin-top:20px;">
+                <div class="row">
+                    <h3 class="new-marker-header">Defalt Marker</h3>
+                </div>
+                <!--Sizes-->
+                <div class="row">
+                    <!--Sizes header-->
+                    <div class="col-md-1 sizes-header">
+                        <label>Sizes</label>
+                    </div>
+                    <div class="col-md-10 sizes-main-container">
+                        <div class="row">
+                            <div class="col-md-2 size-container-header">
+                                <button v-if="!newMarkerCat.NewMarker.MarkerDetails.length" v-on:click="addSize(null)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                <div class="" v-if="newMarkerCat.NewMarker.MarkerDetails.length >= 1">
+                                    <button title="Add a size" v-on:click="addSize(null)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
+                                </div>
+                                <div class="size-element" v-if="newMarkerCat.NewMarker.MarkerDetails.length">
+                                    <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                                </div>
+                                <div class="size-element" v-if="newMarkerCat.NewMarker.MarkerDetails.length">
+                                    <label class="col-md-1 col-form-label" for="Size">Count:</label>
+                                </div>
                             </div>
-                        </td>
-                        <td>{{item.Department.Name}}</td>
-                        <td>{{item.Sleeve.Name}}</td>
-                        <td>{{item.BodyStyle.Name}}</td>
-                        <td>{{item.DefaltMarker.SizeText}}</td>
-                        <td>
-                            <span title="Delete" v-on:click="delteMarkerCat(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                        </td>
-                    </tr>
-                    <tr v-if="item.Markers && item.DetailsOpened">
-                        <td colspan="5" class="details-well">
-                            <div class="col-md-8 col-md-offset-2">
-                                <button class="btn btn-success" v-if="!item.NewMarker" v-on:click="openMarkerForm(index)">Add New Marker</button>
-                                <div class="well" v-if="item.NewMarker">
-                                    <div class="row">
-                                        <p class="text-center">New Marker</p>
-                                        <div class="size-container col-md-1">
-                                            <button v-if="!item.NewMarker.MarkerDetails.length" v-on:click="addSize(index)" class="btn btn-circle green btn-sm">Add a Size</button>
-                                            <div class="" v-if="item.NewMarker.MarkerDetails.length >= 1">
-                                                <button title="Add a size" v-on:click="addSize(index)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
-                                            </div>
-                                            <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
-                                                <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
-                                            </div>
-                                            <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
-                                                <label class="col-md-1 col-form-label" for="Size">Count:</label>
-                                            </div>
+                            <div class="col-md-10">
+                                <template v-for="(size, sizeIndex) in newMarkerCat.NewMarker.MarkerDetails">
+                                    <div :style="{width: 100 / newMarkerCat.NewMarker.MarkerDetails.length + '%' }" class="size-container-marker">
+                                        <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;" title="Remove this size">
+                                            <button v-on:click="removeSize(null,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                                         </div>
-                                        <div class="col-md-5">
-                                            <template v-for="(size, sizeIndex) in item.NewMarker.MarkerDetails">
-                                                <div class="size-container col-md-2">
-                                                    <div class="size-element" title="Remove this size">
-                                                        <button v-on:click="removeSize(index,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
-                                                    </div>
-                                                    <div class="size-element">
-                                                        <input type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name).Id" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
-                                                       
-                                                    </div>
-                                                    <div class="size-element">
-                                                        <input type="text" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
-                                                    </div>
-                                                </div>
-                                            </template>
+                                        <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
+                                            <input placeholder="Size" title="Size" type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;newMarkerCat.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                        </div>
+                                        <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
+                                            <input placeholder="Amount Per Layer" title="Amount Per Layer" type="number" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
                                         </div>
                                     </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Length and waste-->
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1" style="margin-top:15px;">
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <input type="number" placeholder="Length" title="Length" class="form-control" id="length" v-model="newMarkerCat.NewMarker.Length" />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" placeholder="PercentWaste" title="PercentWaste" id="PercentWaste" v-model="newMarkerCat.NewMarker.PercentWaste" />
+                            </div>
+                            <div class="col-md-4">
+                                <div class="pretty p-svg p-curve">
+                                    <input type="checkbox" disabled v-model="newMarkerCat.NewMarker.MakeDefalt" />
+                                    <div class="state p-success">
+                                        <!-- svg path -->
+                                        <svg class="svg svg-icon" viewBox="0 0 20 20">
+                                            <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
+                                        </svg>
+                                        <label>Make Defalt</label>
+                                    </div>
                                 </div>
-                                <table class="table table-bordered table-hover table-responsive">
-                                    <tr>
-                                        <th></th>
-                                        <th>Date Created</th>
-                                        <th>Sizes breakdown</th>
-                                        <th>Length</th>
-                                        <th colspan="2">Waste percentage</th>
-                                    </tr>
-                                    @*<tr class="defalt-tr">
-                                        <td class="defalt-td">Defalt</td>
-                                        <td>{{item.DefaltMarker.CreatedOn | toShortDateString}}</td>
-                                        <td>{{item.DefaltMarker.SizeText}}</td>
-                                        <td>{{item.DefaltMarker.Length}}</td>
-                                        <td>{{item.DefaltMarker.PercentWaste}}</td>
-                                    </tr>*@
-                                    <template v-for="(marker, markerIndex) in item.Markers">
-                                        <tr v-on:dblclick="edit(index,markerIndex)" :class="{'defalt-tr' : marker.Id === item.DefaltMarkerId, 'editing-background' : marker.Edit}">
-                                            <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}">
-                                            <span v-if="marker.Id === item.DefaltMarkerId">Defalt</span>
-                                            <button v-if="marker.MarkerDetails.length > 1 && marker.Id !== item.DefaltMarkerId" v-on:click="makeMarkerDefalt(index,marker.Id)" class="btn default red-stripe">Make Defalt</button>
-                                            </td>
-                                            <td>{{marker.CreatedOn | toShortDateString}}</td>
-                                            <td>{{marker.SizeText}}</td>
-                                            <template v-if="!marker.Edit">
-                                                <td>{{marker.Length}}</td>
-                                                <td colspan="2">{{marker.PercentWaste | percentage}}</td>
-                                            </template>
-                                            <template v-if="marker.Edit">
-                                                <td>
-                                                    <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.Length" />
+                            </div>
+                            @*<label class="col-md-2 col-form-label" for="length">Length</label>
+                                <label class="col-md-2 col-form-label" for="PercentWaste">Percent Waste</label>
+                                <label class="col-md-2 col-form-label" for="MakeDefalt">Make Defalt</label>*@
+                        </div>
+                    </div>
+                </div>
+                <!--Buttons-->
+                <div class="row">
+                    <div class="col-md-1">
+                        <button title="Cancel" class="btn btn-circle btn-default" v-on:click="newMarkerCat.NewMarker = null;">Cancel</button>
+                    </div>
+                    @*<div class="col-md-offset-10 co-md-1 text-right">
+                        <button title="Submit New Marker" :disabled="newMarkerSubmit[index]" v-on:click="addNewMarker(index)" class="btn btn-circle btn-success">Submit</button>
+                    </div>*@
+                </div>
+
+             </div>
+            <!--New Marker Cat Form Buttons-->
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-1">
+                    <button title="Cancel" class="btn btn-circle btn-default" v-on:click="newMarkerCat = null;">Cancel</button>
+                </div>
+                <div class="col-md-offset-9 co-md-2 text-right">
+                    <button class="btn btn-circle btn-primary" v-if="!newMarkerCat.NewMarker" v-on:click="openMarkerForm(null)">Add Defalt Marker</button>
+                    <button title="Submit New Marker Category" :disabled="!newMarkerCatSubmit" v-on:click="addNewMarkerCat($event)" class="btn btn-circle btn-success">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--The marker table-->
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-12" style="overflow: auto;">
+            @*<div class="row">
+                    <div class="col-md-2 very-little-margin">
+                        <p><h4>Showing {{orderedArraySeason ? orderedArraySeason.length : 0}} items</h4></p>
+                    </div>
+                </div>*@
+            <div>
+                <table class="table table-bordered table-responsive table-striped">
+
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Department
+                        </th>
+                        <th>
+                            Sleeve
+                        </th>
+                        <th>
+                            BodyStyle
+                        </th>
+                        <th>
+                            Defalt Size Breakdown
+                        </th>
+                    </tr>
+                    <template v-for="(item,index) in markerCatergories">
+                        <tr>
+                            <td>
+                                <div style="position: relative !important;">
+                                    <span style="position: absolute !important; top: 3px;left:-9px;">
+                                        <button v-on:click="item.DetailsOpened = !item.DetailsOpened;" class="icon-btn-minus">
+                                            <i class="fa" :class="{'fa-plus-square': !item.DetailsOpened, 'fa-minus-square': item.DetailsOpened }"></i>
+                                        </button>
+                                    </span><span style="margin-left: 25px;">{{item.Name}}</span>
+                                </div>
+                            </td>
+                            <td>{{item.Department.Name}}</td>
+                            <td>{{item.Sleeve.Name}}</td>
+                            <td>{{item.BodyStyle.Name}}</td>
+                            <td>{{item.DefaltMarker.SizeText}}</td>
+                            <td>
+                                <span title="Delete" v-on:click="delteMarkerCat(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                            </td>
+                        </tr>
+                        <tr v-if="item.Markers && item.DetailsOpened">
+                            <td colspan="5" class="details-well">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <button class="btn btn-success" v-if="!item.NewMarker" v-on:click="openMarkerForm(index)">Add New Marker</button>
+                                    <div class="well" v-if="item.NewMarker">
+                                        <div class="row">
+                                            <h3 class="new-marker-header">New Marker</h3>
+                                        </div>
+                                        <!--Sizes-->
+                                        <div class="row">
+                                            <!--Sizes header-->
+                                            <div class="col-md-1 sizes-header">
+                                                <label>Sizes</label>
+                                            </div>
+                                            <div class="col-md-10 sizes-main-container">
+                                                <div class="row">
+                                                    <div class="col-md-2 size-container-header">
+                                                        <button v-if="!item.NewMarker.MarkerDetails.length" v-on:click="addSize(index)" class="btn btn-circle green btn-sm">Add a Size</button>
+                                                        <div class="" v-if="item.NewMarker.MarkerDetails.length >= 1">
+                                                            <button title="Add a size" v-on:click="addSize(index)" class="btn btn-circle btn-icon-only green add-size-btn">+</button>
+                                                        </div>
+                                                        <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
+                                                            <label class="col-md-1 col-form-label" for="Size">Size/s:</label>
+                                                        </div>
+                                                        <div class="size-element" v-if="item.NewMarker.MarkerDetails.length">
+                                                            <label class="col-md-1 col-form-label" for="Size">Count:</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <template v-for="(size, sizeIndex) in item.NewMarker.MarkerDetails">
+                                                            <div :style="{width: 100 / item.NewMarker.MarkerDetails.length + '%' }" class="size-container-marker">
+                                                                <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;" title="Remove this size">
+                                                                    <button v-on:click="removeSize(index,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                                                </div>
+                                                                <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
+                                                                    <input placeholder="Size" title="Size" type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;item.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                                                </div>
+                                                                <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
+                                                                    <input placeholder="Amount Per Layer" title="Amount Per Layer" type="number" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Length and waste-->
+                                        <div class="row">
+                                            <div class="col-md-10 col-md-offset-1" style="margin-top:15px;">
+                                                <div class="form-row">
+                                                    <div class="col-md-4">
+                                                        <input type="number" placeholder="Length" title="Length" class="form-control" id="length" v-model="item.NewMarker.Length" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="number" class="form-control" placeholder="PercentWaste" title="PercentWaste" id="PercentWaste" v-model="item.NewMarker.PercentWaste" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="pretty p-svg p-curve">
+                                                            <input type="checkbox" v-model="item.NewMarker.MakeDefalt" />
+                                                            <div class="state p-success">
+                                                                <!-- svg path -->
+                                                                <svg class="svg svg-icon" viewBox="0 0 20 20">
+                                                                    <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
+                                                                </svg>
+                                                                <label>Make Defalt</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @*<label class="col-md-2 col-form-label" for="length">Length</label>
+                                                        <label class="col-md-2 col-form-label" for="PercentWaste">Percent Waste</label>
+                                                        <label class="col-md-2 col-form-label" for="MakeDefalt">Make Defalt</label>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Buttons-->
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <button title="Cancel" class="btn btn-circle btn-default" v-on:click="item.NewMarker = null;">Cancel</button>
+                                            </div>
+                                            <div class="col-md-offset-10 co-md-1 text-right">
+                                                <button title="Submit New Marker" :disabled="newMarkerSubmit[index]" v-on:click="addNewMarker(index)" class="btn btn-circle btn-success">Submit</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <table class="table table-bordered table-hover table-responsive">
+                                        <tr>
+                                            <th></th>
+                                            <th>Date Created</th>
+                                            <th>Sizes breakdown</th>
+                                            <th>Length</th>
+                                            <th colspan="2">Waste percentage</th>
+                                        </tr>
+                                        @*<tr class="defalt-tr">
+                                                <td class="defalt-td">Defalt</td>
+                                                <td>{{item.DefaltMarker.CreatedOn | toShortDateString}}</td>
+                                                <td>{{item.DefaltMarker.SizeText}}</td>
+                                                <td>{{item.DefaltMarker.Length}}</td>
+                                                <td>{{item.DefaltMarker.PercentWaste}}</td>
+                                            </tr>*@
+                                        <template v-for="(marker, markerIndex) in item.Markers">
+                                            <tr v-on:dblclick="edit(index,markerIndex)" :class="{'defalt-tr' : marker.Id === item.DefaltMarkerId, 'editing-background' : marker.Edit}">
+                                                <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}">
+                                                    <span v-if="marker.Id === item.DefaltMarkerId">Defalt</span>
+                                                    <button v-if="marker.MarkerDetails.length > 1 && marker.Id !== item.DefaltMarkerId" v-on:click="makeMarkerDefalt(index,marker.Id)" class="btn default red-stripe">Make Defalt</button>
                                                 </td>
-                                                <td>
-                                                    <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.PercentWaste" />
-                                                </td>
-                                                <td class="action-btn-td">
+                                                <td>{{marker.CreatedOn | toShortDateString}}</td>
+                                                <td>{{marker.SizeText}}</td>
+                                                <template v-if="!marker.Edit">
+                                                    <td>{{marker.Length}}</td>
+                                                    <td colspan="2">{{marker.PercentWaste | percentage}}</td>
+                                                </template>
+                                                <template v-if="marker.Edit">
+                                                    <td>
+                                                        <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.Length" />
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="text" @*v-bind:class="[item.Quantity > 0 ? '': 'hasError' ]"*@ v-model="marker.PercentWaste" />
+                                                    </td>
+                                                    <td class="action-btn-td">
+                                                        <span class="action-btn-span">
+                                                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateMarker(index,markerIndex)" class="fa fa-save"></i></span>
+                                                            <span title="Delete" v-on:click="deleteMarker(index,markerIndex)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(index,markerIndex)">Cancel</button>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                            @*<div v-if="marker.Edit" class="action-btn-td">
                                                     <span class="action-btn-span">
-                                                        <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateMarker(index,markerIndex)" class="fa fa-save"></i></span>
-                                                        <span title="Delete" v-on:click="deleteMarker(index,markerIndex)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                                        <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span>
+                                                        <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
                                                         <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(index,markerIndex)">Cancel</button>
                                                     </span>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                        @*<div v-if="marker.Edit" class="action-btn-td">
-                                            <span class="action-btn-span">
-                                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingItem(index)" class="fa fa-save"></i></span>
-                                                <span title="Delete" v-on:click="deleteAExistingItem(item.Id,index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(index,markerIndex)">Cancel</button>
-                                            </span>
-                                        </div>*@
-                                    </template>
-                                </table>
-                            </div>
-                            <div v-if="item.PlannedProdDetailsId" class="col-md-3">
-                                <label>Notes</label>
-                                <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
-                            </div>
-                        </td>
-                    </tr>
-                </template>
+                                                </div>*@
+                                        </template>
+                                    </table>
+                                </div>
+                                <div v-if="item.PlannedProdDetailsId" class="col-md-3">
+                                    <label>Notes</label>
+                                    <textarea v-on:blur="item.notesDisabled = true; updatePpd(index)" v-on:focus="item.notesDisabled = false; item.notesCopied = item.Notes" class="form-control" :readonly="item.notesDisabled" rows="3" v-model="item.Notes"></textarea>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
 
 
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -176,4 +405,7 @@
     <script src="~/Scripts/moment.js"></script>
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/SiteScripts/marker-vue.js"></script>
+}
+@section css{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" />
 }
