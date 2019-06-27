@@ -16,9 +16,9 @@
             <div class="panel-group accordion" id="accordion1">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">
+                        <div class="panel-title">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1" aria-expanded="true"> <center>Sleeves</center>  </a>
-                        </h4>
+                        </div>
                     </div>
                     <div id="collapse_1" class="panel-collapse collapse in" aria-expanded="true" style="">
                         <div class="panel-body">
@@ -27,17 +27,13 @@
                                     @*table logic goes here*@
                                     <table class="table table-bordered">
                                         <tr>
+                                            <th colspan="2">Sleeves</th>
+                                        </tr>
 
-                                            <th colspan="2">style</th>
+                                        <tr v-for="(sleeve,index) in listOfAllSleeves">
+                                            <td>{{index+1}})  {{sleeve.Name}}</td>
                                         </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>long sleeves kaklaf</td>
-                                        </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>aron</td>
-                                        </tr>
+
                                     </table>
                                 </div>
                             </div>
@@ -47,9 +43,9 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">
+                        <div class="panel-title">
                             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_2" aria-expanded="false"> <center> Body Style</center> </a>
-                        </h4>
+                        </div>
                     </div>
                     <div id="collapse_2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body" style="height:200px; overflow-y:auto;">
@@ -75,9 +71,9 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">
+                        <div class="panel-title">
                             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_3" aria-expanded="false"> <center>Materials</center> </a>
-                        </h4>
+                        </div>
                     </div>
                     <div id="collapse_3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body">
