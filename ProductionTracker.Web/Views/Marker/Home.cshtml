@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Marker";
+    ViewBag.Title = "Marker Catergories";
 }
 <style>
     .defalt-tr {
@@ -63,6 +63,7 @@
 
 <div id="app" class="row" v-cloak>
     <!--Data lists-->
+
     <datalist id="sizes">
         <option v-for="x in sizes">{{x.Name}}</option>
     </datalist>
@@ -137,10 +138,10 @@
                                 <template v-for="(size, sizeIndex) in newMarkerCat.NewMarker.MarkerDetails">
                                     <div :style="{width: 100 / newMarkerCat.NewMarker.MarkerDetails.length + '%' }" class="size-container-marker">
                                         <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;" title="Remove this size">
-                                            <button v-on:click="removeSize(null,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                            <button tabindex="-1" v-on:click="removeSize(null,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                                         </div>
                                         <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
-                                            <input placeholder="Size" title="Size" type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;newMarkerCat.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                            <input placeholder="Size" title="Size" type="text" v-on:change="size.Name = size.Name.toUpperCase(); size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;newMarkerCat.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
                                         </div>
                                         <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
                                             <input placeholder="Amount Per Layer" title="Amount Per Layer" type="number" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
@@ -253,7 +254,9 @@
                             <td colspan="5" class="details-well">
                                 <div class="col-md-8 col-md-offset-2">
                                     <button class="btn btn-success" v-if="!item.NewMarker" v-on:click="openMarkerForm(index)">Add New Marker</button>
+                                    <!--New Marker-->
                                     <div class="well" v-if="item.NewMarker">
+                                        
                                         <div class="row">
                                             <h3 class="new-marker-header">New Marker</h3>
                                         </div>
@@ -281,10 +284,10 @@
                                                         <template v-for="(size, sizeIndex) in item.NewMarker.MarkerDetails">
                                                             <div :style="{width: 100 / item.NewMarker.MarkerDetails.length + '%' }" class="size-container-marker">
                                                                 <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;" title="Remove this size">
-                                                                    <button v-on:click="removeSize(index,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
+                                                                    <button tabindex="-1" v-on:click="removeSize(index,sizeIndex)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                                                                 </div>
                                                                 <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
-                                                                    <input placeholder="Size" title="Size" type="text" v-on:change="size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;item.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
+                                                                    <input placeholder="Size" title="Size" type="text" v-on:change="size.Name = size.Name.toUpperCase(); size.SizeId = sizes.find(i => i.Name === size.Name) ? sizes.find(i => i.Name === size.Name).Id : null;item.NewMarker.MarkerDetails.splice(sizeIndex,1,size);" v-bind:class="[sizes.some(i => i.Name === size.Name) ? '': 'hasError' ]" list="sizes" style="width:100%" name="Size" v-model="size.Name" />
                                                                 </div>
                                                                 <div class="size-element" style="width:100%; margin: 5px 0px; text-align: center;">
                                                                     <input placeholder="Amount Per Layer" title="Amount Per Layer" type="number" v-bind:class="[ size.AmountPerLayer > 0 ? '': 'hasError' ]" style="width:100%" name="layer" v-model="size.AmountPerLayer" />
@@ -334,7 +337,7 @@
                                         </div>
 
                                     </div>
-                                    <table class="table table-bordered table-hover table-responsive">
+                                    <table v-if="item.Markers.length" class="table table-bordered table-hover table-responsive">
                                         <tr>
                                             <th></th>
                                             <th>Date Created</th>
@@ -350,6 +353,7 @@
                                                 <td>{{item.DefaltMarker.PercentWaste}}</td>
                                             </tr>*@
                                         <template v-for="(marker, markerIndex) in item.Markers">
+                                            
                                             <tr v-on:dblclick="edit(index,markerIndex)" :class="{'defalt-tr' : marker.Id === item.DefaltMarkerId, 'editing-background' : marker.Edit}">
                                                 <td :class="{'mDefalt-btn' : marker.Id !== item.DefaltMarkerId, 'defalt-td' : marker.Id === item.DefaltMarkerId}">
                                                     <span v-if="marker.Id === item.DefaltMarkerId">Defalt</span>
