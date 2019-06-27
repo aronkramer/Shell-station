@@ -96,6 +96,15 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             repo.DeleteColor(ColorId);
         }
+        [HttpGet]
+        public ActionResult GetSleeves()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetSleeves().Select(c =>
+            {
+                return JsonConvert.DeserializeObject<Sleeve>(Helpers.GetBasePropertiesOnDbObject(c));
+            }), JsonRequestBehavior.AllowGet);
+        }
 
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {

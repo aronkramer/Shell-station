@@ -6570,7 +6570,8 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
-    <Content Include="Scripts\SiteScripts\color-vue.js" />
+    <Content Include="Scripts\SiteScripts\item\attributes-options-vue.js" />
+    <Content Include="Scripts\SiteScripts\item\color-vue.js" />
     <Content Include="Scripts\SiteScripts\marker-vue.js" />
     <Content Include="Scripts\SiteScripts\Marker.vue" />
     <Content Include="Scripts\i18n\defaults-ar_AR.js" />
@@ -6695,6 +6696,7 @@
     <Content Include="Views\Production\PlannedProduction.cshtml" />
     <Content Include="Views\Production\ReciveItems.cshtml" />
     <Content Include="Views\Marker\Home.cshtml" />
+    <Content Include="Views\Item\ItemAttribute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
