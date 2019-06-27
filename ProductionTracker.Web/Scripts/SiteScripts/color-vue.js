@@ -13,8 +13,8 @@
         },
         submitColors: function () {
             $.post("/item/AddColors", { colors: this.formColors }, () => {
-                console.log(this.formColors);
-                this.listOfAllColors = this.listOfAllColors.concat(this.formColors);
+                this.getColors();
+                //this.listOfAllColors = this.listOfAllColors.concat(this.formColors);
                 this.formColors = [{ Id: null, Name: null }];
             })
         },

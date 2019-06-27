@@ -6,7 +6,7 @@
     ViewBag.Title = "Colors";
 }
 
-<style>
+<style>    
     .color-form {
         background-color: #86afcc;
         overflow: auto;
@@ -28,11 +28,18 @@
 <div id="app">
     <div class="col-md-5 col-lg-offset-3 well">
 
-        <div class="color-form">
-            <h3 id="color-form-header" style="text-align:center; font-weight:bold;">Enter the colors you want to add </h3>
-            <br />
-            <button @*id="btn-row-adder"*@ v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
-            <button v-on:click="submitColors" style="float:right; background-color: limegreen;" class="btn btn-info">Submit</button>
+        <div class="row color-form">
+            <div class="row" style="margin:0px;">
+                <div class="col-md-4" style="margin-left:-15px;">
+                <button v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
+                </div>
+                <div class="col-md-4 text-center">
+                <h6 id="color-form-header" style="text-align:center; font-weight: bold; font-size: 23px; margin-bottom: 3px;">Add colors</h6>
+                </div>
+                <div class="col-md-4" style="float:right; padding-right:0px; ">
+                <button v-on:click="submitColors" style="float:right; background-color: limegreen;" class="btn">Submit</button>
+                </div>
+            </div>
             <table class="table table-bordered table-responsive" id="color-form-table">
                 <tr>
                     <th style="text-align:center;">Id</th>
@@ -44,7 +51,7 @@
                             <input type="text" placeholder="Id" v-model="color.Id" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" placeholder="Color" v-model="color.Name" class="form-control" />
+                            <input v-on:change="color.Name = color.Name.toUpperCase()" type="text" placeholder="Color" v-model="color.Name" class="form-control" />
                         </td>
                         <td>
                             <button v-on:click="formColors.splice(index,1)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
@@ -52,7 +59,7 @@
                     </tr>
                 </template>
             </table>
-            
+
         </div>
         
         <hr />
