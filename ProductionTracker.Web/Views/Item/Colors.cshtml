@@ -6,7 +6,7 @@
     ViewBag.Title = "Colors";
 }
 
-<style>    
+<style>
     .color-form {
         background-color: #86afcc;
         overflow: auto;
@@ -26,18 +26,17 @@
 
 
 <div id="app">
-    <div class="col-md-5 col-lg-offset-3 well">
-
+    <div class="col-md-5 well" style="margin-left: 1px">
         <div class="row color-form">
             <div class="row" style="margin:0px;">
                 <div class="col-md-4" style="margin-left:-15px;">
-                <button v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
+                    <button v-on:click="addRowtoColorForm" style="text-align:end;" type="button" class="btn btn-success">Add more rows</button>
                 </div>
                 <div class="col-md-4 text-center">
-                <h6 id="color-form-header" style="text-align:center; font-weight: bold; font-size: 23px; margin-bottom: 3px;">Add colors</h6>
+                    <h6 id="color-form-header" style="text-align:center; font-weight: bold; font-size: 23px; margin-bottom: 3px;">Add colors</h6>
                 </div>
                 <div class="col-md-4" style="float:right; padding-right:0px; ">
-                <button v-on:click="submitColors" style="float:right; background-color: limegreen;" class="btn">Submit</button>
+                    <button v-on:click="submitColors" style="float:right; background-color: limegreen;" class="btn">Submit</button>
                 </div>
             </div>
             <table class="table table-bordered table-responsive" id="color-form-table">
@@ -59,9 +58,8 @@
                     </tr>
                 </template>
             </table>
-
         </div>
-        
+
         <hr />
         <div class="color-table">
             <h3 style="text-align:center; font-weight:bold;">Colors </h3>
@@ -69,9 +67,8 @@
                 <tr>
                     <th style="text-align:center;">Id</th>
                     <th colspan="2" style="text-align:center;">Color</th>
-
                 </tr>
-                
+
                 <template v-for="(color,index) in listOfAllColors">
                     <tr :class="{'being-edited-background': color.Edit}">
                         <td>{{color.Id}}</td>
@@ -85,22 +82,25 @@
                                 <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
                             </span>
                         </td>
-
                     </tr>
                 </template>
-
             </table>
         </div>
-
     </div>
 </div>
+
+<div>
+    @Html.Partial("ItemAttribute")
+</div>
+
 
 @section scripts{
     <script src="~/Metronic/theme/assets/global/plugins/bootstrap-sweetalert/sweetalert.js"></script>
     <script src="~/Metronic/theme/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.js"></script>
     <script src="~/Scripts/SiteScripts/Colors.js"></script>
     <script src="~/Scripts/vue.js"></script>
-    <script src="~/Scripts/SiteScripts/color-vue.js"></script>
+    <script src="~/Scripts/SiteScripts/item/color-vue.js"></script>
+    <script src="~/Scripts/SiteScripts/item/attributes-options-vue.js"></script>
 }
 
 
