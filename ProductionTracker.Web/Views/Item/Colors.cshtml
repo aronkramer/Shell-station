@@ -73,6 +73,7 @@
                         <td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
                             <span v-if="!color.Edit">{{color.Name}}</span>
                             <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
+                        </td>
                         <td v-if="color.Edit" class="action-btn-td">
                             <span class="action-btn-span">
                                 <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>

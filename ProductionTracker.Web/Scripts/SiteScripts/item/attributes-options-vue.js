@@ -25,6 +25,8 @@
         getBodyStyle: function () {
             $.get("/item/GetBodyStyle", result => {
                 this.listOfAllBodyStyle = result.map(r => {
+                    r.Edit = false;
+                    r.NameCopy = null;
                     return r;
                 });
             });
@@ -32,6 +34,8 @@
         getMaterial: function () {
             $.get("/item/GetMaterial", result => {
                 this.listOfAllMaterial = result.map(r => {
+                    r.Edit = false;
+                    r.NameCopy = null;
                     return r;
                 });
             });

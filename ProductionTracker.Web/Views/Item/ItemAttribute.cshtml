@@ -1,4 +1,6 @@
-﻿<div id="edit-options">
+﻿
+
+<div id="edit-options">
 
     <div class="portlet box green col-md-5" style="margin-left: 10px">
         <div class="portlet-title">
@@ -7,9 +9,10 @@
             </div>
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                @* commented out for #protection
                 <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
                 <a href="javascript:;" class="reload" data-original-title="" title=""> </a>
-                <a href="javascript:;" class="remove" data-original-title="" title=""> </a>
+                <a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
             </div>
         </div>
         <div class="portlet-body" style="display: block;">
@@ -22,13 +25,24 @@
                     </div>
                     <div id="collapse_1" class="panel-collapse collapse in" aria-expanded="true" style="">
                         <div class="panel-body">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-striped table-hover table-responsive">
                                 <tr>
-                                    <th colspan="2">Sleeves</th>
+                                    <th colspan="3" style="background-color: darkturquoise">Sleeves</th>
                                 </tr>
-                                <tr v-for="(sleeve,index) in listOfAllSleeves">
-                                            <td>{{index+1}})  {{sleeve.Name}}</td>
-                                        </tr>
+                                <tr v-for="(sleeve,index) in listOfAllSleeves" :class="{'being-edited-background': sleeve.Edit}" >
+                                    <td>{{index+1}} </td>
+                                    <td :colspan="!sleeve.Edit ? 2 : 1" v-on:dblclick="sleeve.Edit = !sleeve.Edit; sleeve.NameCopy = sleeve.Name" tabindex="1">
+                                        <span v-if="!sleeve.Edit">{{sleeve.Name}}</span> 
+                                        <input v-else v-model="sleeve.Name"/>
+                                    </td> 
+                                    <td v-if="sleeve.Edit" class="action-btn-td">
+                                        <span class="action-btn-span">
+                                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingSleeve(index); sleeve.Edit = !sleeve.Edit" class="fa fa-save"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="sleeve.Edit = !sleeve.Edit; sleeve.Name = sleeve.NameCopy;">Cancel</button>
+                                        </span>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -41,13 +55,25 @@
                     </div>
                     <div id="collapse_2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body" style="height:200px; overflow-y:auto;">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-responsive table-hover table-striped">
                                 <tr>
-                                    <th colspan="2">BodyStyle</th>
+                                    <th colspan="3" style="background-color: darkturquoise">BodyStyle</th>
                                 </tr>
-                                <tr v-for="(BodyStyle,index) in listOfAllBodyStyle">
-                                    <td>{{index+1}}) &nbsp; {{BodyStyle.Name}}</td>
+                                <tr v-for="(bodyStyle,index) in listOfAllBodyStyle" :class="{'being-edited-background': bodyStyle.Edit}">
+                                    <td>  {{index+1}}  </td>
+                                    <td :colspan="!bodyStyle.Edit ? 2 : 1" v-on:dblclick="bodyStyle.Edit = !bodyStyle.Edit; bodyStyle.NameCopy = bodyStyle.Name" tabindex="1">
+                                        <span v-if="!bodyStyle.Edit">{{bodyStyle.Name}}</span>
+                                        <input v-else v-model="bodyStyle.Name" />
+                                    </td>
+                                    <td v-if="bodyStyle.Edit" class="action-btn-td">
+                                        <span class="action-btn-span">
+                                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingBodyStyle(index); bodyStyle.Edit = !bodyStyle.Edit" class="fa fa-save"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="bodyStyle.Edit = !bodyStyle.Edit; bodyStyle.Name = bodyStyle.NameCopy;">Cancel</button>
+                                        </span>
+                                    </td>
                                 </tr>
+                               
                             </table>
                         </div>
                     </div>
@@ -60,12 +86,23 @@
                     </div>
                     <div id="collapse_3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body">
-                          <table class="table table-bordered">
+                          <table class="table table-bordered table-responsive table-hover table-striped">
                                 <tr>
-                                    <th colspan="2">Materials</th>
+                                    <th colspan="3" style="background-color: darkturquoise">Materials</th>
                                 </tr>
-                                <tr v-for="(Material,index) in listOfAllMaterial">
-                                    <td>{{index+1}}) &nbsp; {{Material.Name}} &nbsp; {{Material.PricePerYard}}</td>
+                                <tr v-for="(material,index) in listOfAllMaterial" :class="{'being-edited-background': material.Edit}">
+                                    <td>{{index+1}}</td>
+                                    <td :colspan="!material.Edit ? 2 : 1" v-on:dblclick="material.Edit = !material.Edit; material.NameCopy = material.Name" tabindex="1">
+                                        <span v-if="!material.Edit">{{material.Name}} {{material.PricePerYard}}</span>
+                                        <input v-else v-model="material.Name" />
+                                    </td>
+                                    <td v-if="material.Edit" class="action-btn-td">
+                                        <span class="action-btn-span">
+                                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingmaterial(index); material.Edit = !material.Edit" class="fa fa-save"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="material.Edit = !material.Edit; material.Name = material.NameCopy;">Cancel</button>
+                                        </span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
