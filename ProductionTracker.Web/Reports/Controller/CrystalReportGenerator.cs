@@ -32,7 +32,7 @@ namespace ProductionTracker.Web.Reports
         {
             using (var reportDocument = new ReportDocument())
             {
-                var reportPath = HttpContext.Current.Server.MapPath("~/") + "Reports//" +  reportName;
+                var reportPath = HttpContext.Current.Server.MapPath("~/bin/") + "Reports//" +  reportName;
                 reportDocument.Load(reportPath);
                 reportDocument.Database.Tables[0].SetDataSource(tb);
                 

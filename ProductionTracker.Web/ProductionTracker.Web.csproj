@@ -207,7 +207,9 @@
       <DependentUpon>Barcode.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\Controller\CrystalReportGenerator.cs" />
+    <Compile Include="Reports\Controller\CrystalReportGenerator.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Reports\Controller\ReportController.cs" />
     <Compile Include="Reports\CrystalReportBarcode.cs">
       <SubType>Component</SubType>
@@ -238,6 +240,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RegularBarcodes.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\ReportModel\ProgressofFilesModel.cs" />
     <Compile Include="Reports\ReportModel\SummeryModel.cs" />
@@ -6747,6 +6750,7 @@
     <EmbeddedResource Include="Reports\RegularBarcodes.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>RegularBarcodes1.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\test.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
