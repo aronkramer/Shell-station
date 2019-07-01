@@ -1,9 +1,9 @@
-﻿<div id="app-other-edit-options">
+﻿<div id="edit-options">
 
     <div class="portlet box green col-md-5" style="margin-left: 10px">
         <div class="portlet-title">
             <div class="caption">
-                <i class="fa fa-gift"></i>Accordions
+                <i class="fa fa-gift"></i>Edit Item
             </div>
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -22,22 +22,14 @@
                     </div>
                     <div id="collapse_1" class="panel-collapse collapse in" aria-expanded="true" style="">
                         <div class="panel-body">
-                            <div id="app-bodyStyle">
-                                <div style="margin-left: 1px">
-                                    @*table logic goes here*@
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th colspan="2">Sleeves</th>
-                                        </tr>
-
-                                        <tr v-for="(sleeve,index) in listOfAllSleeves">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th colspan="2">Sleeves</th>
+                                </tr>
+                                <tr v-for="(sleeve,index) in listOfAllSleeves">
                                             <td>{{index+1}})  {{sleeve.Name}}</td>
                                         </tr>
-
-                                    </table>
-                                </div>
-                            </div>
-
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -49,23 +41,14 @@
                     </div>
                     <div id="collapse_2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body" style="height:200px; overflow-y:auto;">
-                            @*another-test*@
-                            <div id="app-Sleeves">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>id</th>
-                                        <th>sleeve</th>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>long sleeves kaklaf</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>aron</td>
-                                    </tr>
-                                </table>
-                            </div>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th colspan="2">BodyStyle</th>
+                                </tr>
+                                <tr v-for="(BodyStyle,index) in listOfAllBodyStyle">
+                                    <td>{{index+1}}) &nbsp; {{BodyStyle.Name}}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -77,23 +60,14 @@
                     </div>
                     <div id="collapse_3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body">
-                            @*another-test*@
-                            <div id="app-materials">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>id</th>
-                                        <th>mat</th>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>long sleeves kaklaf</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>aron</td>
-                                    </tr>
-                                </table>
-                            </div>
+                          <table class="table table-bordered">
+                                <tr>
+                                    <th colspan="2">Materials</th>
+                                </tr>
+                                <tr v-for="(Material,index) in listOfAllMaterial">
+                                    <td>{{index+1}}) &nbsp; {{Material.Name}} &nbsp; {{Material.PricePerYard}}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

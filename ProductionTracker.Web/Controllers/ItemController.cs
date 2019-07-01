@@ -105,7 +105,24 @@ namespace ProductionTracker.Web.Controllers
                 return JsonConvert.DeserializeObject<Sleeve>(Helpers.GetBasePropertiesOnDbObject(c));
             }), JsonRequestBehavior.AllowGet);
         }
-
+        [HttpGet]
+        public ActionResult GetBodyStyle()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetBodyStyle().Select(s =>
+            {
+                return JsonConvert.DeserializeObject<BodyStyle>(Helpers.GetBasePropertiesOnDbObject(s));
+            }), JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetMaterial()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetMaterial().Select(m =>
+            {
+                return JsonConvert.DeserializeObject<Material>(Helpers.GetBasePropertiesOnDbObject(m));
+            }), JsonRequestBehavior.AllowGet);
+        }
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();

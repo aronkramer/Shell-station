@@ -1,24 +1,40 @@
-﻿var appnew = new Vue({
-    el: '#app-other-edit-options',
+﻿new Vue({
+    el: '#edit-options',
     mounted: function () {
-        console.log(true)
         this.getSleeves();
+        this.getBodyStyle();
+        this.getMaterial();
     },
     data: {
         formColors: [{ Id: null, Name: null }],
-        listOfAllSleeves: []
+        listOfAllSleeves: [],
+        listOfAllBodyStyle: [],
+        listOfAllMaterial: []
     },
     methods: {
         getSleeves: function () {
-            var x = $.get("/item/GetSleeves", result => {
+            $.get("/item/GetSleeves", result => {
                 this.listOfAllSleeves = result.map(r => {
-                    
+                    r.Edit = false;
+                    r.NameCopy = null;
                     return r;
                 });
             })
             
-            console.log(x.responseJSON)
-           
-        } 
+        },
+        getBodyStyle: function () {
+            $.get("/item/GetBodyStyle", result => {
+                this.listOfAllBodyStyle = result.map(r => {
+                    return r;
+                });
+            });
+        },
+        getMaterial: function () {
+            $.get("/item/GetMaterial", result => {
+                this.listOfAllMaterial = result.map(r => {
+                    return r;
+                });
+            });
+        }
     }
 })
