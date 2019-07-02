@@ -594,5 +594,16 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+        public void EditSleeve(Sleeve sleeve)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.Sleeves.Where(i => i.Id == sleeve.Id).FirstOrDefault();
+                original.Name = sleeve.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
+                context.SubmitChanges();
+            }
+        }
+
     }
 }

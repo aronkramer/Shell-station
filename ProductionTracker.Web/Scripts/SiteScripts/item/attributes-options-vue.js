@@ -9,7 +9,12 @@
         formColors: [{ Id: null, Name: null }],
         listOfAllSleeves: [],
         listOfAllBodyStyle: [],
-        listOfAllMaterial: []
+        listOfAllMaterial: [],
+        listOfAtributes: {
+            bodysStyles:[],
+            matarials:[],
+            Sleeves: []
+        }
     },
     methods: {
         getSleeves: function () {
@@ -20,7 +25,7 @@
                     return r;
                 });
             })
-            
+
         },
         getBodyStyle: function () {
             $.get("/item/GetBodyStyle", result => {
@@ -39,6 +44,17 @@
                     return r;
                 });
             });
+        },
+        updateExistingSleeve: function (index) {
+            var item = this.listOfAllSleeves[index];
+            $.post("/item/UpdateSleeve", { sleeve: { Id: item.Id, Name: item.Name } });
+        },
+        edit: function (item) {
+            if (!item.Edit) {
+                item.Edit = !item.Edit;
+                item.Copy = jQuery.extend(true, {}, item);
+            }
+            
         }
     }
 })

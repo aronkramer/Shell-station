@@ -62,9 +62,7 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult Colors()
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-
-            return View(new ColorVM { Colors = repo.GetColors() });
+            return View();
         }
         
         [HttpGet]
@@ -104,6 +102,12 @@ namespace ProductionTracker.Web.Controllers
             {
                 return JsonConvert.DeserializeObject<Sleeve>(Helpers.GetBasePropertiesOnDbObject(c));
             }), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void UpdateSleeve(Sleeve sleeve)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditSleeve(sleeve);
         }
         [HttpGet]
         public ActionResult GetBodyStyle()

@@ -31,8 +31,8 @@
                                 </tr>
                                 <tr v-for="(sleeve,index) in listOfAllSleeves" :class="{'being-edited-background': sleeve.Edit}" >
                                     <td>{{index+1}} </td>
-                                    <td :colspan="!sleeve.Edit ? 2 : 1" v-on:dblclick="sleeve.Edit = !sleeve.Edit; sleeve.NameCopy = sleeve.Name" tabindex="1">
-                                        <span v-if="!sleeve.Edit">{{sleeve.Name}}</span> 
+                                    <td :colspan="!sleeve.Edit ? 2 : 1" v-on:dblclick="sleeve.Edit = true; sleeve.NameCopy = sleeve.Name" tabindex="1">
+                                        <span v-if="!sleeve.Edit">{{sleeve.Name.toUpperCase()}}</span> 
                                         <input v-else v-model="sleeve.Name"/>
                                     </td> 
                                     <td v-if="sleeve.Edit" class="action-btn-td">
@@ -61,7 +61,7 @@
                                 </tr>
                                 <tr v-for="(bodyStyle,index) in listOfAllBodyStyle" :class="{'being-edited-background': bodyStyle.Edit}">
                                     <td>  {{index+1}}  </td>
-                                    <td :colspan="!bodyStyle.Edit ? 2 : 1" v-on:dblclick="bodyStyle.Edit = !bodyStyle.Edit; bodyStyle.NameCopy = bodyStyle.Name" tabindex="1">
+                                    <td :colspan="!bodyStyle.Edit ? 2 : 1" v-on:dblclick="edit(bodyStyle)" tabindex="1">
                                         <span v-if="!bodyStyle.Edit">{{bodyStyle.Name}}</span>
                                         <input v-else v-model="bodyStyle.Name" />
                                     </td>
