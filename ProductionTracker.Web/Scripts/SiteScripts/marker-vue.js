@@ -28,17 +28,36 @@
                 });
             });
         },
-        edit: function (markerCatIndex, MarkerIndex) {
-            var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
+        //edit: function (markerCatIndex, MarkerIndex) {
+        //    var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
+        //    if (!marker.Edit) {
+        //        this.editCancelMarker(true, markerCatIndex, MarkerIndex);
+        //    }
+        //},
+        edit: function (marker) {
+            //var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
             if (!marker.Edit) {
-                this.editCancelMarker(true, markerCatIndex, MarkerIndex);
+                this.editCancelMarker(true, marker);
             }
         },
-        cancel: function (markerCatIndex, MarkerIndex) {
-            this.editCancelMarker(false, markerCatIndex, MarkerIndex);
+        cancel: function (marker) {
+            this.editCancelMarker(false, marker);
         },
-        editCancelMarker: function (edit, markerCatIndex, MarkerIndex) {
-            var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
+        //editCancelMarker: function (edit, markerCatIndex, MarkerIndex) {
+        //    var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
+
+        //    marker.Edit = edit;
+        //    if (edit) {
+        //        marker.Copy = jQuery.extend(true, {}, marker);
+        //    }
+        //    else {
+        //        marker.Length = marker.Copy.Length;
+        //        marker.PercentWaste = marker.Copy.PercentWaste;
+        //    }
+        //    this.markerCatergories[markerCatIndex].Markers.splice(MarkerIndex, 1, marker);
+        //},
+        editCancelMarker: function (edit,marker) {
+            //var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
 
             marker.Edit = edit;
             if (edit) {
@@ -48,7 +67,7 @@
                 marker.Length = marker.Copy.Length;
                 marker.PercentWaste = marker.Copy.PercentWaste;
             }
-            this.markerCatergories[markerCatIndex].Markers.splice(MarkerIndex, 1, marker);
+            //this.markerCatergories[markerCatIndex].Markers.splice(MarkerIndex, 1, marker);
         },
         updateMarker: function (markerCatIndex, MarkerIndex) {
             var marker = this.markerCatergories[markerCatIndex].Markers[MarkerIndex];
