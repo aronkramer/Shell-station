@@ -49,6 +49,14 @@
             var item = this.listOfAllSleeves[index];
             $.post("/item/UpdateSleeve", { sleeve: { Id: item.Id, Name: item.Name } });
         },
+        updateExistingBodyStyle: function (index) {
+            var item = this.listOfAllBodyStyle[index];
+            $.post("/item/UpdateBodyStyle", { bodyStyle: { Id: item.Id, Name: item.Name } });
+        },
+        updateExistingmaterial: function (index) {
+            var item = this.listOfAllMaterial[index];
+            $.post("/item/UpdateMaterial", { material: { Id: item.Id, Name: item.Name } });
+        },
         edit: function (item) {
             if (!item.Edit) {
                 item.Edit = !item.Edit;

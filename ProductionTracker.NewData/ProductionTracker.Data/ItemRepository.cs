@@ -80,7 +80,7 @@ namespace ProductionTracker.Data
                     }).ToList();
             }
         }
-
+        
         public IEnumerable<ItemWithQuantity> GetItemsInProduction()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
@@ -579,7 +579,7 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var original = context.Colors.Where(i => i.Id == id).FirstOrDefault();
-                original.Name = color;
+                original.Name = color.ToUpper();
                 original.ModifiedOn = DateTime.Now;
 
                 context.SubmitChanges();
@@ -604,6 +604,25 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
-
+        public void EditBodyStyle(BodyStyle bodyStyle)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.BodyStyles.Where(i => i.Id == bodyStyle.Id).FirstOrDefault();
+                original.Name = bodyStyle.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
+                context.SubmitChanges();
+            }
+        }
+        public void EditMaterial(Material material)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.Materials.Where(i => i.Id == material.Id).FirstOrDefault();
+                original.Name = material.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
+                context.SubmitChanges();
+            }
+        }
     }
 }

@@ -118,6 +118,12 @@ namespace ProductionTracker.Web.Controllers
                 return JsonConvert.DeserializeObject<BodyStyle>(Helpers.GetBasePropertiesOnDbObject(s));
             }), JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public void UpdateBodyStyle(BodyStyle bodyStyle)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditBodyStyle(bodyStyle);
+        }
         [HttpGet]
         public ActionResult GetMaterial()
         {
@@ -126,6 +132,12 @@ namespace ProductionTracker.Web.Controllers
             {
                 return JsonConvert.DeserializeObject<Material>(Helpers.GetBasePropertiesOnDbObject(m));
             }), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void UpdateMaterial(Material material)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditMaterial(material);
         }
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {

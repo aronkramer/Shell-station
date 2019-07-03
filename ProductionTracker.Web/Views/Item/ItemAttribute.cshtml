@@ -29,12 +29,14 @@
                                 <tr>
                                     <th colspan="3" style="background-color: darkturquoise">Sleeves</th>
                                 </tr>
-                                <tr v-for="(sleeve,index) in listOfAllSleeves" :class="{'being-edited-background': sleeve.Edit}" >
+                                <tr v-for="(sleeve,index) in listOfAllSleeves" :class="{'being-edited-background': sleeve.Edit}">
                                     <td>{{index+1}} </td>
-                                    <td :colspan="!sleeve.Edit ? 2 : 1" v-on:dblclick="sleeve.Edit = true; sleeve.NameCopy = sleeve.Name" tabindex="1">
-                                        <span v-if="!sleeve.Edit">{{sleeve.Name.toUpperCase()}}</span> 
-                                        <input v-else v-model="sleeve.Name"/>
-                                    </td> 
+                                    <td v-if="!sleeve.Edit" :colspan="2" v-on:dblclick="sleeve.Edit = true; sleeve.NameCopy = sleeve.Name" tabindex="1">
+                                        <span>{{sleeve.Name.toUpperCase()}}</span>
+                                    </td>
+                                    <td v-else :colspan="1" v-on:dblclick="sleeve.Edit = false; sleeve.Name = sleeve.NameCopy" tabindex="1">
+                                        <input v-model="sleeve.Name" />
+                                    </td>
                                     <td v-if="sleeve.Edit" class="action-btn-td">
                                         <span class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingSleeve(index); sleeve.Edit = !sleeve.Edit" class="fa fa-save"></i></span>
@@ -61,9 +63,11 @@
                                 </tr>
                                 <tr v-for="(bodyStyle,index) in listOfAllBodyStyle" :class="{'being-edited-background': bodyStyle.Edit}">
                                     <td>  {{index+1}}  </td>
-                                    <td :colspan="!bodyStyle.Edit ? 2 : 1" v-on:dblclick="edit(bodyStyle)" tabindex="1">
-                                        <span v-if="!bodyStyle.Edit">{{bodyStyle.Name}}</span>
-                                        <input v-else v-model="bodyStyle.Name" />
+                                    <td v-if="!bodyStyle.Edit" :colspan="2" v-on:dblclick="bodyStyle.Edit = true; bodyStyle.NameCopy = bodyStyle.Name" tabindex="1">
+                                        <span>{{bodyStyle.Name.toUpperCase()}}</span>
+                                    </td>
+                                    <td v-else :colspan="1" v-on:dblclick="bodyStyle.Edit = false; bodyStyle.Name = bodyStyle.NameCopy" tabindex="1">
+                                        <input v-model="bodyStyle.Name" />
                                     </td>
                                     <td v-if="bodyStyle.Edit" class="action-btn-td">
                                         <span class="action-btn-span">
@@ -92,9 +96,11 @@
                                 </tr>
                                 <tr v-for="(material,index) in listOfAllMaterial" :class="{'being-edited-background': material.Edit}">
                                     <td>{{index+1}}</td>
-                                    <td :colspan="!material.Edit ? 2 : 1" v-on:dblclick="material.Edit = !material.Edit; material.NameCopy = material.Name" tabindex="1">
-                                        <span v-if="!material.Edit">{{material.Name}} {{material.PricePerYard}}</span>
-                                        <input v-else v-model="material.Name" />
+                                    <td v-if="!material.Edit" :colspan="2" v-on:dblclick="material.Edit = true; material.NameCopy = material.Name" tabindex="1">
+                                        <span>{{material.Name.toUpperCase()}}  {{material.PricePerYard}}</span>
+                                    </td>
+                                    <td v-else :colspan="1" v-on:dblclick="material.Edit = false; material.Name = material.NameCopy" tabindex="1">
+                                        <input v-model="material.Name" />
                                     </td>
                                     <td v-if="material.Edit" class="action-btn-td">
                                         <span class="action-btn-span">

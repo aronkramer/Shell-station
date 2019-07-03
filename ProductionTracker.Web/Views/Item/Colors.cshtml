@@ -64,20 +64,28 @@
                     <th colspan="2" style="text-align:center;">Color</th>
                 </tr>
 
-                    <tr  v-for="(color,index) in listOfAllColors" :class="{'being-edited-background': color.Edit}">
-                        <td>{{color.Id}}</td>
-                        <td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = true; color.NameCopy = color.Name" tabindex="1">
-                            <span v-if="!color.Edit">{{color.Name}}</span>
-                            <input v-else v-model="color.Name" />
-                        </td>
-                        <td v-if="color.Edit" class="action-btn-td">
-                            <span class="action-btn-span">
-                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>
-                                <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
-                            </span>
-                        </td>
-                    </tr>
+                <tr v-for="(color,index) in listOfAllColors" :class="{'being-edited-background': color.Edit}">
+                    <td>{{color.Id}}</td>
+                    @*<td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = true; color.NameCopy = color.Name" tabindex="1">
+                        <span v-if="!color.Edit">{{color.Name}}</span>
+                        <input v-else v-model="color.Name" />
+                    </td>*@
+
+                    <td v-if="!color.Edit" :colspan="2" v-on:dblclick="color.Edit = true; color.NameCopy = color.Name" tabindex="1">
+                        <span>{{color.Name.toUpperCase()}}</span>
+                    </td>
+                    <td v-else :colspan="1" v-on:dblclick="color.Edit = false; color.Name = color.NameCopy" tabindex="1">
+                        <input v-model="color.Name" />
+                    </td>
+
+                    <td v-if="color.Edit" class="action-btn-td">
+                        <span class="action-btn-span">
+                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>
+                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
+                        </span>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
