@@ -346,4 +346,24 @@
       <Column Name="MaterialId" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </ElementType>
   </Function>
+  <Function Name="dbo.ItemsWithDetails" Method="ItemsWithDetails">
+    <ElementType Name="ItemsWithDetailsResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SKU" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SizeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SizeDescription" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastCuttingInstructionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="AmountOrdered" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AmountReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemsNotReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
 </Database>

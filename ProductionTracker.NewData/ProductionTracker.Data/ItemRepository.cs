@@ -81,33 +81,41 @@ namespace ProductionTracker.Data
             }
         }
 
-        public IEnumerable<ItemWithQuantity> GetItemsInProduction()
+        //public IEnumerable<ItemWithQuantity> GetItemsInProduction()
+        //{
+        //    using (var context = new ManufacturingDataContext(_connectionString))
+        //    {
+        //        var loadoptions = new DataLoadOptions();
+        //        loadoptions.LoadWith<CuttingInstructionItem>(c => c.Item);
+        //        context.LoadOptions = loadoptions;
+        //        return context.CuttingInstructionItems.GroupBy(i => i.ItemId).Where(ite =>
+        //            ite.Sum(p => p.Quantity) - (ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Count() > 0 ? ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Sum(p => p.Quantity) : 0) > 0
+        //        )
+        //            .ToList()
+        //            .Select(ite =>
+        //            {
+        //                var it = ite.FirstOrDefault();
+        //                return new ItemWithQuantity
+        //                {
+        //                    Item = it.Item,
+        //                    LastCuttingInstructionDate = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault(),
+        //                    LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(),
+        //                    Quantitys = new ItemQuantity
+        //                    {
+        //                        AmountOrdered = ite.Sum(p => p.Quantity),
+        //                        AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Sum(p => p.Quantity) : 0
+        //                    }
+
+        //                };
+        //            }).ToList();
+        //    }
+        //}
+
+        public IEnumerable<ItemsWithDetailsResult> GetItemsInProduction()
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                var loadoptions = new DataLoadOptions();
-                loadoptions.LoadWith<CuttingInstructionItem>(c => c.Item);
-                context.LoadOptions = loadoptions;
-                return context.CuttingInstructionItems.GroupBy(i => i.ItemId).Where(ite =>
-                    ite.Sum(p => p.Quantity) - (ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Count() > 0 ? ite.FirstOrDefault().Item.ReceivingItemsTransactions.Where(i => i.ItemId == ite.FirstOrDefault().ItemId).Sum(p => p.Quantity) : 0) > 0
-                )
-                    .ToList()
-                    .Select(ite =>
-                    {
-                        var it = ite.FirstOrDefault();
-                        return new ItemWithQuantity
-                        {
-                            Item = it.Item,
-                            LastCuttingInstructionDate = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault(),
-                            LastCuttingInstructionDatePretty = ite.OrderByDescending(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).Select(p => p.CuttingInstructionDetail.CuttingInstruction.Production.Date).FirstOrDefault().ToShortDateString(),
-                            Quantitys = new ItemQuantity
-                            {
-                                AmountOrdered = ite.Sum(p => p.Quantity),
-                                AmountReceived = it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Count() > 0 ? it.Item.ReceivingItemsTransactions.Where(i => i.ItemId == it.ItemId).Sum(p => p.Quantity) : 0
-                            }
-
-                        };
-                    }).ToList();
+                return context.ItemsWithDetails().ToList();
             }
         }
 

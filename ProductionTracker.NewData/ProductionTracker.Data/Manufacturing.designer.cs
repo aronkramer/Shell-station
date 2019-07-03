@@ -354,6 +354,13 @@ namespace ProductionTracker.Data
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
 			return ((ISingleResult<ItemsForBarcodes2Result>)(result.ReturnValue));
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.ItemsWithDetails")]
+		public ISingleResult<ItemsWithDetailsResult> ItemsWithDetails()
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+			return ((ISingleResult<ItemsWithDetailsResult>)(result.ReturnValue));
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BodyStyle")]
@@ -7716,6 +7723,302 @@ namespace ProductionTracker.Data
 				if ((this._MaterialId != value))
 				{
 					this._MaterialId = value;
+				}
+			}
+		}
+	}
+	
+	public partial class ItemsWithDetailsResult
+	{
+		
+		private System.Nullable<int> _Id;
+		
+		private string _SKU;
+		
+		private System.Nullable<int> _ColorId;
+		
+		private System.Nullable<int> _SizeId;
+		
+		private System.Nullable<int> _DepartmentId;
+		
+		private System.Nullable<int> _MaterialId;
+		
+		private System.Nullable<int> _SleeveId;
+		
+		private System.Nullable<int> _BodyStyleId;
+		
+		private string _SizeDescription;
+		
+		private string _BodyStyleAttributte;
+		
+		private System.Nullable<System.DateTime> _CreatedOn;
+		
+		private System.Nullable<System.DateTime> _ModifiedOn;
+		
+		private System.Nullable<System.DateTime> _LastCuttingInstructionDate;
+		
+		private System.Nullable<int> _AmountOrdered;
+		
+		private System.Nullable<int> _AmountReceived;
+		
+		private System.Nullable<int> _ItemsNotReceived;
+		
+		public ItemsWithDetailsResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int")]
+		public System.Nullable<int> Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKU", DbType="VarChar(50)")]
+		public string SKU
+		{
+			get
+			{
+				return this._SKU;
+			}
+			set
+			{
+				if ((this._SKU != value))
+				{
+					this._SKU = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ColorId", DbType="Int")]
+		public System.Nullable<int> ColorId
+		{
+			get
+			{
+				return this._ColorId;
+			}
+			set
+			{
+				if ((this._ColorId != value))
+				{
+					this._ColorId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SizeId", DbType="Int")]
+		public System.Nullable<int> SizeId
+		{
+			get
+			{
+				return this._SizeId;
+			}
+			set
+			{
+				if ((this._SizeId != value))
+				{
+					this._SizeId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="Int")]
+		public System.Nullable<int> DepartmentId
+		{
+			get
+			{
+				return this._DepartmentId;
+			}
+			set
+			{
+				if ((this._DepartmentId != value))
+				{
+					this._DepartmentId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaterialId", DbType="Int")]
+		public System.Nullable<int> MaterialId
+		{
+			get
+			{
+				return this._MaterialId;
+			}
+			set
+			{
+				if ((this._MaterialId != value))
+				{
+					this._MaterialId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SleeveId", DbType="Int")]
+		public System.Nullable<int> SleeveId
+		{
+			get
+			{
+				return this._SleeveId;
+			}
+			set
+			{
+				if ((this._SleeveId != value))
+				{
+					this._SleeveId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BodyStyleId", DbType="Int")]
+		public System.Nullable<int> BodyStyleId
+		{
+			get
+			{
+				return this._BodyStyleId;
+			}
+			set
+			{
+				if ((this._BodyStyleId != value))
+				{
+					this._BodyStyleId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SizeDescription", DbType="VarChar(50)")]
+		public string SizeDescription
+		{
+			get
+			{
+				return this._SizeDescription;
+			}
+			set
+			{
+				if ((this._SizeDescription != value))
+				{
+					this._SizeDescription = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BodyStyleAttributte", DbType="VarChar(50)")]
+		public string BodyStyleAttributte
+		{
+			get
+			{
+				return this._BodyStyleAttributte;
+			}
+			set
+			{
+				if ((this._BodyStyleAttributte != value))
+				{
+					this._BodyStyleAttributte = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> CreatedOn
+		{
+			get
+			{
+				return this._CreatedOn;
+			}
+			set
+			{
+				if ((this._CreatedOn != value))
+				{
+					this._CreatedOn = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedOn", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedOn
+		{
+			get
+			{
+				return this._ModifiedOn;
+			}
+			set
+			{
+				if ((this._ModifiedOn != value))
+				{
+					this._ModifiedOn = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastCuttingInstructionDate", DbType="Date")]
+		public System.Nullable<System.DateTime> LastCuttingInstructionDate
+		{
+			get
+			{
+				return this._LastCuttingInstructionDate;
+			}
+			set
+			{
+				if ((this._LastCuttingInstructionDate != value))
+				{
+					this._LastCuttingInstructionDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountOrdered", DbType="Int")]
+		public System.Nullable<int> AmountOrdered
+		{
+			get
+			{
+				return this._AmountOrdered;
+			}
+			set
+			{
+				if ((this._AmountOrdered != value))
+				{
+					this._AmountOrdered = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountReceived", DbType="Int")]
+		public System.Nullable<int> AmountReceived
+		{
+			get
+			{
+				return this._AmountReceived;
+			}
+			set
+			{
+				if ((this._AmountReceived != value))
+				{
+					this._AmountReceived = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemsNotReceived", DbType="Int")]
+		public System.Nullable<int> ItemsNotReceived
+		{
+			get
+			{
+				return this._ItemsNotReceived;
+			}
+			set
+			{
+				if ((this._ItemsNotReceived != value))
+				{
+					this._ItemsNotReceived = value;
 				}
 			}
 		}

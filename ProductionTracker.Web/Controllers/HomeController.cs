@@ -30,17 +30,17 @@ namespace ProductionTracker.Web.Controllers
 
                 return new
                 {
-                    it.Item.Id,
-                    it.Item.SKU,
-                    it.Item.BodyStyleId,
-                    it.Item.DepartmentId,
-                    it.Item.MaterialId,
-                    it.Item.ColorId,
-                    it.Item.SleeveId,
-                    it.Item.SizeId,
+                    it.Id,
+                    it.SKU,
+                    it.BodyStyleId,
+                    it.DepartmentId,
+                    it.MaterialId,
+                    it.ColorId,
+                    it.SleeveId,
+                    it.SizeId,
                     it.LastCuttingInstructionDate,
-                    it.LastCuttingInstructionDatePretty,
-                    ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
+                    LastCuttingInstructionDatePretty = DateTime.Parse(it.LastCuttingInstructionDate.ToString()).ToShortDateString(),
+                    it.ItemsNotReceived
                 };
             }), JsonRequestBehavior.AllowGet);
         }

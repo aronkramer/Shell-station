@@ -171,6 +171,7 @@
     <Compile Include="Controllers\FabricController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MarkerController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\TestingController.cs" />
@@ -6706,6 +6707,7 @@
     <Folder Include="DataAcsess\" />
     <Folder Include="Metronic\theme\assets\apps\img\" />
     <Folder Include="Metronic\theme\assets\global\plugins\angularjs\plugins\angular-file-upload\uploads\" />
+    <Folder Include="Views\Login\" />
     <Folder Include="Views\Testing\" />
   </ItemGroup>
   <ItemGroup>
