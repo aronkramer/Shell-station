@@ -93,6 +93,22 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<BodyStyle> GetBodyStyle()
+        {
+            using(var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.BodyStyles.ToList();
+            }
+        }
+
+        public IEnumerable<Material> GetMaterial()
+        {
+            using(var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.Materials.ToList();
+            }
+        }
+
         public Color GetColor(int id)
         {
             using (var context = new ManufacturingDataContext(_connectionString))

@@ -80,6 +80,7 @@ namespace ProductionTracker.Data
                     }).ToList();
             }
         }
+<<<<<<< HEAD
 
         //public IEnumerable<ItemWithQuantity> GetItemsInProduction()
         //{
@@ -112,6 +113,10 @@ namespace ProductionTracker.Data
         //}
 
         public IEnumerable<ItemsWithDetailsResult> GetItemsInProduction()
+=======
+        
+        public IEnumerable<ItemWithQuantity> GetItemsInProduction()
+>>>>>>> 1630539619c5c9572fc44460009ea74789e0bc43
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
@@ -587,7 +592,7 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var original = context.Colors.Where(i => i.Id == id).FirstOrDefault();
-                original.Name = color;
+                original.Name = color.ToUpper();
                 original.ModifiedOn = DateTime.Now;
 
                 context.SubmitChanges();
@@ -599,6 +604,36 @@ namespace ProductionTracker.Data
             {
                 var v = context.Colors.Where(i => i.Id == ColorId).FirstOrDefault();
                 context.Colors.DeleteOnSubmit(v);
+                context.SubmitChanges();
+            }
+        }
+        public void EditSleeve(Sleeve sleeve)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.Sleeves.Where(i => i.Id == sleeve.Id).FirstOrDefault();
+                original.Name = sleeve.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
+                context.SubmitChanges();
+            }
+        }
+        public void EditBodyStyle(BodyStyle bodyStyle)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.BodyStyles.Where(i => i.Id == bodyStyle.Id).FirstOrDefault();
+                original.Name = bodyStyle.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
+                context.SubmitChanges();
+            }
+        }
+        public void EditMaterial(Material material)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var original = context.Materials.Where(i => i.Id == material.Id).FirstOrDefault();
+                original.Name = material.Name.ToUpper();
+                original.ModifiedOn = DateTime.Now;
                 context.SubmitChanges();
             }
         }

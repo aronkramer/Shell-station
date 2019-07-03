@@ -1,8 +1,4 @@
-﻿@using ProductionTracker.Data
-@using ProductionTracker.Web.Models
-@model ColorVM
-
-@{
+﻿@{
     ViewBag.Title = "Colors";
 }
 
@@ -44,8 +40,7 @@
                     <th style="text-align:center;">Id</th>
                     <th colspan="2" style="text-align:center;">Color</th>
                 </tr>
-                <template v-for="(color,index) in formColors">
-                    <tr>
+                    <tr v-for="(color,index) in formColors">
                         <td>
                             <input type="text" placeholder="Id" v-model="color.Id" class="form-control" />
                         </td>
@@ -56,7 +51,7 @@
                             <button v-on:click="formColors.splice(index,1)" class="btn btn-circle btn-icon-only red-sunglo">X</button>
                         </td>
                     </tr>
-                </template>
+                
             </table>
         </div>
 
@@ -69,21 +64,28 @@
                     <th colspan="2" style="text-align:center;">Color</th>
                 </tr>
 
-                <template v-for="(color,index) in listOfAllColors">
-                    <tr :class="{'being-edited-background': color.Edit}">
-                        <td>{{color.Id}}</td>
-                        <td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = !color.Edit; color.NameCopy = color.Name" tabindex="1">
-                            <span v-if="!color.Edit">{{color.Name}}</span>
-                            <input v-else @*style="background-color:#78a4bd;"*@ v-model="color.Name" />
-                        <td v-if="color.Edit" class="action-btn-td">
-                            <span class="action-btn-span">
-                                <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>
-                                <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
-                            </span>
-                        </td>
-                    </tr>
-                </template>
+                <tr v-for="(color,index) in listOfAllColors" :class="{'being-edited-background': color.Edit}">
+                    <td>{{color.Id}}</td>
+                    @*<td :colspan="!color.Edit ? 2 : 1" v-on:dblclick="color.Edit = true; color.NameCopy = color.Name" tabindex="1">
+                        <span v-if="!color.Edit">{{color.Name}}</span>
+                        <input v-else v-model="color.Name" />
+                    </td>*@
+
+                    <td v-if="!color.Edit" :colspan="2" v-on:dblclick="color.Edit = true; color.NameCopy = color.Name" tabindex="1">
+                        <span>{{color.Name.toUpperCase()}}</span>
+                    </td>
+                    <td v-else :colspan="1" v-on:dblclick="color.Edit = false; color.Name = color.NameCopy" tabindex="1">
+                        <input v-model="color.Name" />
+                    </td>
+
+                    <td v-if="color.Edit" class="action-btn-td">
+                        <span class="action-btn-span">
+                            <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingColor(index); color.Edit = !color.Edit" class="fa fa-save"></i></span>
+                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="color.Edit = !color.Edit; color.Name = color.NameCopy;">Cancel</button>
+                        </span>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

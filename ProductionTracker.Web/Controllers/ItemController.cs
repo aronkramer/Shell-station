@@ -62,9 +62,7 @@ namespace ProductionTracker.Web.Controllers
         }
         public ActionResult Colors()
         {
-            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
-
-            return View(new ColorVM { Colors = repo.GetColors() });
+            return View();
         }
         
         [HttpGet]
@@ -105,7 +103,42 @@ namespace ProductionTracker.Web.Controllers
                 return JsonConvert.DeserializeObject<Sleeve>(Helpers.GetBasePropertiesOnDbObject(c));
             }), JsonRequestBehavior.AllowGet);
         }
-
+        [HttpPost]
+        public void UpdateSleeve(Sleeve sleeve)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditSleeve(sleeve);
+        }
+        [HttpGet]
+        public ActionResult GetBodyStyle()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetBodyStyle().Select(s =>
+            {
+                return JsonConvert.DeserializeObject<BodyStyle>(Helpers.GetBasePropertiesOnDbObject(s));
+            }), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void UpdateBodyStyle(BodyStyle bodyStyle)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditBodyStyle(bodyStyle);
+        }
+        [HttpGet]
+        public ActionResult GetMaterial()
+        {
+            var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.GetMaterial().Select(m =>
+            {
+                return JsonConvert.DeserializeObject<Material>(Helpers.GetBasePropertiesOnDbObject(m));
+            }), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void UpdateMaterial(Material material)
+        {
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            repo.EditMaterial(material);
+        }
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();
