@@ -80,7 +80,6 @@ namespace ProductionTracker.Data
                     }).ToList();
             }
         }
-<<<<<<< HEAD
 
         //public IEnumerable<ItemWithQuantity> GetItemsInProduction()
         //{
@@ -113,10 +112,6 @@ namespace ProductionTracker.Data
         //}
 
         public IEnumerable<ItemsWithDetailsResult> GetItemsInProduction()
-=======
-        
-        public IEnumerable<ItemWithQuantity> GetItemsInProduction()
->>>>>>> 1630539619c5c9572fc44460009ea74789e0bc43
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
