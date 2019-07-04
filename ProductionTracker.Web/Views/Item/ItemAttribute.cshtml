@@ -40,7 +40,7 @@
                                     <td v-if="sleeve.Edit" class="action-btn-td">
                                         <span class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingSleeve(index); sleeve.Edit = !sleeve.Edit" class="fa fa-save"></i></span>
-                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(sleeve, 'Sleeves', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="sleeve.Edit = !sleeve.Edit; sleeve.Name = sleeve.NameCopy;">Cancel</button>
                                         </span>
                                     </td>
@@ -72,7 +72,7 @@
                                     <td v-if="bodyStyle.Edit" class="action-btn-td">
                                         <span class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingBodyStyle(index); bodyStyle.Edit = !bodyStyle.Edit" class="fa fa-save"></i></span>
-                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(bodyStyle, 'BodyStyle', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="bodyStyle.Edit = !bodyStyle.Edit; bodyStyle.Name = bodyStyle.NameCopy;">Cancel</button>
                                         </span>
                                     </td>
@@ -105,7 +105,7 @@
                                     <td v-if="material.Edit" class="action-btn-td">
                                         <span class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingmaterial(index); material.Edit = !material.Edit" class="fa fa-save"></i></span>
-                                            <span title="Delete" v-on:click="deleteAnExistingItem(index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
+                                            <span title="Delete" v-on:click="deleteAnExistingItem(material,'Material', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="material.Edit = !material.Edit; material.Name = material.NameCopy;">Cancel</button>
                                         </span>
                                     </td>

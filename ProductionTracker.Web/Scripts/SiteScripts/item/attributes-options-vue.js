@@ -63,6 +63,25 @@
                 item.Copy = jQuery.extend(true, {}, item);
             }
             
+        },
+        deleteAnExistingItem: function (i, type, index) {
+            swal({
+                title: "Are you sure you want to delete this?",
+                text: "Your will not be able to recover!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                showLoaderOnConfirm: true,
+                closeOnConfirm: true
+            },
+                () => {
+                    $.post(`/item/deleteItem`, { id: i.Id, type }, () => {
+                        var listType = this[`listOfAll${type}`];
+                        listType.splice(index, 1);
+                    })
+                }
+            );
         }
     }
 })
