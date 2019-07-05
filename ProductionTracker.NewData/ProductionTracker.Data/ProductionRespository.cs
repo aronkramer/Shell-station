@@ -817,6 +817,14 @@ namespace ProductionTracker.Data
             }
         }
 
+        public IEnumerable<ActiveProductionsResult> GetActiveProductions()
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                return context.ActiveProductions().ToList();
+            }
+        }
+
         public IEnumerable<Production> GetNonClosedProductions()
         {
             using (var context = new ManufacturingDataContext(_connectionString))

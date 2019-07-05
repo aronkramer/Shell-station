@@ -366,4 +366,42 @@
       <Column Name="ItemsNotReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </ElementType>
   </Function>
+  <Function Name="dbo.ActiveProductions" Method="ActiveProductions">
+    <ElementType Name="ActiveProductionsResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ItemsOrdered" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemsRecived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemsNotReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="percentFilled" Type="System.Decimal" DbType="Decimal(29,13)" CanBeNull="true" />
+      <Column Name="Lot" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.ItemsInASeason" Method="ItemsInASeason">
+    <Parameter Name="plannedProdId" Type="System.Int32" DbType="Int" />
+    <ElementType Name="ItemsInASeasonResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SKU" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ColorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DepartmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SleeveId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BodyStyleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SizeDescription" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BodyStyleAttributte" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PlannedAmount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="PlannedProdDetailsId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastCuttingInstructionDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="AmountOrdered" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AmountReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemsNotReceived" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PercentageFilled" Type="System.Decimal" DbType="Decimal(29,13)" CanBeNull="true" />
+    </ElementType>
+  </Function>
 </Database>

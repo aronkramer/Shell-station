@@ -100,22 +100,22 @@ namespace ProductionTracker.Web.Controllers
                 {
                     return new
                     {
-                        it.Item.Id,
-                        it.Item.SKU,
-                        it.Item.BodyStyleId,
-                        it.Item.DepartmentId,
-                        it.Item.MaterialId,
-                        it.Item.ColorId,
-                        it.Item.SleeveId,
-                        it.Item.SizeId,
+                        it.Id,
+                        it.SKU,
+                        it.BodyStyleId,
+                        it.DepartmentId,
+                        it.MaterialId,
+                        it.ColorId,
+                        it.SleeveId,
+                        it.SizeId,
                         it.LastCuttingInstructionDate,
-                        it.LastCuttingInstructionDatePretty,
-                        it.Quantitys.AmountOrdered,
-                        it.Quantitys.AmountReceived,
-                        it.Quantitys.PlannedAmount,
-                        ItemsNotReceived = (it.Quantitys.AmountOrdered - it.Quantitys.AmountReceived).ToString(),
-                        PercentageFilled = it.Quantitys.PlannedAmount != 0 /*&& it.Quantitys.AmountOrdered != 0*/ ? double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount : 0,
-                        PercentageFilledText = string.Format("{0:P}", double.Parse(it.Quantitys.AmountOrdered.ToString()) / it.Quantitys.PlannedAmount),
+                        LastCuttingInstructionDatePretty = DateTime.Parse(it.LastCuttingInstructionDate.ToString()).ToShortDateString(),
+                        it.AmountOrdered,
+                        it.AmountReceived,
+                        it.PlannedAmount,
+                        it.ItemsNotReceived,
+                        it.PercentageFilled,
+                        PercentageFilledText = string.Format("{0:P}", it.PercentageFilled),
                         Details = (object)null,
                         it.PlannedProdDetailsId,
                         it.Notes,
@@ -206,24 +206,41 @@ namespace ProductionTracker.Web.Controllers
         {
             var repo = new ProductionRespository(Properties.Settings.Default.ManufacturingConStr);
             //var CuttingInstructions = repo.GetOpenedProductions();
-            var CuttingInstructions = repo.GetNonClosedProductions();
+            //var CuttingInstructions = repo.GetNonClosedProductions();
+
+
+            //return Json(CuttingInstructions.Select(p =>
+            //{
+            //    var sumor = p.CuttingInstructions.Sum(c => c.CuttingInstructionDetails.Sum(pd => pd.CuttingInstructionItems.Sum(d => d.Quantity)));
+            //    var sumre = p.CuttingInstructions.Sum(c => c.ReceivingItemsTransactions.Sum(re => re.Quantity));
+            //    return new
+            //    {
+            //        Date = p.Date.ToShortDateString(),
+            //        Lot = string.Join(",", p.CuttingInstructions.Select(c => c.LotNumber)),
+            //        Id = p.Id,
+            //        TotalItems = sumor,
+            //        ItemsNotReceived = sumor - sumre,
+            //        PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
+
+            //    };
+            //}).OrderByDescending(p => p.Id), JsonRequestBehavior.AllowGet);
+
+            var CuttingInstructions = repo.GetActiveProductions();
 
 
             return Json(CuttingInstructions.Select(p =>
             {
-                var sumor = p.CuttingInstructions.Sum(c => c.CuttingInstructionDetails.Sum(pd => pd.CuttingInstructionItems.Sum(d => d.Quantity)));
-                var sumre = p.CuttingInstructions.Sum(c => c.ReceivingItemsTransactions.Sum(re => re.Quantity));
                 return new
                 {
                     Date = p.Date.ToShortDateString(),
-                    Lot = string.Join(",", p.CuttingInstructions.Select(c => c.LotNumber)),
-                    Id = p.Id,
-                    TotalItems = sumor,
-                    ItemsNotReceived = sumor - sumre,
-                    PercentageFilled = string.Format("{0:P}", double.Parse(sumre.ToString()) / sumor)
+                    p.Lot,
+                    p.Id,
+                    TotalItems = p.ItemsOrdered,
+                    p.ItemsNotReceived,
+                    PercentageFilled = string.Format("{0:P}", p.percentFilled)
 
                 };
-            }).OrderByDescending(p => p.Id), JsonRequestBehavior.AllowGet);
+            }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetDeatilsOfACuttingInstruction(int id)
