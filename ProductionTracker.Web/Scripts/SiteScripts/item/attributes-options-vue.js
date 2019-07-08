@@ -82,6 +82,24 @@
                     })
                 }
             );
+        },
+        addRow: function (type) {
+            var listType = this[`listOfAll${type}`];
+            listType.push({ Name: "", Edit: true,  });
+        },
+        removeRow: function (type) {
+            var listType = this[`listOfAll${type}`];
+            listType.pop();
+        },
+        cancel: function (object) {
+            if (object.Id) {
+                object.Edit = false;
+                object.Name = object.NameCopy;
+            }
+        },
+        addNewItem: function (object) {
+            var item = this[`listOfAll${object}`];
+            console.log(item.Name);
         }
     }
 })

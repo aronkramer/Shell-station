@@ -1,6 +1,6 @@
 ﻿
 
-<div id="edit-options">
+<div id="edit-options" v-cloak>
 
     <div class="portlet box green col-md-5" style="margin-left: 10px">
         <div class="portlet-title">
@@ -9,10 +9,7 @@
             </div>
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                @* commented out for #protection
-                <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title=""> </a>
-                <a href="javascript:;" class="reload" data-original-title="" title=""> </a>
-                <a href="javascript:;" class="remove" data-original-title="" title=""> </a>*@
+           
             </div>
         </div>
         <div class="portlet-body" style="display: block;">
@@ -34,15 +31,24 @@
                                     <td v-if="!sleeve.Edit" :colspan="2" v-on:dblclick="sleeve.Edit = true; sleeve.NameCopy = sleeve.Name" tabindex="1">
                                         <span>{{sleeve.Name.toUpperCase()}}</span>
                                     </td>
-                                    <td v-else :colspan="1" v-on:dblclick="sleeve.Edit = false; sleeve.Name = sleeve.NameCopy" tabindex="1">
+                                    <td v-else :colspan="1" v-on:dblclick="cancel(sleeve)" tabindex="1">
                                         <input v-model="sleeve.Name" />
                                     </td>
                                     <td v-if="sleeve.Edit" class="action-btn-td">
-                                        <span class="action-btn-span">
+                                        <span v-if="sleeve.Id" class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingSleeve(index); sleeve.Edit = !sleeve.Edit" class="fa fa-save"></i></span>
                                             <span title="Delete" v-on:click="deleteAnExistingItem(sleeve, 'Sleeves', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="sleeve.Edit = !sleeve.Edit; sleeve.Name = sleeve.NameCopy;">Cancel</button>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(sleeve)">Cancel</button>
                                         </span>
+                                        <span v-else>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('Sleeves')"><i class="fa fa-plus"></i></button>
+                                            <button title="Remove" class="btn btn-danger" v-on:click="removeRow('Sleeves')"><i class="fa fa-ban"></i></button>pending...
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-left:475px;" colspan="3">
+                                        <button class="btn btn-circle btn-info" v-on:click="addRow('Sleeves')">Add New</button>
                                     </td>
                                 </tr>
                             </table>
@@ -66,18 +72,26 @@
                                     <td v-if="!bodyStyle.Edit" :colspan="2" v-on:dblclick="bodyStyle.Edit = true; bodyStyle.NameCopy = bodyStyle.Name" tabindex="1">
                                         <span>{{bodyStyle.Name.toUpperCase()}}</span>
                                     </td>
-                                    <td v-else :colspan="1" v-on:dblclick="bodyStyle.Edit = false; bodyStyle.Name = bodyStyle.NameCopy" tabindex="1">
+                                    <td v-else :colspan="1" v-on:dblclick="cancel(bodyStyle)" tabindex="1">
                                         <input v-model="bodyStyle.Name" />
                                     </td>
                                     <td v-if="bodyStyle.Edit" class="action-btn-td">
-                                        <span class="action-btn-span">
+                                        <span v-if="bodyStyle.Id" class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingBodyStyle(index); bodyStyle.Edit = !bodyStyle.Edit" class="fa fa-save"></i></span>
                                             <span title="Delete" v-on:click="deleteAnExistingItem(bodyStyle, 'BodyStyle', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="bodyStyle.Edit = !bodyStyle.Edit; bodyStyle.Name = bodyStyle.NameCopy;">Cancel</button>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(bodyStyle)">Cancel</button>
+                                        </span>
+                                        <span v-else>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('BodyStyle')"><i class="fa fa-plus"></i></button>
+                                            <button title="Remove" class="btn btn-danger" v-on:click="removeRow('BodyStyle')"><i class="fa fa-ban"></i></button>pending...
                                         </span>
                                     </td>
                                 </tr>
-                               
+                                <tr>
+                                    <td style="padding-left:475px;" colspan="3">
+                                        <button class="btn btn-circle btn-info" v-on:click="addRow('BodyStyle')">Add New</button>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -90,7 +104,7 @@
                     </div>
                     <div id="collapse_3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body">
-                          <table class="table table-bordered table-responsive table-hover table-striped">
+                            <table class="table table-bordered table-responsive table-hover table-striped">
                                 <tr>
                                     <th colspan="3" style="background-color: darkturquoise">Materials</th>
                                 </tr>
@@ -99,15 +113,24 @@
                                     <td v-if="!material.Edit" :colspan="2" v-on:dblclick="material.Edit = true; material.NameCopy = material.Name" tabindex="1">
                                         <span>{{material.Name.toUpperCase()}}  {{material.PricePerYard}}</span>
                                     </td>
-                                    <td v-else :colspan="1" v-on:dblclick="material.Edit = false; material.Name = material.NameCopy" tabindex="1">
+                                    <td v-else :colspan="1" v-on:dblclick="cancel(material)" tabindex="1">
                                         <input v-model="material.Name" />
                                     </td>
                                     <td v-if="material.Edit" class="action-btn-td">
-                                        <span class="action-btn-span">
+                                        <span v-if="material.Id" class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingmaterial(index); material.Edit = !material.Edit" class="fa fa-save"></i></span>
                                             <span title="Delete" v-on:click="deleteAnExistingItem(material,'Material', index)" class="font-awsome-span delete-btn"><i class="fa fa-trash"></i></span>
-                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="material.Edit = !material.Edit; material.Name = material.NameCopy;">Cancel</button>
+                                            <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(material)">Cancel</button>
                                         </span>
+                                        <span v-else>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('Material')"><i class="fa fa-plus"></i></button>
+                                            <button title="Remove" class="btn btn-danger" v-on:click="removeRow('Material')"><i class="fa fa-ban"></i></button>pending...
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-left:475px;" colspan="3">
+                                        <button class="btn btn-circle btn-info" v-on:click="addRow('Material')">Add New</button>
                                     </td>
                                 </tr>
                             </table>
