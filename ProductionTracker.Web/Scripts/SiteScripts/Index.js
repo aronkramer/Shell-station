@@ -189,7 +189,7 @@
         },
         seasonTab: function () {
             if (this.seasonItems.items.length < 1) {
-                this.loadSeasonItems(null, () => this.getPlannedProds());
+                this.loadSeasonItems(null, () => { this.getPlannedProds(); if (!this.seasonItems.filterLists.Materials) this.getTheDataTables(); });
                 
             }
         },

@@ -127,7 +127,21 @@ namespace ProductionTracker.Data
             }
         }
 
-        public SeasonWithItems GetASeasonsItemsWithQuantitys(int plannedProdId)
+        public SeasonWithItems2 GetASeasonsItemsWithQuantitys(int plannedProdId)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                var plannedProd = context.PlannedProductions.FirstOrDefault(p => p.Id == plannedProdId);
+                var items = context.ItemsInASeason(plannedProdId).ToList();
+                return new SeasonWithItems2
+                {
+                    ItemsWithQuantities = context.ItemsInASeason(plannedProdId).ToList(),
+                    Season = new Season { PlannedProductionId = plannedProd.Id, Name = $"{plannedProd.ProductionCatergory.Name} {plannedProd.ProductionCatYear}", Notes = plannedProd.Notes }
+                };
+            }
+        }
+
+        public SeasonWithItems OldGetASeasonsItemsWithQuantitys(int plannedProdId)
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
@@ -184,6 +198,8 @@ namespace ProductionTracker.Data
         
             }
         }
+
+
 
         public IEnumerable<ItemWithQuantity> GetItemsWithQuantitys(bool newway)
         {

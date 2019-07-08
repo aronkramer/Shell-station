@@ -26,5 +26,11 @@ namespace ProductionTracker.Data.Models
         public Season Season { get; set; }
         public IEnumerable<ItemWithQuantity> ItemsWithQuantities { get; set; }
     }
-    
+
+    public class SeasonWithItems2
+    {
+        public Season Season { get; set; }
+        public IEnumerable<ItemsInASeasonResult> ItemsWithQuantities { get; set; }
+    }
+
 }
