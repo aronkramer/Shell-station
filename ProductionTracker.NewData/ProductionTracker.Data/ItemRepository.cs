@@ -648,5 +648,38 @@ namespace ProductionTracker.Data
                 context.SubmitChanges();
             }
         }
+        public void DeleteItem(int id, string type)
+        {
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                switch (type)
+                {
+                    case "Material":
+                        var originalM = context.Materials.Where(i => i.Id == id).FirstOrDefault();
+                        originalM.ModifiedOn = DateTime.Now;
+                        originalM.Deleted = true;
+                        context.SubmitChanges();
+                        break;
+
+                    case "Sleeves":
+                        var originalS = context.Sleeves.Where(i => i.Id == id).FirstOrDefault();
+                        originalS.ModifiedOn = DateTime.Now;
+                        originalS.Deleted = true;
+                        context.SubmitChanges();
+                        break;
+
+                    case "BodyStyle":
+                        var originalB = context.BodyStyles.Where(i => i.Id == id).FirstOrDefault();
+                        originalB.ModifiedOn = DateTime.Now;
+                        originalB.Deleted = true;
+                        context.SubmitChanges();
+                        break;
+
+                    default:
+                        string error = "this line was reached as an error";
+                        break;
+                }
+            }
+        }
     }
 }

@@ -89,7 +89,7 @@ namespace ProductionTracker.Data
         {
             using (var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.Sleeves.ToList();
+                return context.Sleeves.Where(x => x.Deleted == false).ToList();
             }
         }
 
@@ -97,7 +97,7 @@ namespace ProductionTracker.Data
         {
             using(var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.BodyStyles.ToList();
+                return context.BodyStyles.Where(x => x.Deleted == false).ToList();
             }
         }
 
@@ -105,7 +105,7 @@ namespace ProductionTracker.Data
         {
             using(var context = new ManufacturingDataContext(_connectionString))
             {
-                return context.Materials.ToList();
+                return context.Materials.Where(x => x.Deleted == false).ToList();
             }
         }
 
