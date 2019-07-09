@@ -85,7 +85,7 @@
         },
         addRow: function (type) {
             var listType = this[`listOfAll${type}`];
-            listType.push({ Name: "", Edit: true,  });
+            listType.push({ Id: null,Name: "", Edit: true,  });
         },
         removeRow: function (type) {
             var listType = this[`listOfAll${type}`];
@@ -97,9 +97,15 @@
                 object.Name = object.NameCopy;
             }
         },
-        addNewItem: function (object) {
-            var item = this[`listOfAll${object}`];
-            console.log(item.Name);
-        }
+        addNewItem: function (object,type) {
+            //var item = this[`listOfAll${type}`];
+            object.Name = object.Name.toUpperCase();
+            console.log(object.Name);
+            $.post('/item/addAttributeItem', { objName: object.Name , type }, result => {
+                object.Id = result;
+                object.Edit = false;
+            })
+        },
+        
     }
 })

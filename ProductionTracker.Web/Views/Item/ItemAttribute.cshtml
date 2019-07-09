@@ -9,7 +9,7 @@
             </div>
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-           
+
             </div>
         </div>
         <div class="portlet-body" style="display: block;">
@@ -41,13 +41,13 @@
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(sleeve)">Cancel</button>
                                         </span>
                                         <span v-else>
-                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('Sleeves')"><i class="fa fa-plus"></i></button>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem(sleeve,'Sleeves')"><i class="fa fa-plus"></i></button>
                                             <button title="Remove" class="btn btn-danger" v-on:click="removeRow('Sleeves')"><i class="fa fa-ban"></i></button>pending...
                                         </span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-left:475px;" colspan="3">
+                                    <td style="text-align: right;" colspan="3">
                                         <button class="btn btn-circle btn-info" v-on:click="addRow('Sleeves')">Add New</button>
                                     </td>
                                 </tr>
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div id="collapse_2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
-                        <div class="panel-body" style="height:200px; overflow-y:auto;">
+                        <div class="panel-body" style="overflow-y:auto;">
                             <table class="table table-bordered table-responsive table-hover table-striped">
                                 <tr>
                                     <th colspan="3" style="background-color: darkturquoise">BodyStyle</th>
@@ -82,13 +82,13 @@
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(bodyStyle)">Cancel</button>
                                         </span>
                                         <span v-else>
-                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('BodyStyle')"><i class="fa fa-plus"></i></button>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem(bodyStyle, 'BodyStyle')"><i class="fa fa-plus"></i></button>
                                             <button title="Remove" class="btn btn-danger" v-on:click="removeRow('BodyStyle')"><i class="fa fa-ban"></i></button>pending...
                                         </span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-left:475px;" colspan="3">
+                                    <td style="text-align:right" colspan="3">
                                         <button class="btn btn-circle btn-info" v-on:click="addRow('BodyStyle')">Add New</button>
                                     </td>
                                 </tr>
@@ -123,13 +123,13 @@
                                             <button title="Cancel" class="btn btn-circle default cancel-btn" v-on:click="cancel(material)">Cancel</button>
                                         </span>
                                         <span v-else>
-                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem('Material')"><i class="fa fa-plus"></i></button>
+                                            <button title="Add" class="btn btn-info" v-on:click="addNewItem(material,'Material')"><i class="fa fa-plus"></i></button>
                                             <button title="Remove" class="btn btn-danger" v-on:click="removeRow('Material')"><i class="fa fa-ban"></i></button>pending...
                                         </span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-left:475px;" colspan="3">
+                                    <td style="text-align:right" colspan="3">
                                         <button class="btn btn-circle btn-info" v-on:click="addRow('Material')">Add New</button>
                                     </td>
                                 </tr>

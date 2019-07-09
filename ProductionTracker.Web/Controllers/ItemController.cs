@@ -145,6 +145,11 @@ namespace ProductionTracker.Web.Controllers
             var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
             repo.DeleteItem(id, type);
         }
+        public ActionResult AddAttributeItem(string objName, string type)
+        { 
+            var repo = new ItemRepository(Properties.Settings.Default.ManufacturingConStr);
+            return Json(repo.AddItem(objName,type));
+        }
         private IEnumerable<Item> MakeItemsBasedOnCritera(List<int> departmentIds, List<int> styles, List<int> materialIds, List<int> sleaves, List<int> colorIds)
         {
             var ItemList = new List<Item>();

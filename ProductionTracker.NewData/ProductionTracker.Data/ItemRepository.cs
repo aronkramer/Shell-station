@@ -681,5 +681,44 @@ namespace ProductionTracker.Data
                 }
             }
         }
+
+        public int AddItem(string name, string type)
+        {
+            int id;
+            using (var context = new ManufacturingDataContext(_connectionString))
+            {
+                switch (type)
+                {
+                    case "Material":
+                        var addedItemM = new Material { Name = name };
+                        context.Materials.InsertOnSubmit(addedItemM);
+                        context.SubmitChanges();
+                        id = addedItemM.Id;
+                        break;
+
+                    case "Sleeves":
+                        var addedItemS = new Sleeve { Name = name };
+                        context.Sleeves.InsertOnSubmit(addedItemS);
+                        context.SubmitChanges();
+                        id = addedItemS.Id;
+                        break;
+
+                    case "BodyStyle":
+                        var addedItemB = new BodyStyle { Name = name };
+                        context.BodyStyles.InsertOnSubmit(addedItemB);
+                        context.SubmitChanges();
+                        id = addedItemB.Id;
+                        break;
+
+                    default:
+                        id = 0;
+                        string error = "you are here because of an error!!";
+                        break;
+                }
+                
+              return id;
+            }
+
+        }
     }
 }
