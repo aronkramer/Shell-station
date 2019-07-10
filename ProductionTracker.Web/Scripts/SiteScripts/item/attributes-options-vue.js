@@ -40,7 +40,7 @@
             $.get("/item/GetMaterial", result => {
                 this.listOfAllMaterial = result.map(r => {
                     r.Edit = false;
-                    r.NameCopy = null;
+                    r.Copy = null;
                     return r;
                 });
             });
@@ -57,10 +57,14 @@
             var item = this.listOfAllMaterial[index];
             $.post("/item/UpdateMaterial", { material: { Id: item.Id, Name: item.Name } });
         },
-        edit: function (item) {
+        makeEditable: function (item) {
             if (!item.Edit) {
                 item.Edit = !item.Edit;
                 item.Copy = jQuery.extend(true, {}, item);
+            }
+
+            else {
+                this.cancel(item)
             }
             
         },
@@ -93,8 +97,10 @@
         },
         cancel: function (object) {
             if (object.Id) {
+                for (k in object.Copy) {
+                    object[k] = object.Copy[k];
+                }
                 object.Edit = false;
-                object.Name = object.NameCopy;
             }
         },
         addNewItem: function (object,type) {

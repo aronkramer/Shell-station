@@ -643,7 +643,8 @@ namespace ProductionTracker.Data
             using (var context = new ManufacturingDataContext(_connectionString))
             {
                 var original = context.Materials.Where(i => i.Id == material.Id).FirstOrDefault();
-                original.Name = material.Name.ToUpper();
+                material.Name = material.Name.ToUpper();
+                original  = original.SetOrginalDbObjToUpdated(material);
                 original.ModifiedOn = DateTime.Now;
                 context.SubmitChanges();
             }

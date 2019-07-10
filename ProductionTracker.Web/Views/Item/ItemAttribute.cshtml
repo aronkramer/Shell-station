@@ -106,16 +106,27 @@
                         <div class="panel-body">
                             <table class="table table-bordered table-responsive table-hover table-striped">
                                 <tr>
-                                    <th colspan="3" style="background-color: darkturquoise">Materials</th>
+                                    <th colspan="4" style="background-color: darkturquoise">Materials</th>
                                 </tr>
-                                <tr v-for="(material,index) in listOfAllMaterial" :class="{'being-edited-background': material.Edit}">
+                                <tr  v-for="(material,index) in listOfAllMaterial" v-on:dblclick="makeEditable(material)"  :class="{'being-edited-background': material.Edit}">
                                     <td>{{index+1}}</td>
-                                    <td v-if="!material.Edit" :colspan="2" v-on:dblclick="material.Edit = true; material.NameCopy = material.Name" tabindex="1">
-                                        <span>{{material.Name.toUpperCase()}}  {{material.PricePerYard}}</span>
-                                    </td>
-                                    <td v-else :colspan="1" v-on:dblclick="cancel(material)" tabindex="1">
-                                        <input v-model="material.Name" />
-                                    </td>
+                                    <template v-if="!material.Edit" v-on:dblclick="material.Edit = true; material.NameCopy = material.Name">
+                                        <td   tabindex="1">
+                                            {{material.Name.toUpperCase()}}
+                                        </td>
+                                        
+                                        <td>
+                                            {{material.PricePerYard}}
+                                        </td>
+                                    </template>
+                                    <template v-else v-on:dblclick="cancel(material)" >
+                                        <td  :colspan="1" tabindex="1">
+                                            <input v-model="material.Name" />
+                                        </td>
+                                        <td  :colspan="1" tabindex="1">
+                                            <input v-model="material.PricePerYard" />
+                                        </td>
+                                    </template>
                                     <td v-if="material.Edit" class="action-btn-td">
                                         <span v-if="material.Id" class="action-btn-span">
                                             <span class="font-awsome-span save-btn"><i title="Save" v-on:click="updateExistingmaterial(index); material.Edit = !material.Edit" class="fa fa-save"></i></span>
