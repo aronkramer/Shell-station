@@ -393,6 +393,8 @@ namespace ProductionTracker.Data
 		
 		private bool _Deleted;
 		
+		private string _SKUCode;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -411,6 +413,8 @@ namespace ProductionTracker.Data
     partial void OnModifiedOnChanged();
     partial void OnDeletedChanging(bool value);
     partial void OnDeletedChanged();
+    partial void OnSKUCodeChanging(string value);
+    partial void OnSKUCodeChanged();
     #endregion
 		
 		public BodyStyle()
@@ -520,6 +524,26 @@ namespace ProductionTracker.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKUCode", DbType="VarChar(50)")]
+		public string SKUCode
+		{
+			get
+			{
+				return this._SKUCode;
+			}
+			set
+			{
+				if ((this._SKUCode != value))
+				{
+					this.OnSKUCodeChanging(value);
+					this.SendPropertyChanging();
+					this._SKUCode = value;
+					this.SendPropertyChanged("SKUCode");
+					this.OnSKUCodeChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BodyStyle_Item", Storage="_Items", ThisKey="Id", OtherKey="BodyStyleId")]
 		public EntitySet<Item> Items
 		{
@@ -607,6 +631,8 @@ namespace ProductionTracker.Data
 		
 		private bool _Deleted;
 		
+		private string _SKUCode;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<MarkerCategory> _MarkerCategories;
@@ -625,6 +651,8 @@ namespace ProductionTracker.Data
     partial void OnModifiedOnChanged();
     partial void OnDeletedChanging(bool value);
     partial void OnDeletedChanged();
+    partial void OnSKUCodeChanging(string value);
+    partial void OnSKUCodeChanged();
     #endregion
 		
 		public Sleeve()
@@ -730,6 +758,26 @@ namespace ProductionTracker.Data
 					this._Deleted = value;
 					this.SendPropertyChanged("Deleted");
 					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKUCode", DbType="VarChar(50)")]
+		public string SKUCode
+		{
+			get
+			{
+				return this._SKUCode;
+			}
+			set
+			{
+				if ((this._SKUCode != value))
+				{
+					this.OnSKUCodeChanging(value);
+					this.SendPropertyChanging();
+					this._SKUCode = value;
+					this.SendPropertyChanged("SKUCode");
+					this.OnSKUCodeChanged();
 				}
 			}
 		}
@@ -2090,6 +2138,8 @@ namespace ProductionTracker.Data
 		
 		private bool _Deleted;
 		
+		private string _SKUCode;
+		
 		private EntitySet<Item> _Items;
 		
 		private EntitySet<Fabric> _Fabrics;
@@ -2110,6 +2160,8 @@ namespace ProductionTracker.Data
     partial void OnModifiedOnChanged();
     partial void OnDeletedChanging(bool value);
     partial void OnDeletedChanged();
+    partial void OnSKUCodeChanging(string value);
+    partial void OnSKUCodeChanged();
     #endregion
 		
 		public Material()
@@ -2235,6 +2287,26 @@ namespace ProductionTracker.Data
 					this._Deleted = value;
 					this.SendPropertyChanged("Deleted");
 					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKUCode", DbType="VarChar(50)")]
+		public string SKUCode
+		{
+			get
+			{
+				return this._SKUCode;
+			}
+			set
+			{
+				if ((this._SKUCode != value))
+				{
+					this.OnSKUCodeChanging(value);
+					this.SendPropertyChanging();
+					this._SKUCode = value;
+					this.SendPropertyChanged("SKUCode");
+					this.OnSKUCodeChanged();
 				}
 			}
 		}
